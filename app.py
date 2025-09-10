@@ -66,3 +66,15 @@ def counter():
 @app.route('/info')
 def info():
     return redirect("author")
+
+@app.route("/created")
+def created():
+    return """
+    <!doctype html>
+    <html>
+        <body>
+            <h1>web-сервер на flask</h1>
+            <a href="/author">author</a>
+        </body>
+    </html>
+    """, 201
