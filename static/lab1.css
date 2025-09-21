@@ -1,0 +1,20 @@
+body {
+    background-color: #2c2c54; 
+    color: #f1f1f1;
+    font-family: Arial, sans-serif;
+    text-align: center;
+}
+
+h1 {
+    margin-top: 20px;
+    font-size: 2em;
+    color: #d1ff52; 
+}
+
+img {
+    max-width: 90%;   /* растягиваю картинку почти во всю ширину окна */
+    height: auto;
+    border: 5px solid #f1f1f1;
+    border-radius: 10px;
+    margin-top: 20px;
+}
