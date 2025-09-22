@@ -2,10 +2,6 @@ from flask import Flask, url_for, request, redirect
 import datetime
 app = Flask(__name__)
 
-@app.errorhandler(404)
-def not_found(err):
-    return "Нет такой страницы", 404
-
 @app.route("/lab1/web")
 def web():
     return """<!doctype html>
@@ -270,3 +266,60 @@ def error_418():
         </body>
     </html>
     """, 418
+
+@app.errorhandler(404)
+def not_found(error):
+    img_path = url_for("static", filename="404.jpg")  
+    return f"""
+    <!doctype html>
+    <html>
+        <head>
+            <meta charset="utf-8">
+            <title>404 Страница не найдена</title>
+            <style>
+                body {{
+                    font-family: Arial, sans-serif;
+                    background-color: #f4f4f9;
+                    color: #333;
+                    text-align: center;
+                    padding: 50px;
+                    margin: 0;
+                }}
+                h1 {{
+                    font-size: 3em;
+                    color: #e74c3c;
+                }}
+                p {{
+                    font-size: 1.2em;
+                    color: #555;
+                }}
+                img {{
+                    width: 300px;
+                    margin-top: 20px;
+                }}
+                footer {{
+                    margin-top: 40px;
+                    font-size: 0.9em;
+                    color: gray;
+                    text-align: center;
+                }}
+                a {{
+                    color: #3498db;
+                    text-decoration: none;
+                    font-weight: bold;
+                }}
+            </style>
+        </head>
+        <body>
+
+            <h1>404 Страница не найдена</h1>
+            <p>Ой, мы не можем найти эту страницу. Возможно, она была удалена или никогда не существовала.</p>
+            <img src="{img_path}" alt="Не найдено">
+            
+            <footer>
+                <p>Возвращайтесь на <a href="/">главную страницу</a>.</p>
+            </footer>
+
+        </body>
+    </html>
+    """, 404
