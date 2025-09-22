@@ -192,3 +192,81 @@ def lab1():
     </body>
 </html>
 """
+
+@app.route('/lab1/400')
+def error_400():
+    return f"""
+    <!doctype html>
+    <html>
+        <head><title>400 Bad Request</title></head>
+        <body style="font-family: Arial, sans-serif; text-align: center;">
+            <h1>400 Bad Request</h1>
+            <p>Сервер не может обработать ваш запрос из-за синтаксической ошибки.</p>
+        </body>
+    </html>
+    """, 400
+
+@app.route('/lab1/401')
+def error_401():
+    return f"""
+    <!doctype html>
+    <html>
+        <head><title>401 Unauthorized</title></head>
+        <body style="font-family: Arial, sans-serif; text-align: center;">
+            <h1>401 Unauthorized</h1>
+            <p>Необходимо предоставить действительные учетные данные для доступа к этому ресурсу.</p>
+        </body>
+    </html>
+    """, 401
+
+@app.route('/lab1/402')
+def error_402():
+    return f"""
+    <!doctype html>
+    <html>
+        <head><title>402 Payment Required</title></head>
+        <body style="font-family: Arial, sans-serif; text-align: center;">
+            <h1>402 Payment Required</h1>
+            <p>Для доступа к ресурсу необходима оплата.</p>
+        </body>
+    </html>
+    """, 402
+
+@app.route('/lab1/403')
+def error_403():
+    return f"""
+    <!doctype html>
+    <html>
+        <head><title>403 Forbidden</title></head>
+        <body style="font-family: Arial, sans-serif; text-align: center;">
+            <h1>403 Forbidden</h1>
+            <p>Доступ к ресурсу запрещен. У вас нет прав для выполнения этого действия.</p>
+        </body>
+    </html>
+    """, 403
+
+@app.route('/lab1/405')
+def error_405():
+    return f"""
+    <!doctype html>
+    <html>
+        <head><title>405 Method Not Allowed</title></head>
+        <body style="font-family: Arial, sans-serif; text-align: center;">
+            <h1>405 Method Not Allowed</h1>
+            <p>Метод HTTP, который вы использовали, не поддерживается для этого ресурса.</p>
+        </body>
+    </html>
+    """, 405
+
+@app.route('/lab1/418')
+def error_418():
+    return f"""
+    <!doctype html>
+    <html>
+        <head><title>418 I'm a teapot</title></head>
+        <body style="font-family: Arial, sans-serif; text-align: center;">
+            <h1>418 I'm a teapot</h1>
+            <p>Я — чайник! Это код ошибки, введенный в апрельскую шутку, RFC 2324.</p>
+        </body>
+    </html>
+    """, 418
