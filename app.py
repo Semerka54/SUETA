@@ -185,6 +185,13 @@ def lab1():
                 <li><a href="{url_for('counter')}">Счётчик</a></li>
                 <li><a href="{url_for('info')}">Инфо</a></li>
                 <li><a href="{url_for('created')}">Созданный</a></li>
+                <li><a href="{url_for('error_400')}">Ошибка 400</a></li>
+                <li><a href="{url_for('error_401')}">Ошибка 401</a></li>
+                <li><a href="{url_for('error_402')}">Ошибка 402</a></li>
+                <li><a href="{url_for('error_403')}">Ошибка 403</a></li>
+                <li><a href="{url_for('error_405')}">Ошибка 405</a></li>
+                <li><a href="{url_for('error_418')}">Ошибка 418</a></li>
+                <li><a href="{url_for('error')}">Ошибка 500</a></li>
             </ul>
         </nav>
 
