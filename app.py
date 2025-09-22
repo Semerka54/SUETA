@@ -163,11 +163,16 @@ def lab1():
 <html>
     <head>
         <meta charset="utf-8">
-        <title>Первая лабораторная</title>
+        <title>Лабораторная 1</title>
     </head>
     <body style="font-family: Arial, sans-serif; text-align: center;">
 
-        <h2>Это страница первой лабораторной</h2>
+        <h2>Flask — фреймворк для создания веб-приложений на языке
+        программирования Python, использующий набор инструментов
+        Werkzeug, а также шаблонизатор Jinja2. Относится к категории так
+        называемых микрофреймворков — минималистичных каркасов
+        веб-приложений, сознательно предоставляющих лишь самые базовые
+        возможности.</h2>
 
         <nav style="margin-top: 20px;">
             <ul style="list-style-type: none; padding: 0;">
@@ -179,6 +184,10 @@ def lab1():
                 <li><a href="{url_for('created')}">Созданный</a></li>
             </ul>
         </nav>
+
+        <footer style="margin-top: 40px; font-size: 0.9em; color: gray;">
+            <a href="{url_for('index')}">На главную</a>
+        </footer>
 
     </body>
 </html>
