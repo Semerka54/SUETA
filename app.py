@@ -323,3 +323,21 @@ def not_found(error):
         </body>
     </html>
     """, 404
+
+@app.route('/lab1/500')
+def error():
+    result = 1 / 0  # Деление на ноль, которое вызывает ошибку
+    return f"Результат: {result}"
+
+@app.errorhandler(500)
+def internal_error(error):
+    return """
+    <!doctype html>
+    <html>
+        <head><title>Ошибка 500</title></head>
+        <body style="font-family: Arial, sans-serif; text-align: center;">
+            <h1>500 Внутренняя ошибка сервера</h1>
+            <p>Произошла ошибка на сервере. Пожалуйста, попробуйте позже.</p>
+        </body>
+    </html>
+    """, 500
