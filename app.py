@@ -1,4 +1,4 @@
-from flask import Flask, url_for, request, redirect
+from flask import Flask, url_for, request, redirect, render_template, Response
 import datetime
 app = Flask(__name__)
 
@@ -33,20 +33,27 @@ def author():
 
 @app.route('/lab1/image')
 def image():
-    img_path = url_for("static", filename="dub.jpg")
-    css_path = url_for("static", filename="lab1.css")
-    return f'''
-<!doctype html>
-<html>
-    <head>
-        <link rel="stylesheet" type="text/css" href="{css_path}">
-    </head>
-    <body>
-        <h1>Дуб</h1>
-        <img src="{img_path}" alt="Дуб">
-    </body>
-</html>
-'''
+        img_path = url_for("static", filename="dub.jpg")
+        css_path = url_for("static", filename="lab1.css")
+        html_content = f'''
+        <!doctype html>
+        <html>
+            <head>
+                <link rel="stylesheet" type="text/css" href="{css_path}">
+            </head>
+            <body>
+                <h1>Дуб</h1>
+                <img src="{img_path}" alt="Дуб">
+            </body>
+        </html>
+        '''
+
+        response = Response(html_content, content_type='text/html; charset=utf-8')
+        response.headers['Content-Language'] = 'ru'
+        response.headers['X-Custom-Header'] = 'This is a custom header'
+        response.headers['X-Frame-Options'] = 'DENY'
+
+        return response
 
 count = 0
 
@@ -324,7 +331,7 @@ def not_found(error):
     </html>
     """, 404
 
-@app.route('/lab1/500')
+@app.route('/500')
 def error():
     result = 1 / 0  # Деление на ноль, которое вызывает ошибку
     return f"Результат: {result}"
