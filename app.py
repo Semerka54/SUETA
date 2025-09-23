@@ -281,9 +281,28 @@ def error_418():
     </html>
     """, 418
 
+# список для хранения лога
+log_data = []
+
 @app.errorhandler(404)
 def not_found(error):
     img_path = url_for("static", filename="404.jpg")  
+    
+    # данные о пользователе
+    ip = request.remote_addr
+    time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    url = request.url
+
+    # добавляем запись в лог
+    log_entry = f"[{time}], пользователь {ip} зашёл на адрес: {url}"
+    log_data.append(log_entry)
+
+    # формируем HTML список журнала
+    log_html = "<ul>"
+    for entry in log_data:
+        log_html += f"<li>{entry}</li>"
+    log_html += "</ul>"
+
     return f"""
     <!doctype html>
     <html>
@@ -322,6 +341,13 @@ def not_found(error):
                     text-decoration: none;
                     font-weight: bold;
                 }}
+                .journal {{
+                    margin-top: 40px;
+                    text-align: left;
+                    max-width: 800px;
+                    margin-left: auto;
+                    margin-right: auto;
+                }}
             </style>
         </head>
         <body>
@@ -329,10 +355,18 @@ def not_found(error):
             <h1>404 Страница не найдена</h1>
             <p>Ой, мы не можем найти эту страницу. Возможно, она была удалена или никогда не существовала.</p>
             <img src="{img_path}" alt="Не найдено">
-            
+
+            <p><b>Ваш IP:</b> {ip}</p>
+            <p><b>Дата и время:</b> {time}</p>
+
             <footer>
                 <p>Возвращайтесь на <a href="/">главную страницу</a>.</p>
             </footer>
+
+            <div class="journal">
+                <h2>Журнал:</h2>
+                {log_html}
+            </div>
 
         </body>
     </html>
