@@ -189,6 +189,7 @@ def lab1():
                 <li><a href="{url_for('error_401')}">Ошибка 401</a></li>
                 <li><a href="{url_for('error_402')}">Ошибка 402</a></li>
                 <li><a href="{url_for('error_403')}">Ошибка 403</a></li>
+                <li><a href="/lab1/404">Ошибка 404</a></li>
                 <li><a href="{url_for('error_405')}">Ошибка 405</a></li>
                 <li><a href="{url_for('error_418')}">Ошибка 418</a></li>
                 <li><a href="{url_for('error')}">Ошибка 500</a></li>
@@ -389,3 +390,11 @@ def internal_error(error):
         </body>
     </html>
     """, 500
+
+@app.route('/lab2/a')
+def okey():
+    return 'без слэша'
+
+@app.route('/lab2/a/')
+def adrenalin():
+    return 'со слэшем'
