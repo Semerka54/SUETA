@@ -1,0 +1,38 @@
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    color: #333;
+}
+
+header {
+    text-align: center;
+    padding: 15px;
+    background-color: #555a90e2;
+    color: white;
+    border-radius: 0 0 8px 8px;
+}
+
+main {
+    flex: 1; /* занимает всё доступное пространство */
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    margin: 20px;
+}
+
+footer {
+    text-align: center;
+    padding: 15px;
+    background-color: #555a90e2;
+    color: white;
+    border-radius: 8px 8px 0 0;
+}
