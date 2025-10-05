@@ -529,7 +529,7 @@ def calc_default():
 def calc_one(a):
     return redirect(url_for('calc', a=a, b=1))
 
-# список книг (данные хранятся на сервере)
+# список книг
 books = [
     {"author": "Фёдор Достоевский", "title": "Преступление и наказание", "genre": "Роман", "pages": 672},
     {"author": "Лев Толстой", "title": "Война и мир", "genre": "Исторический роман", "pages": 1225},
@@ -546,3 +546,31 @@ books = [
 @app.route('/lab2/books/')
 def show_books():
     return render_template('books.html', books=books)
+
+# Данные о машинах
+cars = [
+    {"name": "Toyota Corolla", "image": "corola.jpg", "description": "Надёжный и экономичный седан для повседневных поездок."},
+    {"name": "Honda Civic", "image": "civic.jpg", "description": "Стильный и динамичный автомобиль с хорошей управляемостью."},
+    {"name": "Ford Mustang", "image": "mustang.jpg", "description": "Американский маслкар с мощным двигателем и агрессивным дизайном."},
+    {"name": "Chevrolet Camaro", "image": "camaro.jpg", "description": "Спортивный автомобиль с ярким и дерзким стилем."},
+    {"name": "BMW 3 Series", "image": "BMW.jpg", "description": "Элегантный немецкий седан с отличной управляемостью."},
+    {"name": "Audi A4", "image": "Audi.jpg", "description": "Комфортный и современный автомобиль с премиальной отделкой."},
+    {"name": "Mercedes-Benz C-Class", "image": "MB.jpg", "description": "Люксовый седан с высоким уровнем комфорта и безопасности."},
+    {"name": "Tesla Model 3", "image": "Tesla.jpg", "description": "Электромобиль с инновационными технологиями и автопилотом."},
+    {"name": "Nissan Altima", "image": "Nissan.jpg", "description": "Практичный седан с хорошей экономией топлива и просторным салоном."},
+    {"name": "Hyundai Elantra", "image": "Hundai.jpg", "description": "Доступный и надёжный автомобиль для ежедневных поездок."},
+    {"name": "Volkswagen Golf", "image": "Golf.jpg", "description": "Компактный хэтчбек с удобным управлением и современным дизайном."},
+    {"name": "Subaru Impreza", "image": "Subaru.jpg", "description": "Надёжный автомобиль с полным приводом для любых дорог."},
+    {"name": "Mazda CX-5", "image": "Mazda.jpg", "description": "Стильный кроссовер с отличной управляемостью и комфортом."},
+    {"name": "Jeep Wrangler", "image": "Jeep.jpg", "description": "Легендарный внедорожник для приключений на любой местности."},
+    {"name": "Porsche 911", "image": "Porsche.jpg", "description": "Икона спортивных автомобилей с невероятной динамикой."},
+    {"name": "Lamborghini Huracan", "image": "Lambo.jpg", "description": "Экзотический суперкар с уникальным дизайном и мощью."},
+    {"name": "Ferrari F8", "image": "Ferrari.jpg", "description": "Высокопроизводительный суперкар с изысканным стилем."},
+    {"name": "Bugatti Chiron", "image": "Buga.jpg", "description": "Сверхскоростной гиперкар для настоящих энтузиастов."},
+    {"name": "Kia Sorento", "image": "kia.jpg", "description": "Просторный семейный SUV с современными технологиями."},
+    {"name": "Renault Clio", "image": "Clio.jpg", "description": "Компактный и экономичный хэтчбек для города."},
+]
+
+@app.route("/lab2/cars/")
+def show_cars():
+    return render_template("cars.html", cars=cars)
