@@ -528,3 +528,21 @@ def calc_default():
 @app.route('/lab2/calc/<int:a>')
 def calc_one(a):
     return redirect(url_for('calc', a=a, b=1))
+
+# список книг (данные хранятся на сервере)
+books = [
+    {"author": "Фёдор Достоевский", "title": "Преступление и наказание", "genre": "Роман", "pages": 672},
+    {"author": "Лев Толстой", "title": "Война и мир", "genre": "Исторический роман", "pages": 1225},
+    {"author": "Александр Пушкин", "title": "Евгений Онегин", "genre": "Роман в стихах", "pages": 320},
+    {"author": "Михаил Булгаков", "title": "Мастер и Маргарита", "genre": "Мистика", "pages": 480},
+    {"author": "Николай Гоголь", "title": "Мёртвые души", "genre": "Сатира", "pages": 352},
+    {"author": "Иван Тургенев", "title": "Отцы и дети", "genre": "Роман", "pages": 280},
+    {"author": "Антон Чехов", "title": "Вишнёвый сад", "genre": "Пьеса", "pages": 160},
+    {"author": "Джордж Оруэлл", "title": "1984", "genre": "Антиутопия", "pages": 328},
+    {"author": "Рэй Брэдбери", "title": "451 градус по Фаренгейту", "genre": "Фантастика", "pages": 256},
+    {"author": "Дж. Р. Р. Толкин", "title": "Хоббит", "genre": "Фэнтези", "pages": 310}
+]
+
+@app.route('/lab2/books/')
+def show_books():
+    return render_template('books.html', books=books)
