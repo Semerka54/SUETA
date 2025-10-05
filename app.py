@@ -406,7 +406,18 @@ def flowers(flower_id):
     if flower_id >= len(flower_list):
         abort(404)
     else:
-        return "цветок: " + flower_list[flower_id]
+        flower_name = flower_list[flower_id]
+        return f'''
+<!doctype html>
+<html>
+    <body>
+        <h1>Информация о цветке</h1>
+        <p>Цветок: {flower_name}</p>
+        <p>Вы выбрали цветок с индексом {flower_id}</p>
+        <p><a href="/lab2/flowers_list">Посмотреть все цветы</a></p>
+    </body>
+</html>
+'''
 
 @app.route('/lab2/add_flower/<name>')
 def add_flower(name):
@@ -419,8 +430,53 @@ def add_flower(name):
     <p>Название нового цветка: {name} </p>
     <p>Всего цветов: {len(flower_list)}</p>
     <p>Полный список: {flower_list}</p>
-    <body>
+    </body>
+</html>
+'''
+
+@app.route('/lab2/add_flower/')
+def add_flower_empty():
+    abort(400, description="Вы не задали имя цветка")
+
+@app.route('/lab2/clear_flowers')
+def clear_flowers():
+    flower_list.clear()
+    return f'''
+<!doctype html>
 <html>
+    <body>
+        <h1>Список цветов очищен!</h1>
+        <p>Все цветы были удалены из списка.</p>
+        <p><a href="/lab2/flowers_list">Перейти к списку всех цветов</a></p>
+    </body>
+</html>
+'''
+
+@app.errorhandler(400)
+def bad_request(error):
+    return f'''
+<!doctype html>
+<html>
+    <body>
+    <h1>Ошибка 400</h1>
+    <p>{error.description}</p>
+    </body>
+</html>
+'''
+
+@app.route('/lab2/flowers_list')
+def flowers_list():
+    return f'''
+<!doctype html>
+<html>
+    <body>
+    <h1>Список всех цветков</h1>
+    <p>Всего цветов: {len(flower_list)}</p>
+    <ul>
+        {"".join([f"<li>{flower}</li>" for flower in flower_list])}
+    </ul>
+    </body>
+</html>
 '''
 
 @app.route('/lab2/example')
