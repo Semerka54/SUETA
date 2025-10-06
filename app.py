@@ -112,52 +112,8 @@ def created():
 @app.route('/')
 @app.route('/index')
 def index():
-    lab1_url = url_for('lab1')
-    return f'''
-<!doctype html>
-<html>
-    <head>
-        <meta charset="utf-8">
-        <title>НГТУ, ФБ, Лабораторные работы</title>
-        <style>
-            body {{
-                font-family: Arial, sans-serif;
-                text-align: center;
-                background-color: #f4f4f9;
-                margin: 0; 
-                padding-bottom: 60px; 
-            }}
-            footer {{
-                position: fixed;
-                bottom: 0;
-                left: 0;
-                width: 100%;
-                height: 60px;
-                background-color: #f4f4f9;
-                color: gray;
-                font-size: 0.9em;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                border-top: 1px solid #ccc;
-            }}
-        </style>
-    </head>
-    <body>
+    return render_template('index.html')
 
-        <h1>НГТУ, ФБ, WEB-программирование, часть 2. Список лабораторных</h1>
-
-        <nav style="margin: 20px 0;">
-            <a href="{lab1_url}">Первая лабораторная</a>
-        </nav>
-
-        <footer>
-            Богданов Семён Андреевич, группа: ФБИ - 32, 3 курс, 2025
-        </footer>
-
-    </body>
-</html>
-'''
 
 @app.route('/lab1')
 def lab1():

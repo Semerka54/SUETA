@@ -6,7 +6,7 @@
     <title>
         {% if name %}
             {{ name }}. 
-        {%else %}
+        {% else %}
             Анонимус.
         {% endif %}
             Лабораторная работа {{ numer }}
@@ -28,25 +28,30 @@
             <li>{{ f.name }}: {{ f.price }} &#8381;</li>
             {% endfor %}
         </ul>
+
+        <!-- Кнопка "Главное меню" -->
+        <div class="floating-home">
+            <a href="{{ url_for('index') }}" class="home-link">Главное меню</a>
+        </div>
     </main>
 
     <footer>
         &copy; 
         {% if name %}
             {{ name }}, 
-        {%else %}
+        {% else %}
             Анонимус,
         {% endif %}
         {% if group %}
             {{ group }}, 
-        {%else %}
+        {% else %}
             Нумбер Ван,
-         {% endif %}
-         {% if cours %}
+        {% endif %}
+        {% if cours %}
             {{ cours }}, 
-        {%else %}
+        {% else %}
             Последний,
-         {% endif %}
+        {% endif %}
             2025
     </footer>
 </body>
