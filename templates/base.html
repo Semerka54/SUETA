@@ -4,7 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Богданов Семён. {% block lab %}{% endblock %}</title>
+
+    <!-- Подключение стилей -->
     <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+
+    <!-- Фавиконка -->
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
 </head>
 <body>
     <header>
