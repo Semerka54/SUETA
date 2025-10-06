@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block main %}
+<h1>Добавлен новый цветок</h1>
+<p>Название нового цветка: {{ name }}</p>
+<p>Цена: {{ price }} ₽</p>
+<p>Всего цветов: {{ total }}</p>
+<ul>
+    {% for flower, price in flower_list.items() %}
+    <li>{{ flower }} — {{ price }} ₽</li>
+    {% endfor %}
+</ul>
+{% endblock %}

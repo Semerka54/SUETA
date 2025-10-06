@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+
+{% block main %}
+<h1>Список цветов очищен!</h1>
+<p>Все цветы были удалены из списка.</p>
+<p><a href="{{ url_for('flowers_list') }}">Перейти к списку всех цветов</a></p>
+{% endblock %}

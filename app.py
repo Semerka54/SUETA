@@ -355,85 +355,78 @@ def okey():
 def adrenalin():
     return 'со слэшем'
 
-flower_list = ['роза', 'тюльпан', 'незабудка', 'ромашка']
+# Словарь цветов и их цен
+flowers = {
+    'роза': 100,
+    'тюльпан': 80,
+    'незабудка': 50,
+    'ромашка': 60
+}
 
 @app.route('/lab2/flowers/<int:flower_id>')
-def flowers(flower_id):
-    if flower_id >= len(flower_list):
+def flower_info(flower_id):
+    flower_names = list(flowers.keys())
+    if flower_id >= len(flower_names):
         abort(404)
-    else:
-        flower_name = flower_list[flower_id]
-        return f'''
-<!doctype html>
-<html>
-    <body>
-        <h1>Информация о цветке</h1>
-        <p>Цветок: {flower_name}</p>
-        <p>Вы выбрали цветок с индексом {flower_id}</p>
-        <p><a href="/lab2/flowers_list">Посмотреть все цветы</a></p>
-    </body>
-</html>
-'''
+    name = flower_names[flower_id]
+    price = flowers[name]
+    return render_template('flower_info.html', flower_id=flower_id, name=name, price=price)
 
-@app.route('/lab2/add_flower/<name>')
-def add_flower(name):
-    flower_list.append(name)
-    return f'''
-<!doctype html>
-<html>
-    <body>
-    <h1>Добавлен новый цветок</h1>
-    <p>Название нового цветка: {name} </p>
-    <p>Всего цветов: {len(flower_list)}</p>
-    <p>Полный список: {flower_list}</p>
-    </body>
-</html>
-'''
+
+@app.route('/lab2/add_flower/<name>/<int:price>')
+def add_flower(name, price):
+    flowers[name] = price
+    return render_template('flower_added.html', name=name, price=price, total=len(flowers), flower_list=flowers)
+
 
 @app.route('/lab2/add_flower/')
 def add_flower_empty():
     abort(400, description="Вы не задали имя цветка")
 
+
 @app.route('/lab2/clear_flowers')
 def clear_flowers():
-    flower_list.clear()
-    return f'''
-<!doctype html>
-<html>
-    <body>
-        <h1>Список цветов очищен!</h1>
-        <p>Все цветы были удалены из списка.</p>
-        <p><a href="/lab2/flowers_list">Перейти к списку всех цветов</a></p>
-    </body>
-</html>
-'''
+    flowers.clear()
+    return render_template('flowers_cleared.html')
+
 
 @app.errorhandler(400)
 def bad_request(error):
-    return f'''
-<!doctype html>
-<html>
-    <body>
-    <h1>Ошибка 400</h1>
-    <p>{error.description}</p>
-    </body>
-</html>
-'''
+    return render_template('400.html', description=error.description), 400
 
-@app.route('/lab2/flowers_list')
+
+@app.route('/lab2/flowers_list', methods=['GET', 'POST'])
 def flowers_list():
-    return f'''
-<!doctype html>
-<html>
-    <body>
-    <h1>Список всех цветков</h1>
-    <p>Всего цветов: {len(flower_list)}</p>
-    <ul>
-        {"".join([f"<li>{flower}</li>" for flower in flower_list])}
-    </ul>
-    </body>
-</html>
-'''
+    if request.method == 'POST':
+        name = request.form.get('name')
+        price = request.form.get('price')
+        if not name or not price:
+            abort(400, description="Название или цена не заданы")
+        try:
+            price = int(price)
+        except ValueError:
+            abort(400, description="Цена должна быть числом")
+        flowers[name] = price
+        return redirect(url_for('flowers_list'))
+
+    return render_template('flowers_list.html', flowers=flowers)
+@app.route('/lab2/delete_flower/<int:flower_id>')
+def delete_flower(flower_id):
+    flower_names = list(flowers.keys())
+    if flower_id >= len(flower_names):
+        abort(404)
+    name_to_delete = flower_names[flower_id]
+    price = flowers[name_to_delete]
+    return render_template('delete_flower.html', flower_id=flower_id, name=name_to_delete, price=price)
+
+@app.route('/lab2/delete_flower_confirm/<int:flower_id>')
+def delete_flower_confirm(flower_id):
+    flower_names = list(flowers.keys())
+    if flower_id >= len(flower_names):
+        abort(404)
+    name_to_delete = flower_names[flower_id]
+    del flowers[name_to_delete]
+    return redirect(url_for('flowers_list'))
 
 @app.route('/lab2/example')
 def example():
