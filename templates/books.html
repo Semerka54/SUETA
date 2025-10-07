@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 2 — Книги{% endblock %}
+
+{% block main %}
+<style>
+    .books-container {
+        background: linear-gradient(135deg, #f5f1e8, #e8e0d0);
+        padding: 20px;
+        border-radius: 20px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        width: 80%;
+        margin: 30px auto;
+    }
+
+    .books-title {
+        text-align: center;
+        font-size: 26px;
+        color: #5a3e1b;
+        margin-bottom: 20px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    table.books-table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: #fffaf2;
+    }
+
+    table.books-table th, table.books-table td {
+        padding: 10px 15px;
+        border: 1px solid #d6c5aa;
+        text-align: left;
+    }
+
+    table.books-table th {
+        background-color: #e2d1b9;
+        color: #3e2b12;
+    }
+
+    table.books-table tr:nth-child(even) {
+        background-color: #f8f4ec;
+    }
+
+    .books-footer {
+        text-align: center;
+        margin-top: 15px;
+    }
+
+    .books-footer a {
+        text-decoration: none;
+        color: #6b4c25;
+        font-weight: bold;
+    }
+
+    .books-footer a:hover {
+        text-decoration: underline;
+    }
+</style>
+
+<div class="books-container">
+    <div class="books-title">Список книг</div>
+
+    <table class="books-table">
+        <tr>
+            <th>Автор</th>
+            <th>Название</th>
+            <th>Жанр</th>
+            <th>Страниц</th>
+        </tr>
+        {% for book in books %}
+        <tr>
+            <td>{{ book.author }}</td>
+            <td>{{ book.title }}</td>
+            <td>{{ book.genre }}</td>
+            <td>{{ book.pages }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <div class="books-footer">
+        <a href="/lab2">Вернуться к лабораторной 2</a>
+    </div>
+</div>
+{% endblock %}

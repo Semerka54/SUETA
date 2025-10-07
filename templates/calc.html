@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 2 — Калькулятор{% endblock %}
+
+{% block main %}
+<h2>Расчёт с параметрами:</h2>
+
+<table class="calc-table">
+    <tr><th>Операция</th><th>Результат</th></tr>
+    <tr><td>{{ a }} + {{ b }}</td><td>{{ sum }}</td></tr>
+    <tr><td>{{ a }} - {{ b }}</td><td>{{ sub }}</td></tr>
+    <tr><td>{{ a }} × {{ b }}</td><td>{{ mul }}</td></tr>
+    <tr><td>{{ a }} ÷ {{ b }}</td><td>{{ div }}</td></tr>
+    <tr><td>{{ a }}<sup>{{ b }}</sup></td><td>{{ pow }}</td></tr>
+</table>
+
+<div class="back-link">
+    <a href="/lab2/calc/">Сбросить параметры</a>
+</div>
+{% endblock %}

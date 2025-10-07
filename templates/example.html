@@ -1,11 +1,66 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Богданов Семён. Лабораторная работа {{ numer }}</title>
 </head>
 <body>
     
 </body>
 </html>
+    <title>
+        {% if name %}
+            {{ name }}. 
+        {% else %}
+            Анонимус.
+        {% endif %}
+            Лабораторная работа {{ numer }}
+    </title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+</head>
+<body>
+    <header>
+        WEB-программирование, часть 2. {% if numer %}Лабораторная работа {{ numer }}{% endif %}
+    </header>
+
+    <main>
+        11 × 28 = {{ 11 * 28 }} <br>
+        3258 - 759 = {{ 3258 - 759 }} <br>
+        8452 ÷ 793 = {{ 8452 / 793 }} <br>
+        45<sup>8</sup> = {{ 45**8 }} <br>
+        <ul>
+            {% for f in fruits %}
+            <li>{{ f.name }}: {{ f.price }} &#8381;</li>
+            {% endfor %}
+        </ul>
+
+        <!-- Кнопка "Главное меню" -->
+        <div class="floating-home">
+            <a href="{{ url_for('index') }}" class="home-link">Главное меню</a>
+        </div>
+    </main>
+
+    <footer>
+        &copy; 
+        {% if name %}
+            {{ name }}, 
+        {% else %}
+            Анонимус,
+        {% endif %}
+        {% if group %}
+            {{ group }}, 
+        {% else %}
+            Нумбер Ван,
+        {% endif %}
+        {% if cours %}
+            {{ cours }}, 
+        {% else %}
+            Последний,
+        {% endif %}
+            2025
+    </footer>
+</body>
+</html>
+

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 2{% endblock %}
+
+{% block main %}
+<h1>Шаблоны</h1>
+<p>Тема лабораторной — шаблоны. Ниже приведены ссылки на все страницы, созданные в рамках лабораторной:</p>
+
+<ol>
+    <li><a href="/lab2/a">Без слэша</a></li>
+    <li><a href="/lab2/a/">Со слэшем</a></li>
+    <li><a href="/lab2/example">Пример с шаблоном example.html</a></li>
+    <li><a href="/lab2/filters">Страница с фильтрами</a></li>
+    <li><a href="/lab2/calc/">Калькулятор (параметры по умолчанию)</a></li>
+    <li><a href="/lab2/calc/5/3">Калькулятор (пример с числами 5 и 3)</a></li>
+    <li><a href="/lab2/calc/7">Калькулятор (пример с одним параметром — 7)</a></li>
+    <li><a href="/lab2/flowers/0">Информация о цветке по индексу</a></li>
+    <li><a href="/lab2/add_flower/Подсолнух/500">Добавить цветок «Подсолнух»</a></li>
+    <li><a href="/lab2/add_flower/">Добавить цветок без имени (ошибка 400)</a></li>
+    <li><a href="/lab2/flowers_list">Список всех цветов</a></li>
+    <li><a href="/lab2/clear_flowers">Очистить список цветов</a></li>
+    <li><a href="/lab2/books/">Список книг</a></li>
+    <li><a href="/lab2/cars/">Список машин</a></li>
+</ol>
+{% endblock %}
