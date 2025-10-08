@@ -414,7 +414,7 @@ def flowers_list():
 @app.route('/lab2/delete_flower/<int:flower_id>')
 def delete_flower(flower_id):
     flower_names = list(flowers.keys())
-    if flower_id >= len(flower_names):
+    if not (0 <= flower_id < len(flower_names)):
         abort(404)
     name_to_delete = flower_names[flower_id]
     price = flowers[name_to_delete]
