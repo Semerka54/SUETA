@@ -366,7 +366,7 @@ flowers = {
 @app.route('/lab2/flowers/<int:flower_id>')
 def flower_info(flower_id):
     flower_names = list(flowers.keys())
-    if flower_id >= len(flower_names):
+    if not (0 <= flower_id < len(flower_names)):
         abort(404)
     name = flower_names[flower_id]
     price = flowers[name]
