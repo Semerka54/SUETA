@@ -1,8 +1,10 @@
 from flask import Flask, url_for, request, redirect, render_template, Response, abort
 import datetime
 from lab1 import lab1
+
 app = Flask(__name__)
 app.register_blueprint(lab1)
+
 
 @app.route('/')
 @app.route('/index')
@@ -101,6 +103,7 @@ def not_found(error):
     </html>
     """, 404
 
+
 @app.errorhandler(500)
 def internal_error(error):
     return """
@@ -114,9 +117,11 @@ def internal_error(error):
     </html>
     """, 500
 
+
 @app.route('/lab2/a')
 def okey():
     return 'без слэша'
+
 
 @app.route('/lab2/a/')
 def adrenalin():
@@ -129,6 +134,7 @@ flowers = {
     'незабудка': 50,
     'ромашка': 60
 }
+
 
 @app.route('/lab2/flowers/<int:flower_id>')
 def flower_info(flower_id):
@@ -177,7 +183,8 @@ def flowers_list():
         return redirect(url_for('flowers_list'))
 
     return render_template('flowers_list.html', flowers=flowers)
-    
+
+
 @app.route('/lab2/delete_flower/<int:flower_id>')
 def delete_flower(flower_id):
     flower_names = list(flowers.keys())
@@ -187,6 +194,7 @@ def delete_flower(flower_id):
     price = flowers[name_to_delete]
     return render_template('delete_flower.html', flower_id=flower_id, name=name_to_delete, price=price)
 
+
 @app.route('/lab2/delete_flower_confirm/<int:flower_id>')
 def delete_flower_confirm(flower_id):
     flower_names = list(flowers.keys())
@@ -195,6 +203,7 @@ def delete_flower_confirm(flower_id):
     name_to_delete = flower_names[flower_id]
     del flowers[name_to_delete]
     return redirect(url_for('flowers_list'))
+
 
 @app.route('/lab2/example')
 def example():
@@ -211,14 +220,17 @@ def example():
     ]
     return render_template('example.html', name = name, numer = numer, group = group, cours = cours, fruits = fruits)
 
+
 @app.route('/lab2/')
 def lab2():
     return render_template('lab2.html')
+
 
 @app.route('/lab2/filters')
 def filters():
     phrase = "о <b>сколько</b> <u>нам</u> <i>открытий</i> чудных..."
     return render_template('filter.html', phrase = phrase)
+
 
 # --- основной роут с двумя параметрами ---
 @app.route('/lab2/calc/<int:a>/<int:b>')
@@ -260,6 +272,7 @@ books = [
     {"author": "Дж. Р. Р. Толкин", "title": "Хоббит", "genre": "Фэнтези", "pages": 310}
 ]
 
+
 @app.route('/lab2/books/')
 def show_books():
     return render_template('books.html', books=books)
@@ -287,6 +300,7 @@ cars = [
     {"name": "Kia Sorento", "image": "kia.jpg", "description": "Просторный семейный SUV с современными технологиями."},
     {"name": "Renault Clio", "image": "Clio.jpg", "description": "Компактный и экономичный хэтчбек для города."},
 ]
+
 
 @app.route("/lab2/cars/")
 def show_cars():
