@@ -2,10 +2,12 @@ from flask import Flask, url_for, request, redirect, render_template, Response, 
 import datetime
 from lab1 import lab1
 from lab2 import lab2
+from lab3 import lab3
 
 app = Flask(__name__)
 app.register_blueprint(lab1)
 app.register_blueprint(lab2)
+app.register_blueprint(lab3)
 
 
 @app.route('/')
@@ -118,3 +120,13 @@ def internal_error(error):
         </body>
     </html>
     """, 500
+
+
+@app.route('/start')
+def start():
+    return '''
+    <h1>Добро пожаловать!</h1>
+    <ul>
+        <li><a href="/lab3/">Лабораторная 3</a></li>
+    </ul>
+    '''
