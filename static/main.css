@@ -122,3 +122,10 @@ footer {
     background-color: #0056b3;
     transform: translateX(-50%) scale(1.05);
 }
+
+.error {
+    color: red;
+    font-weight: bold;
+    font-size: 14px;
+    margin-left: 10px;
+}
