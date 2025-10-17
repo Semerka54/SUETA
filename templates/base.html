@@ -10,6 +10,29 @@
 
     <!-- Фавиконка -->
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <style>
+        body {
+            /* Цвет текста */
+            color: {{ request.cookies.get('color', 'black') }};
+
+            /* Цвет фона */
+            background-color: {{ request.cookies.get('bg_color', 'white') }};
+
+            /* Размер шрифта */
+            font-size: {{ request.cookies.get('font_size', '16') }}px;
+
+            /* Стиль текста */
+            {% set style = request.cookies.get('font_style', 'normal') %}
+            {% if style == 'italic' %}
+                font-style: italic;
+            {% elif style == 'bold' %}
+                font-weight: bold;
+            {% else %}
+                font-style: normal;
+                font-weight: normal;
+            {% endif %}
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -23,7 +46,6 @@
     <main>
         {% block main %}{% endblock %}
 
-        {# Кнопка "Главное меню" отображается только НЕ на главной странице #}
         {% if request.endpoint != 'index' %}
         <div class="floating-home">
             <a href="{{ url_for('index') }}" class="home-link">Главное меню</a>

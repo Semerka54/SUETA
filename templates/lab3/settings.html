@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 3{% endblock %}
+
+{% block main %}
+<h1>Cookies</h1>
+
+<form>
+    <div>
+        <label for="color">Выберите цвет текста:</label>
+        <input type="color" id="color" name="color" value="{{ color }}">
+    </div>
+
+    <div>
+        <label for="bg_color">Выберите цвет фона:</label>
+        <input type="color" id="bg_color" name="bg_color" value="{{ bg_color }}">
+    </div>
+
+    <div>
+        <label for="font_size">Размер шрифта:</label>
+        <input type="number" id="font_size" name="font_size" value="{{ font_size }}" min="10" max="40"> px
+    </div>
+
+    <div>
+        <label for="font_style">Стиль текста:</label>
+        <select id="font_style" name="font_style">
+            <option value="normal" {% if font_style == 'normal' %}selected{% endif %}>Обычный</option>
+            <option value="bold" {% if font_style == 'bold' %}selected{% endif %}>Жирный</option>
+            <option value="italic" {% if font_style == 'italic' %}selected{% endif %}>Курсив</option>
+        </select>
+    </div>
+
+    <div>
+        <button type="submit">OK</button>
+    </div>
+</form>
+
+<style>
+    body {
+        color: {{ color }};
+        background-color: {{ bg_color }};
+        font-size: {{ font_size }}px;
+        font-style: {% if font_style == 'italic' %}italic{% else %}normal{% endif %};
+        font-weight: {% if font_style == 'bold' %}bold{% else %}normal{% endif %};
+    }
+</style>
+{% endblock %}
