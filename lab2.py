@@ -28,13 +28,13 @@ def flower_info(flower_id):
         abort(404)
     name = flower_names[flower_id]
     price = flowers[name]
-    return render_template('flower_info.html', flower_id=flower_id, name=name, price=price)
+    return render_template('lab2/flower_info.html', flower_id=flower_id, name=name, price=price)
 
 
 @lab2.route('/lab2/add_flower/<name>/<int:price>')
 def add_flower(name, price):
     flowers[name] = price
-    return render_template('flower_added.html', name=name, price=price, total=len(flowers), flower_list=flowers)
+    return render_template('lab2/flower_added.html', name=name, price=price, total=len(flowers), flower_list=flowers)
 
 
 @lab2.route('/lab2/add_flower/')
@@ -45,12 +45,12 @@ def add_flower_empty():
 @lab2.route('/lab2/clear_flowers')
 def clear_flowers():
     flowers.clear()
-    return render_template('flowers_cleared.html')
+    return render_template('lab2/flowers_cleared.html')
 
 
 @lab2.errorhandler(400)
 def bad_request(error):
-    return render_template('400.html', description=error.description), 400
+    return render_template('lab2/400.html', description=error.description), 400
 
 
 @lab2.route('/lab2/flowers_list', methods=['GET', 'POST'])
@@ -67,7 +67,7 @@ def flowers_list():
         flowers[name] = price
         return redirect(url_for('lab2.flowers_list'))
 
-    return render_template('flowers_list.html', flowers=flowers)
+    return render_template('lab2/flowers_list.html', flowers=flowers)
 
 
 @lab2.route('/lab2/delete_flower/<int:flower_id>')
@@ -77,7 +77,7 @@ def delete_flower(flower_id):
         abort(404)
     name_to_delete = flower_names[flower_id]
     price = flowers[name_to_delete]
-    return render_template('delete_flower.html', flower_id=flower_id, name=name_to_delete, price=price)
+    return render_template('lab2/delete_flower.html', flower_id=flower_id, name=name_to_delete, price=price)
 
 
 @lab2.route('/lab2/delete_flower_confirm/<int:flower_id>')
@@ -103,18 +103,18 @@ def example():
         {'name': 'мандарины', 'price': 95},
         {'name': 'манго', 'price': 321}
     ]
-    return render_template('example.html', name = name, numer = numer, group = group, cours = cours, fruits = fruits)
+    return render_template('lab2/example.html', name = name, numer = numer, group = group, cours = cours, fruits = fruits)
 
 
 @lab2.route('/lab2/')
 def lab():
-    return render_template('lab2.html')
+    return render_template('lab2/lab2.html')
 
 
 @lab2.route('/lab2/filters')
 def filters():
     phrase = "о <b>сколько</b> <u>нам</u> <i>открытий</i> чудных..."
-    return render_template('filter.html', phrase = phrase)
+    return render_template('lab2/filter.html', phrase = phrase)
 
 
 # --- основной роут с двумя параметрами ---
@@ -129,7 +129,7 @@ def calc(a, b):
         'div': a / b if b != 0 else 'нельзя делить на 0',
         'pow': a ** b
     }
-    return render_template('calc.html', **results)
+    return render_template('lab2/calc.html', **results)
 
 
 # --- без параметров ---
@@ -160,33 +160,33 @@ books = [
 
 @lab2.route('/lab2/books/')
 def show_books():
-    return render_template('books.html', books=books)
+    return render_template('lab2/books.html', books=books)
 
 # Данные о машинах
 cars = [
-    {"name": "Toyota Corolla", "image": "corola.jpg", "description": "Надёжный и экономичный седан для повседневных поездок."},
-    {"name": "Honda Civic", "image": "civic.jpg", "description": "Стильный и динамичный автомобиль с хорошей управляемостью."},
-    {"name": "Ford Mustang", "image": "mustang.jpg", "description": "Американский маслкар с мощным двигателем и агрессивным дизайном."},
-    {"name": "Chevrolet Camaro", "image": "camaro.jpg", "description": "Спортивный автомобиль с ярким и дерзким стилем."},
-    {"name": "BMW 3 Series", "image": "BMW.jpg", "description": "Элегантный немецкий седан с отличной управляемостью."},
-    {"name": "Audi A4", "image": "Audi.jpg", "description": "Комфортный и современный автомобиль с премиальной отделкой."},
-    {"name": "Mercedes-Benz C-Class", "image": "MB.jpg", "description": "Люксовый седан с высоким уровнем комфорта и безопасности."},
-    {"name": "Tesla Model 3", "image": "Tesla.jpg", "description": "Электромобиль с инновационными технологиями и автопилотом."},
-    {"name": "Nissan Altima", "image": "Nissan.jpg", "description": "Практичный седан с хорошей экономией топлива и просторным салоном."},
-    {"name": "Hyundai Elantra", "image": "Hundai.jpg", "description": "Доступный и надёжный автомобиль для ежедневных поездок."},
-    {"name": "Volkswagen Golf", "image": "Golf.jpg", "description": "Компактный хэтчбек с удобным управлением и современным дизайном."},
-    {"name": "Subaru Impreza", "image": "Subaru.jpg", "description": "Надёжный автомобиль с полным приводом для любых дорог."},
-    {"name": "Mazda CX-5", "image": "Mazda.jpg", "description": "Стильный кроссовер с отличной управляемостью и комфортом."},
-    {"name": "Jeep Wrangler", "image": "Jeep.jpg", "description": "Легендарный внедорожник для приключений на любой местности."},
-    {"name": "Porsche 911", "image": "Porsche.jpg", "description": "Икона спортивных автомобилей с невероятной динамикой."},
-    {"name": "Lamborghini Huracan", "image": "Lambo.jpg", "description": "Экзотический суперкар с уникальным дизайном и мощью."},
-    {"name": "Ferrari F8", "image": "Ferrari.jpg", "description": "Высокопроизводительный суперкар с изысканным стилем."},
-    {"name": "Bugatti Chiron", "image": "Buga.jpg", "description": "Сверхскоростной гиперкар для настоящих энтузиастов."},
-    {"name": "Kia Sorento", "image": "kia.jpg", "description": "Просторный семейный SUV с современными технологиями."},
-    {"name": "Renault Clio", "image": "Clio.jpg", "description": "Компактный и экономичный хэтчбек для города."},
+    {"name": "Toyota Corolla", "image": "lab2/corola.jpg", "description": "Надёжный и экономичный седан для повседневных поездок."},
+    {"name": "Honda Civic", "image": "lab2/civic.jpg", "description": "Стильный и динамичный автомобиль с хорошей управляемостью."},
+    {"name": "Ford Mustang", "image": "lab2/mustang.jpg", "description": "Американский маслкар с мощным двигателем и агрессивным дизайном."},
+    {"name": "Chevrolet Camaro", "image": "lab2/camaro.jpg", "description": "Спортивный автомобиль с ярким и дерзким стилем."},
+    {"name": "BMW 3 Series", "image": "lab2/BMW.jpg", "description": "Элегантный немецкий седан с отличной управляемостью."},
+    {"name": "Audi A4", "image": "lab2/Audi.jpg", "description": "Комфортный и современный автомобиль с премиальной отделкой."},
+    {"name": "Mercedes-Benz C-Class", "image": "lab2/MB.jpg", "description": "Люксовый седан с высоким уровнем комфорта и безопасности."},
+    {"name": "Tesla Model 3", "image": "lab2/Tesla.jpg", "description": "Электромобиль с инновационными технологиями и автопилотом."},
+    {"name": "Nissan Altima", "image": "lab2/Nissan.jpg", "description": "Практичный седан с хорошей экономией топлива и просторным салоном."},
+    {"name": "Hyundai Elantra", "image": "lab2/Hundai.jpg", "description": "Доступный и надёжный автомобиль для ежедневных поездок."},
+    {"name": "Volkswagen Golf", "image": "lab2/Golf.jpg", "description": "Компактный хэтчбек с удобным управлением и современным дизайном."},
+    {"name": "Subaru Impreza", "image": "lab2/Subaru.jpg", "description": "Надёжный автомобиль с полным приводом для любых дорог."},
+    {"name": "Mazda CX-5", "image": "lab2/Mazda.jpg", "description": "Стильный кроссовер с отличной управляемостью и комфортом."},
+    {"name": "Jeep Wrangler", "image": "lab2/Jeep.jpg", "description": "Легендарный внедорожник для приключений на любой местности."},
+    {"name": "Porsche 911", "image": "lab2/Porsche.jpg", "description": "Икона спортивных автомобилей с невероятной динамикой."},
+    {"name": "Lamborghini Huracan", "image": "lab2/Lambo.jpg", "description": "Экзотический суперкар с уникальным дизайном и мощью."},
+    {"name": "Ferrari F8", "image": "lab2/Ferrari.jpg", "description": "Высокопроизводительный суперкар с изысканным стилем."},
+    {"name": "Bugatti Chiron", "image": "lab2/Buga.jpg", "description": "Сверхскоростной гиперкар для настоящих энтузиастов."},
+    {"name": "Kia Sorento", "image": "lab2/kia.jpg", "description": "Просторный семейный SUV с современными технологиями."},
+    {"name": "Renault Clio", "image": "lab2/Clio.jpg", "description": "Компактный и экономичный хэтчбек для города."},
 ]
 
 
 @lab2.route("/lab2/cars/")
 def show_cars():
-    return render_template("cars.html", cars=cars)
+    return render_template("lab2/cars.html", cars=cars)
