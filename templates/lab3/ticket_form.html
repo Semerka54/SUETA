@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block lab %}
+    Оформление билета
+{% endblock %}
+
+{% block main %}
+    <h1>Детали вашего билета</h1>
+
+    <p><strong>ФИО:</strong> {{ session['ticket_data']['fio'] }}</p>
+    <p><strong>Полка:</strong> {{ session['ticket_data']['shelf'] }}</p>
+    <p><strong>Тип билета:</strong> {{ session['ticket_data']['ticket_type'] }} 
+    ({{ session['ticket_data']['price'] - session['ticket_data']['shelf_price'] - session['ticket_data']['linen_price'] - session['ticket_data']['luggage_price'] - session['ticket_data']['insurance_price'] }} руб.)</p>
+    <p><strong>Пункт выезда:</strong> {{ session['ticket_data']['departure'] }}</p>
+    <p><strong>Пункт назначения:</strong> {{ session['ticket_data']['destination'] }}</p>
+    <p><strong>Дата поездки:</strong> {{ session['ticket_data']['date'] }}</p>
+
+    <h3>Стоимость дополнительных услуг:</h3>
+    <ul>
+        <li>Полка: {{ session['ticket_data']['shelf_price'] }} руб.</li>
+        <li>С бельём: {{ session['ticket_data']['linen_price'] }} руб.</li>
+        <li>С багажом: {{ session['ticket_data']['luggage_price'] }} руб.</li>
+        <li>Страховка: {{ session['ticket_data']['insurance_price'] }} руб.</li>
+    </ul>
+
+    <h3><strong>Общая стоимость билета:</strong> {{ session['ticket_data']['price'] }} руб.</h3>
+
+    <a href="/lab3/ticket">Назад</a>
+{% endblock %}

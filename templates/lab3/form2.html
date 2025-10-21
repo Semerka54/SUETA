@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block lab %}
+    Оформление билета
+{% endblock %}
+
+{% block main %}
+    <h1>Форма на покупку билета</h1>
+
+    <form action="/lab3/ticket" method="POST">
+        <div>
+            <label for="fio">ФИО пассажира:</label>
+            <input type="text" name="fio" id="fio" required>
+        </div>
+
+        <div>
+            <label for="shelf">Полка:</label>
+            <select name="shelf" id="shelf" required>
+                <option value="нижняя">Нижняя</option>
+                <option value="верхняя">Верхняя</option>
+                <option value="верхняя боковая">Верхняя боковая</option>
+                <option value="нижняя боковая">Нижняя боковая</option>
+            </select>
+        </div>
+
+        <div>
+            <label for="linen">С бельём:</label>
+            <input type="checkbox" name="linen" id="linen">
+        </div>
+
+        <div>
+            <label for="luggage">С багажом:</label>
+            <input type="checkbox" name="luggage" id="luggage">
+        </div>
+
+        <div>
+            <label for="age">Возраст:</label>
+            <input type="number" name="age" id="age" min="1" max="120" required>
+        </div>
+
+        <div>
+            <label for="departure">Пункт выезда:</label>
+            <input type="text" name="departure" id="departure" required>
+        </div>
+
+        <div>
+            <label for="destination">Пункт назначения:</label>
+            <input type="text" name="destination" id="destination" required>
+        </div>
+
+        <div>
+            <label for="date">Дата поездки:</label>
+            <input type="date" name="date" id="date" required>
+        </div>
+
+        <div>
+            <label for="insurance">Нужна ли страховка:</label>
+            <input type="checkbox" name="insurance" id="insurance">
+        </div>
+
+        <button type="submit">Оформить билет</button>
+    </form>
+{% endblock %}

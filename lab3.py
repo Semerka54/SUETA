@@ -1,20 +1,12 @@
-from flask import Blueprint, url_for, request, redirect, Response, render_template, abort, make_response
+from flask import Blueprint, url_for, request, redirect, Response, render_template, abort, make_response, session
 import datetime
 lab3 = Blueprint('lab3', __name__)
-
 
 @lab3.route('/lab3/')
 def lab():
     name = request.cookies.get('name')
     name_color = request.cookies.get('name_color')
-    age = request.cookies.get('age')
-    
-    if name is None:
-        name = "Аноним"
-    if age is None:
-        age = "неизвестно"
-    
-    return render_template('lab3/lab3.html', name=name, name_color=name_color, age=age)
+    return render_template('lab3/lab3.html', name=name, name_color=name_color)
 
 
 @lab3.route('/lab3/cookie')
@@ -90,7 +82,6 @@ def settings():
     font_size = request.args.get('font_size')
     font_style = request.args.get('font_style')
 
-    # Если пользователь выбрал хотя бы один параметр — сохранить в cookie
     if color or bg_color or font_size or font_style:
         resp = make_response(redirect(url_for('lab3.settings')))
         if color:
@@ -114,5 +105,89 @@ def settings():
                            bg_color=bg_color,
                            font_size=font_size,
                            font_style=font_style)
+
+
+@lab3.route('/lab3/ticket', methods=['GET', 'POST'])
+def ticket():
+    if request.method == 'POST':
+        # Получаем данные из формы
+        fio = request.form['fio']
+        shelf = request.form['shelf']
+        linen = 'linen' in request.form  # Преобразуем checkbox в булевое значение
+        luggage = 'luggage' in request.form
+        age = int(request.form['age'])
+        departure = request.form['departure']
+        destination = request.form['destination']
+        date = request.form['date']
+        insurance = 'insurance' in request.form
+
+        # Проверка на пустые поля и возраст
+        if not fio or not shelf or not age or not departure or not destination or not date:
+            return "Все поля должны быть заполнены!", 400
+        
+        if age < 1 or age > 120:
+            return "Возраст должен быть от 1 до 120 лет", 400
+
+        # Расчёт стоимости билета
+        if age < 18:
+            price = 700  # Детский билет
+            ticket_type = "Детский билет"
+        else:
+            price = 1000  # Взрослый билет
+            ticket_type = "Взрослый билет"
+
+        # Дополнительные стоимости
+        shelf_price = 0
+        if shelf in ['нижняя', 'нижняя боковая']:
+            shelf_price = 100
+            price += shelf_price
+
+        linen_price = 75 if linen else 0
+        price += linen_price
+
+        luggage_price = 250 if luggage else 0
+        price += luggage_price
+
+        insurance_price = 150 if insurance else 0
+        price += insurance_price
+
+        # Сохраняем данные в сессии
+        session['ticket_data'] = {
+            'fio': fio,
+            'shelf': shelf,
+            'linen': linen,
+            'luggage': luggage,
+            'age': age,
+            'departure': departure,
+            'destination': destination,
+            'date': date,
+            'insurance': insurance,
+            'ticket_type': ticket_type,
+            'price': price,
+            'shelf_price': shelf_price,
+            'linen_price': linen_price,
+            'luggage_price': luggage_price,
+            'insurance_price': insurance_price
+        }
+
+        # Перенаправление на страницу с билетом
+        return redirect(url_for('lab3.ticket_details'))
+
+    return render_template('lab3/form2.html')
+
+
+
+@lab3.route('/lab3/ticket_details')
+def ticket_details():
+    # Получаем данные из сессии
+    ticket_data = session.get('ticket_data', None)
+
+    if ticket_data is None:
+        return "Ошибка: Данные о билете не найдены!", 400
+
+    # Отображаем страницу с билетом
+    return render_template('lab3/ticket_form.html', **ticket_data)
+
+
 
 
