@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block main %}
+    <h1>Поиск автомобилей</h1>
+
+    <form method="POST">
+        <label for="min_price">Мин. цена:</label>
+        <input type="number" id="min_price" name="min_price" placeholder="{{ min_price }}" value="{{ min_price }}" required>
+        <br><br>
+        <label for="max_price">Макс. цена:</label>
+        <input type="number" id="max_price" name="max_price" placeholder="{{ max_price }}" value="{{ max_price }}" required>
+        <br><br>
+
+        <label for="body_type">Тип кузова:</label>
+        <select name="body_type" id="body_type">
+            <option value="">Не важно</option>
+            {% for body in body_types %}
+                <option value="{{ body }}" {% if body == body_type_selected %} selected {% endif %}>{{ body }}</option>
+            {% endfor %}
+        </select>
+        <br><br>
+
+        <!-- Добавляем выбор комплектации вместо цвета -->
+        <label for="equipment">Комплектация:</label>
+        <select name="equipment" id="equipment">
+            <option value="">Не важно</option>
+            {% for equipment in equipments %}
+                <option value="{{ equipment }}" {% if equipment == equipment_selected %} selected {% endif %}>{{ equipment }}</option>
+            {% endfor %}
+        </select>
+        <br><br>
+
+        <label for="brand">Бренд:</label>
+        <select name="brand" id="brand">
+            <option value="">Не важно</option>
+            {% for brand in brands %}
+                <option value="{{ brand }}" {% if brand == brand_selected %} selected {% endif %}>{{ brand }}</option>
+            {% endfor %}
+        </select>
+        <br><br>
+
+        <button type="submit">Искать</button>
+    </form>
+
+    <a href="{{ url_for('lab3.reset') }}">Сбросить</a>
+
+    <h2>Найдено автомобилей: {{ total_count }}</h2>
+
+    {% if total_count == 0 %}
+        <p>Не найдено ни одного автомобиля</p>
+    {% else %}
+        <ul>
+            {% for car in cars %}
+                <li>
+                    {{ car["brand"] }} {{ car["model"] }} - {{ car["price"] }} руб. - {{ car["equipment"] }} - {{ car["body_type"] }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endblock %}
+
+{% block styles %}
+    <style>
+        select, select option {
+            color: black; /* Цвет текста всегда черный */
+        }
+    </style>
+{% endblock %}
