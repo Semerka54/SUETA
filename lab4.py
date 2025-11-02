@@ -122,8 +122,10 @@ def tree():
     operation = request.form.get('operation')
 
     if operation == 'cut':
-        tree_count -= 1
+        if tree_count > 0:  # Проверка, чтобы счетчик не ушел в отрицательную область
+            tree_count -= 1
     elif operation == 'plant':
-        tree_count += 1
+        if tree_count < 10:  # Проверка, чтобы не посадить больше 10 деревьев
+            tree_count += 1
 
     return redirect('/lab4/tree')
