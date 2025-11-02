@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block lab %}Умножение чисел{% endblock %}
+
+{% block main %}
+    {% if error %}
+        <h1>Ошибка</h1>
+        <div style="color: red;">{{ error }}</div>
+    {% else %}
+        <h1>Умножение чисел</h1>
+        {{ x1 }} × {{ x2 }} = {{ result }}
+    {% endif %}
+    <div><a href="/lab4/mul-form">Вернуться назад к форме</a></div>
+{% endblock %}
