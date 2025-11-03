@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 4{% endblock %}
+
+{% block main %}
+    <h1>Холодильник</h1>
+    
+    <div style="max-width: 500px; margin: 0 auto;">
+        <form method="post">
+            <div style="margin-bottom: 20px;">
+                <label for="temperature" style="display: block; margin-bottom: 8px; font-weight: bold;">
+                    Установите температуру холодильника (°C):
+                </label>
+                <input type="number" 
+                       id="temperature" 
+                       name="temperature" 
+                       value="{{ temperature }}"
+                       step="0.1"
+                       style="width: 100%; padding: 10px; border: 2px solid #ccc; border-radius: 5px; font-size: 16px;"
+                       placeholder="Введите температуру от -12 до -1">
+            </div>
+            
+            <button type="submit" 
+                    style="background-color: #4CAF50; color: white; padding: 12px 24px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px;">
+                Установить температуру
+            </button>
+        </form>
+
+        {% if error %}
+            <div style="color: #d32f2f; background-color: #ffebee; border: 1px solid #f44336; border-radius: 5px; padding: 15px; margin-top: 20px; font-weight: bold;">
+                {{ error }}
+            </div>
+        {% endif %}
+
+        {% if message %}
+            <div style="color: #2e7d32; background-color: #e8f5e9; border: 1px solid #4caf50; border-radius: 5px; padding: 15px; margin-top: 20px;">
+                <div style="font-weight: bold; margin-bottom: 10px;">{{ message }}</div>
+                <div style="font-size: 24px; color: #1976d2;">
+                    {% for i in range(snowflakes) %}
+                        ❄️
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+
+        <div style="margin-top: 30px; padding: 15px; background-color: #e3f2fd; border-radius: 5px;">
+            <h3 style="margin-top: 0; color: #1565c0;">Диапазоны температур:</h3>
+            <ul style="color: #1976d2;">
+                <li><strong>-12°C — -9°C:</strong> ❄️❄️❄️ (3 снежинки)</li>
+                <li><strong>-8°C — -5°C:</strong> ❄️❄️ (2 снежинки)</li>
+                <li><strong>-4°C — -1°C:</strong> ❄️ (1 снежинка)</li>
+            </ul>
+        </div>
+    </div>
+{% endblock %}
