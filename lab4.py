@@ -218,3 +218,63 @@ def fridge():
                          error=error, 
                          snowflakes=snowflakes,
                          temperature=temperature or '')
+
+
+@lab4.route('/lab4/grain_order', methods=['GET', 'POST'])
+def grain_order():
+    grain_types = {
+        'barley': {'name': 'ячмень', 'price': 12000},
+        'oats': {'name': 'овёс', 'price': 8500},
+        'wheat': {'name': 'пшеница', 'price': 9000},
+        'rye': {'name': 'рожь', 'price': 15000}
+    }
+    
+    grain = request.form.get('grain')
+    weight = request.form.get('weight')
+    message = ''
+    error = ''
+    discount_applied = False
+    discount_amount = 0
+    total_amount = 0
+    
+    if request.method == 'POST':
+        if not grain:
+            error = 'Ошибка: выберите тип зерна'
+        elif not weight:
+            error = 'Ошибка: не указан вес'
+        else:
+            try:
+                weight_float = float(weight)
+                if weight_float <= 0:
+                    error = 'Ошибка: вес должен быть больше 0'
+                elif weight_float > 100:
+                    error = 'Извините, такого объёма сейчас нет в наличии'
+                else:
+                    # Расчет стоимости
+                    grain_data = grain_types[grain]
+                    base_price = grain_data['price']
+                    total_amount = weight_float * base_price
+                    
+                    # Применение скидки
+                    if weight_float > 10:
+                        discount_amount = total_amount * 0.1
+                        total_amount -= discount_amount
+                        discount_applied = True
+                    
+                    # Форматирование чисел с разделителями тысяч
+                    formatted_total = "{:,.0f}".format(total_amount).replace(",", " ")
+                    message = f'Заказ успешно сформирован. Вы заказали {grain_data["name"]}. Вес: {weight_float} т. Сумма к оплате: {formatted_total} руб'
+                    
+            except ValueError:
+                error = 'Ошибка: введите корректное числовое значение веса'
+    
+    return render_template('lab4/grain_order.html', 
+                         message=message, 
+                         error=error, 
+                         grain_types=grain_types,
+                         grain=grain or '',
+                         weight=weight or '',
+                         discount_applied=discount_applied,
+                         discount_amount=discount_amount,
+                         total_amount=total_amount)
+                        

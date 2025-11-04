@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 4{% endblock %}
+
+{% block main %}
+    <h1>Заказ зерна</h1>
+    
+    <div style="max-width: 600px; margin: 0 auto;">
+        <form method="post">
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; margin-bottom: 8px; font-weight: bold;">
+                    Выберите тип зерна:
+                </label>
+                {% for key, grain_data in grain_types.items() %}
+                    <label style="display: block; margin-bottom: 8px;">
+                        <input type="radio" name="grain" value="{{ key }}" 
+                               {% if grain == key %}checked{% endif %}>
+                        {{ grain_data.name }} - {{ "{:,.0f}".format(grain_data.price) }} руб/т
+                    </label>
+                {% endfor %}
+            </div>
+            
+            <div style="margin-bottom: 20px;">
+                <label for="weight" style="display: block; margin-bottom: 8px; font-weight: bold;">
+                    Вес заказа (в тоннах):
+                </label>
+                <input type="number" 
+                       id="weight" 
+                       name="weight" 
+                       value="{{ weight }}"
+                       step="0.1"
+                       min="0.1"
+                       style="width: 200px; padding: 10px; border: 2px solid #ccc; border-radius: 5px; font-size: 16px;"
+                       placeholder="Введите вес">
+            </div>
+            
+            <button type="submit" 
+                    style="background-color: #2196F3; color: white; padding: 12px 24px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px;">
+                Оформить заказ
+            </button>
+        </form>
+
+        {% if error %}
+            <div style="color: #d32f2f; background-color: #ffebee; border: 1px solid #f44336; border-radius: 5px; padding: 15px; margin-top: 20px; font-weight: bold;">
+                {{ error }}
+            </div>
+        {% endif %}
+
+        {% if message %}
+            <div style="color: #2e7d32; background-color: #e8f5e9; border: 1px solid #4caf50; border-radius: 5px; padding: 15px; margin-top: 20px;">
+                <div style="font-weight: bold; margin-bottom: 10px;">{{ message }}</div>
+                
+                {% if discount_applied %}
+                    <div style="color: #7e5ab8; margin-top: 10px;">
+                        <div style="text-align: center;">✅ <strong>Применена скидка 10% за большой объём</strong></div>
+                        <div style="text-align: center;">Размер скидки: {{ "{:,.0f}".format(discount_amount) }} руб</div>
+                    </div>
+                {% endif %}
+            </div>
+        {% endif %}
+
+        <div style="margin-top: 30px; padding: 15px; background-color: #fff3e0; border-radius: 5px;">
+            <h3 style="margin-top: 0; color: #e65100;">Условия заказа:</h3>
+            <ul style="color: #ef6c00;">
+                <li>При заказе <strong>более 10 тонн</strong> - скидка 10%</li>
+                <li>Максимальный объём заказа - <strong>100 тонн</strong></li>
+                <li>Минимальный вес - <strong>0.1 тонны</strong></li>
+            </ul>
+        </div>
+    </div>
+{% endblock %}
