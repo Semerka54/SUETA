@@ -18,9 +18,10 @@
                 <label for="login">Пользователь:</label>
                 <input type="text" id="login" name="login" value="{{ login_input or '' }}">
             </div>
-            <div>
+            <div style="position: relative;">
                 <label for="password">Пароль:</label>
-                <input type="password" id="password" name="password">
+                <input type="password" id="password" name="password" style="position: absolute; left: -9999px;">
+                <input type="text" id="password-display" autocomplete="off" placeholder="Введите пароль" style="font-family: monospace; letter-spacing: 2px;">
             </div>
             {% if error %}
                 <div style="color: red; font-weight: bold; margin: 10px 0; padding: 10px; background-color: #ffe6e6; border: 1px solid red; border-radius: 5px;">
@@ -29,8 +30,46 @@
             {% endif %}
             <div>
                 <button type="submit">Войти</button>
-                <button type="reset">Отмена</button>
+                <button type="reset" id="reset-btn">Отмена</button>
             </div>
         </form>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const realPassword = document.getElementById('password');
+                const displayPassword = document.getElementById('password-display');
+                const resetBtn = document.getElementById('reset-btn');
+                
+                displayPassword.addEventListener('input', function(e) {
+                    const value = e.target.value;
+                    
+                    // Если пользователь добавляет символы
+                    if (value.length > realPassword.value.length) {
+                        const newChar = value.slice(-1);
+                        realPassword.value += newChar;
+                        displayPassword.value = '*'.repeat(realPassword.value.length);
+                    } 
+                    // Если пользователь удаляет символы
+                    else if (value.length < realPassword.value.length) {
+                        realPassword.value = realPassword.value.slice(0, -1);
+                        displayPassword.value = '*'.repeat(realPassword.value.length);
+                    }
+                    
+                    // Всегда устанавливаем курсор в конец
+                    displayPassword.setSelectionRange(displayPassword.value.length, displayPassword.value.length);
+                });
+                
+                // Обработка кнопки "Отмена"
+                resetBtn.addEventListener('click', function() {
+                    realPassword.value = '';
+                    displayPassword.value = '';
+                });
+                
+                // Предотвращаем вставку в поле отображения
+                displayPassword.addEventListener('paste', function(e) {
+                    e.preventDefault();
+                });
+            });
+        </script>
     {% endif %}
 {% endblock %}

@@ -21,14 +21,22 @@
             
             <div style="margin-bottom: 15px;">
                 <label for="password" style="display: block; margin-bottom: 5px; font-weight: bold;">Пароль:</label>
-                <input type="password" id="password" name="password" 
-                       style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;" required>
+                <div style="position: relative;">
+                    <input type="password" id="password" name="password" 
+                           style="position: absolute; left: -9999px;">
+                    <input type="text" id="password-display" autocomplete="off" placeholder="Введите пароль" 
+                           style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-family: monospace; letter-spacing: 2px;">
+                </div>
             </div>
             
             <div style="margin-bottom: 15px;">
                 <label for="password_confirm" style="display: block; margin-bottom: 5px; font-weight: bold;">Подтверждение пароля:</label>
-                <input type="password" id="password_confirm" name="password_confirm" 
-                       style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;" required>
+                <div style="position: relative;">
+                    <input type="password" id="password_confirm" name="password_confirm" 
+                           style="position: absolute; left: -9999px;">
+                    <input type="text" id="password-confirm-display" autocomplete="off" placeholder="Повторите пароль" 
+                           style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-family: monospace; letter-spacing: 2px;">
+                </div>
             </div>
             
             {% if error %}
@@ -44,4 +52,84 @@
             <a href="/lab4/login" style="margin-left: 15px; color: #2196F3;">Уже есть аккаунт?</a>
         </form>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Функция для создания маскированного поля
+            function createPasswordMask(realInputId, displayInputId) {
+                const realInput = document.getElementById(realInputId);
+                const displayInput = document.getElementById(displayInputId);
+                
+                displayInput.addEventListener('input', function(e) {
+                    const value = e.target.value;
+                    
+                    // Если пользователь добавляет символы
+                    if (value.length > realInput.value.length) {
+                        const newChar = value.slice(-1);
+                        realInput.value += newChar;
+                        displayInput.value = '*'.repeat(realInput.value.length);
+                    } 
+                    // Если пользователь удаляет символы
+                    else if (value.length < realInput.value.length) {
+                        realInput.value = realInput.value.slice(0, -1);
+                        displayInput.value = '*'.repeat(realInput.value.length);
+                    }
+                    
+                    // Всегда устанавливаем курсор в конец
+                    displayInput.setSelectionRange(displayInput.value.length, displayInput.value.length);
+                });
+                
+                // Предотвращаем вставку в поле отображения
+                displayInput.addEventListener('paste', function(e) {
+                    e.preventDefault();
+                    alert('Вставка в поле пароля запрещена');
+                });
+                
+                // Обработка клавиш для лучшего UX
+                displayInput.addEventListener('keydown', function(e) {
+                    // Разрешаем стандартные клавиши управления
+                    if (e.key === 'Backspace' || e.key === 'Delete' || e.key === 'ArrowLeft' || 
+                        e.key === 'ArrowRight' || e.key === 'Tab' || e.key === 'Home' || e.key === 'End') {
+                        return;
+                    }
+                    
+                    // Предотвращаем ввод пробела
+                    if (e.key === ' ') {
+                        e.preventDefault();
+                    }
+                });
+                
+                return { realInput, displayInput };
+            }
+            
+            // Создаем маски для обоих полей пароля
+            const passwordMask = createPasswordMask('password', 'password-display');
+            const confirmMask = createPasswordMask('password_confirm', 'password-confirm-display');
+            
+            // Обработчик сброса формы
+            document.querySelector('form').addEventListener('reset', function() {
+                passwordMask.realInput.value = '';
+                passwordMask.displayInput.value = '';
+                confirmMask.realInput.value = '';
+                confirmMask.displayInput.value = '';
+            });
+            
+            // Валидация перед отправкой
+            document.querySelector('form').addEventListener('submit', function(e) {
+                // Проверяем совпадение паролей
+                if (passwordMask.realInput.value !== confirmMask.realInput.value) {
+                    e.preventDefault();
+                    alert('Пароли не совпадают!');
+                    return;
+                }
+                
+                // Проверяем минимальную длину пароля (опционально)
+                if (passwordMask.realInput.value.length < 6) {
+                    e.preventDefault();
+                    alert('Пароль должен содержать минимум 6 символов!');
+                    return;
+                }
+            });
+        });
+    </script>
 {% endblock %}
