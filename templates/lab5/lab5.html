@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block main %}
+
+<h1>База знаний</h1>
+
+<div class="menu-bar">
+    <a href="/lab5/list" class="menu-btn">Список статей</a>
+    <a href="/lab5/create" class="menu-btn">Создать статью</a>
+    <a href="/lab5/login" class="menu-btn">Войти</a>
+    <a href="/lab5/register" class="menu-btn">Регистрация</a>
+
+    <!-- Вывод имени пользователя -->
+    <span class="username">
+        {{ username if username else "Anonymous" }}
+    </span>
+</div>
+
+<style>
+    .menu-bar {
+        background-color: #b9dce8;
+        padding: 15px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .menu-btn {
+        padding: 6px 12px;
+        background: #eee;
+        border-radius: 5px;
+        text-decoration: none;
+        color: black;
+        border: 1px solid #ccc;
+    }
+
+    .menu-btn:hover {
+        background: #ddd;
+    }
+
+    .username {
+        margin-left: auto;
+        font-weight: bold;
+    }
+</style>
+
+{% endblock %}
