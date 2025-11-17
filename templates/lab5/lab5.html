@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
+{% block lab %}Лабораторная работа 5{% endblock %}
+
 {% block main %}
 
 <h1>База знаний</h1>
@@ -12,7 +14,7 @@
 
     <!-- Вывод имени пользователя -->
     <span class="username">
-        {{ username if username else "Anonymous" }}
+        {{ login if login else "Anonymous" }}
     </span>
 </div>
 
