@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 5{% endblock %}
+
+{% block main %}
+<style>
+    .confirm-container {
+        max-width: 500px;
+        margin: 0 auto;
+        padding: 40px 20px;
+        text-align: center;
+    }
+    
+    .warning-icon {
+        font-size: 4em;
+        margin-bottom: 20px;
+        color: #e74c3c;
+    }
+    
+    .page-title {
+        color: #e74c3c;
+        margin-bottom: 20px;
+        font-size: 2em;
+        font-weight: 500;
+    }
+    
+    .warning-message {
+        background: white;
+        border-radius: 15px;
+        padding: 30px;
+        box-shadow: 0 5px 20px rgba(231, 76, 60, 0.1);
+        border: 2px solid #e74c3c;
+        margin-bottom: 30px;
+    }
+    
+    .article-title {
+        color: #2c3e50;
+        font-weight: 600;
+        font-size: 1.2em;
+        margin: 15px 0;
+        padding: 10px;
+        background: #f8f9fa;
+        border-radius: 8px;
+        border-left: 4px solid #e74c3c;
+    }
+    
+    .action-buttons {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        margin-top: 30px;
+    }
+    
+    .confirm-btn {
+        background: linear-gradient(135deg, #e74c3c, #c0392b);
+        color: white;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 8px;
+        font-size: 1.1em;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+    }
+    
+    .confirm-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
+        background: linear-gradient(135deg, #c0392b, #e74c3c);
+    }
+    
+    .cancel-btn {
+        background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+        color: white;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 8px;
+        font-size: 1.1em;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+    }
+    
+    .cancel-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(149, 165, 166, 0.4);
+        background: linear-gradient(135deg, #7f8c8d, #95a5a6);
+    }
+</style>
+
+<div class="confirm-container">
+    <div class="warning-icon">⚠️</div>
+    
+    <h1 class="page-title">Подтверждение удаления</h1>
+    
+    <div class="warning-message">
+        <p>Вы собираетесь удалить статью:</p>
+        <div class="article-title">{{ article_title }}</div>
+        <p>Это действие невозможно отменить!</p>
+    </div>
+    
+    <div class="action-buttons">
+        <a href="/lab5/delete/{{ article_id }}/confirm" class="confirm-btn">🗑️ Да, удалить</a>
+        <a href="/lab5/list" class="cancel-btn">❌ Отмена</a>
+    </div>
+</div>
+{% endblock %}

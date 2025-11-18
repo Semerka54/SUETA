@@ -3,8 +3,279 @@
 {% block lab %}Лабораторная работа 5{% endblock %}
 
 {% block main %}
-<h1>Поздравляем с успешной регистрацией!</h1>
-<p>Вы успешно зарегистрировались в системе.</p>
-<p>Теперь вы можете перейти к использованию базы знаний.</p>
-<a href="/lab5">Перейти к базе знаний</a>
+<style>
+    .success-container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 60px 20px;
+        text-align: center;
+    }
+    
+    .success-icon {
+        font-size: 5em;
+        margin-bottom: 30px;
+        animation: celebrate 2s ease infinite;
+    }
+    
+    @keyframes celebrate {
+        0%, 100% { 
+            transform: scale(1) rotate(0deg); 
+        }
+        25% { 
+            transform: scale(1.2) rotate(-10deg); 
+        }
+        50% { 
+            transform: scale(1.3) rotate(10deg); 
+        }
+        75% { 
+            transform: scale(1.2) rotate(-5deg); 
+        }
+    }
+    
+    .page-title {
+        color: #9b59b6;
+        margin-bottom: 30px;
+        font-size: 2.8em;
+        font-weight: 300;
+        background: linear-gradient(135deg, #9b59b6, #8e44ad);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    
+    .congrats-message {
+        background: white;
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 10px 30px rgba(155, 89, 182, 0.15);
+        border: 2px solid #f0e6f5;
+        margin-bottom: 30px;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .congrats-message::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #9b59b6, #8e44ad, #3498db, #27ae60);
+    }
+    
+    .success-text {
+        color: #2c3e50;
+        font-size: 1.2em;
+        line-height: 1.6;
+        margin-bottom: 15px;
+    }
+    
+    .highlight-text {
+        color: #9b59b6;
+        font-weight: 600;
+        font-size: 1.1em;
+    }
+    
+    .cta-button {
+        display: inline-block;
+        background: linear-gradient(135deg, #9b59b6, #8e44ad);
+        color: white;
+        text-decoration: none;
+        padding: 16px 40px;
+        border-radius: 50px;
+        font-size: 1.1em;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 20px rgba(155, 89, 182, 0.3);
+        margin: 20px 0;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .cta-button::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        transition: left 0.5s;
+    }
+    
+    .cta-button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 30px rgba(155, 89, 182, 0.4);
+        background: linear-gradient(135deg, #8e44ad, #9b59b6);
+    }
+    
+    .cta-button:hover::before {
+        left: 100%;
+    }
+    
+    .next-steps {
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        border-radius: 15px;
+        padding: 30px;
+        margin-top: 40px;
+        border-left: 4px solid #9b59b6;
+    }
+    
+    .steps-title {
+        color: #2c3e50;
+        font-size: 1.3em;
+        margin-bottom: 20px;
+        font-weight: 500;
+    }
+    
+    .steps-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        text-align: left;
+    }
+    
+    .steps-list li {
+        padding: 12px 0;
+        color: #5d6d7e;
+        font-size: 1em;
+        position: relative;
+        padding-left: 35px;
+    }
+    
+    .steps-list li::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 24px;
+        height: 24px;
+        background: #9b59b6;
+        border-radius: 50%;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 0.8em;
+    }
+    
+    .steps-list li:nth-child(1)::before { content: '1'; }
+    .steps-list li:nth-child(2)::before { content: '2'; }
+    .steps-list li:nth-child(3)::before { content: '3'; }
+    
+    .welcome-badge {
+        display: inline-block;
+        background: linear-gradient(135deg, #3498db, #2980b9);
+        color: white;
+        padding: 8px 20px;
+        border-radius: 20px;
+        font-size: 0.9em;
+        font-weight: 500;
+        margin-bottom: 20px;
+        animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+    }
+    
+    .floating-elements {
+        position: absolute;
+        pointer-events: none;
+        opacity: 0.1;
+        font-size: 2em;
+    }
+    
+    .floating-1 { top: 10%; left: 5%; animation: float 6s ease-in-out infinite; }
+    .floating-2 { top: 20%; right: 10%; animation: float 8s ease-in-out infinite 1s; }
+    .floating-3 { bottom: 30%; left: 15%; animation: float 7s ease-in-out infinite 0.5s; }
+    .floating-4 { bottom: 20%; right: 5%; animation: float 9s ease-in-out infinite 1.5s; }
+    
+    @keyframes float {
+        0%, 100% { transform: translateY(0) rotate(0deg); }
+        50% { transform: translateY(-20px) rotate(10deg); }
+    }
+</style>
+
+<div class="success-container">
+    <div class="floating-elements floating-1">🎓</div>
+    <div class="floating-elements floating-2">📚</div>
+    <div class="floating-elements floating-3">🌟</div>
+    <div class="floating-elements floating-4">💡</div>
+    
+    <div class="success-icon">🎊</div>
+    
+    <div class="welcome-badge">Новый участник</div>
+    
+    <h1 class="page-title">Поздравляем с успешной регистрацией!</h1>
+    
+    <div class="congrats-message">
+        <p class="success-text">
+            Вы успешно зарегистрировались в системе. 
+        </p>
+        <p class="success-text">
+            Теперь вы стали частью нашего сообщества <span class="highlight-text">Базы Знаний</span>!
+        </p>
+    </div>
+    
+    <a href="/lab5" class="cta-button">
+        🚀 Начать использовать Базу Знаний
+    </a>
+    
+    <div class="next-steps">
+        <div class="steps-title">Что делать дальше?</div>
+        <ul class="steps-list">
+            <li>Исследуйте статьи других пользователей</li>
+            <li>Создайте свою первую статью</li>
+            <li>Настройте свой профиль и предпочтения</li>
+        </ul>
+    </div>
+</div>
+
+<script>
+    // Добавляем дополнительные анимации для страницы регистрации
+    document.addEventListener('DOMContentLoaded', function() {
+        // Анимация появления элементов
+        const elements = document.querySelectorAll('.success-icon, .page-title, .congrats-message, .cta-button, .next-steps');
+        elements.forEach((element, index) => {
+            element.style.opacity = '0';
+            element.style.transform = 'translateY(20px)';
+            
+            setTimeout(() => {
+                element.style.transition = 'all 0.6s ease';
+                element.style.opacity = '1';
+                element.style.transform = 'translateY(0)';
+            }, index * 200);
+        });
+        
+        // Создаем дополнительные праздничные элементы
+        setTimeout(() => {
+            for (let i = 0; i < 15; i++) {
+                const sparkle = document.createElement('div');
+                sparkle.innerHTML = '✨';
+                sparkle.style.position = 'fixed';
+                sparkle.style.fontSize = (Math.random() * 20 + 10) + 'px';
+                sparkle.style.left = Math.random() * 100 + 'vw';
+                sparkle.style.top = Math.random() * 100 + 'vh';
+                sparkle.style.opacity = '0';
+                sparkle.style.pointerEvents = 'none';
+                sparkle.style.zIndex = '9999';
+                document.body.appendChild(sparkle);
+                
+                sparkle.animate([
+                    { opacity: 0, transform: 'scale(0) rotate(0deg)' },
+                    { opacity: 1, transform: 'scale(1) rotate(180deg)' },
+                    { opacity: 0, transform: 'scale(0) rotate(360deg)' }
+                ], {
+                    duration: 2000 + Math.random() * 2000,
+                    delay: Math.random() * 1000
+                }).onfinish = () => sparkle.remove();
+            }
+        }, 1000);
+    });
+</script>
 {% endblock %}

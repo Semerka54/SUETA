@@ -3,23 +3,183 @@
 {% block lab %}Лабораторная работа 5{% endblock %}
 
 {% block main %}
-<h1>Вход в систему</h1>
+<style>
+    .login-container {
+        max-width: 450px;
+        margin: 0 auto;
+        padding: 40px 20px;
+    }
+    
+    .page-title {
+        text-align: center;
+        color: #2c3e50;
+        margin-bottom: 40px;
+        font-size: 2.5em;
+        font-weight: 300;
+        background: linear-gradient(135deg, #3498db, #2c3e50);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    
+    .login-form {
+        background: white;
+        border-radius: 15px;
+        padding: 40px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        border: 1px solid #e1e8ed;
+    }
+    
+    .form-group {
+        margin-bottom: 25px;
+    }
+    
+    .form-label {
+        display: block;
+        margin-bottom: 8px;
+        color: #2c3e50;
+        font-weight: 500;
+        font-size: 1em;
+    }
+    
+    .form-input {
+        width: 100%;
+        padding: 14px 16px;
+        border: 2px solid #e1e8ed;
+        border-radius: 10px;
+        font-size: 1em;
+        transition: all 0.3s ease;
+        box-sizing: border-box;
+        background: #f8f9fa;
+    }
+    
+    .form-input:focus {
+        outline: none;
+        border-color: #3498db;
+        background: white;
+        box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+    }
+    
+    .error-message {
+        background: linear-gradient(135deg, #e74c3c, #c0392b);
+        color: white;
+        padding: 15px 20px;
+        border-radius: 10px;
+        margin-bottom: 25px;
+        text-align: center;
+        font-weight: 500;
+        box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .submit-btn {
+        width: 100%;
+        background: linear-gradient(135deg, #3498db, #2980b9);
+        color: white;
+        border: none;
+        padding: 16px;
+        border-radius: 10px;
+        font-size: 1.1em;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: 10px;
+    }
+    
+    .submit-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(52, 152, 219, 0.4);
+        background: linear-gradient(135deg, #2980b9, #3498db);
+    }
+    
+    .submit-btn:active {
+        transform: translateY(0);
+    }
+    
+    .login-links {
+        text-align: center;
+        margin-top: 25px;
+        padding-top: 20px;
+        border-top: 1px solid #e1e8ed;
+    }
+    
+    .login-link {
+        color: #3498db;
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.3s ease;
+    }
+    
+    .login-link:hover {
+        color: #2980b9;
+        text-decoration: underline;
+    }
+    
+    .password-toggle {
+        position: relative;
+    }
+    
+    .toggle-icon {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        color: #7f8c8d;
+        font-size: 1.2em;
+    }
+    
+    .form-icon {
+        margin-right: 8px;
+        opacity: 0.7;
+    }
+</style>
 
-{% if error %}
-    <div style="color: red; margin-bottom: 15px;">{{ error }}</div>
-{% endif %}
+<div class="login-container">
+    <h1 class="page-title">Вход в систему</h1>
 
-<form action="/lab5/login" method="post">
-    <div>
-        <label>
-            Логин: <input type="text" name="login">
-        </label>
-    </div>
-    <div>
-        <label>
-            Пароль: <input type="password" name="password">
-        </label>
-    </div>
-    <button type="submit">Вход</button>
-</form>
+    <form action="/lab5/login" method="post" class="login-form">
+        {% if error %}
+            <div class="error-message">
+                ⚠️ {{ error }}
+            </div>
+        {% endif %}
+
+        <div class="form-group">
+            <label class="form-label">
+                <span class="form-icon">👤</span>Логин:
+            </label>
+            <input type="text" name="login" class="form-input" placeholder="Введите ваш логин" required>
+        </div>
+
+        <div class="form-group password-toggle">
+            <label class="form-label">
+                <span class="form-icon">🔒</span>Пароль:
+            </label>
+            <input type="password" name="password" id="password" class="form-input" placeholder="Введите ваш пароль" required>
+            <span class="toggle-icon" onclick="togglePassword()">👁️</span>
+        </div>
+
+        <button type="submit" class="submit-btn">🚀 Войти в систему</button>
+
+        <div class="login-links">
+            <p>Ещё нет аккаунта? <a href="/lab5/register" class="login-link">Зарегистрируйтесь здесь</a></p>
+        </div>
+    </form>
+</div>
+
+<script>
+    function togglePassword() {
+        const passwordInput = document.getElementById('password');
+        const toggleIcon = document.querySelector('.toggle-icon');
+        
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            toggleIcon.textContent = '🔒';
+        } else {
+            passwordInput.type = 'password';
+            toggleIcon.textContent = '👁️';
+        }
+    }
+</script>
 {% endblock %}

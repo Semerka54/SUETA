@@ -3,22 +3,151 @@
 {% block lab %}Лабораторная работа 5{% endblock %}
 
 {% block main %}
-<h1>Создание статьи</h1>
+<style>
+    .create-article-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 30px 20px;
+    }
+    
+    .page-title {
+        text-align: center;
+        color: #2c3e50;
+        margin-bottom: 40px;
+        font-size: 2.5em;
+        font-weight: 300;
+    }
+    
+    .article-form {
+        background: white;
+        border-radius: 12px;
+        padding: 40px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        border: 1px solid #e1e8ed;
+    }
+    
+    .form-group {
+        margin-bottom: 30px;
+    }
+    
+    .form-label {
+        display: block;
+        margin-bottom: 10px;
+        color: #2c3e50;
+        font-weight: 500;
+        font-size: 1.1em;
+    }
+    
+    .title-input {
+        width: 100%;
+        padding: 12px 16px;
+        border: 2px solid #e1e8ed;
+        border-radius: 8px;
+        font-size: 1em;
+        transition: all 0.3s ease;
+        box-sizing: border-box;
+    }
+    
+    .title-input:focus {
+        outline: none;
+        border-color: #3498db;
+        box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+    }
+    
+    .article-textarea {
+        width: 100%;
+        min-height: 300px;
+        padding: 16px;
+        border: 2px solid #e1e8ed;
+        border-radius: 8px;
+        font-size: 1em;
+        font-family: inherit;
+        line-height: 1.5;
+        resize: vertical;
+        transition: all 0.3s ease;
+        box-sizing: border-box;
+    }
+    
+    .article-textarea:focus {
+        outline: none;
+        border-color: #3498db;
+        box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+    }
+    
+    .submit-btn {
+        background: linear-gradient(135deg, #3498db, #2980b9);
+        color: white;
+        border: none;
+        padding: 14px 35px;
+        border-radius: 8px;
+        font-size: 1.1em;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: block;
+        margin: 0 auto;
+    }
+    
+    .submit-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+        background: linear-gradient(135deg, #2980b9, #3498db);
+    }
+    
+    .submit-btn:active {
+        transform: translateY(0);
+    }
+    
+    .char-counter {
+        text-align: right;
+        color: #7f8c8d;
+        font-size: 0.9em;
+        margin-top: 5px;
+    }
+</style>
 
-<form method="post">
-    <div>
-        <label>
-            Название статьи:
-            <input type="text" name="title" maxlength="50">
-        </label>
-    </div>
+<div class="create-article-container">
+    <h1 class="page-title">Создание статьи</h1>
 
-    <div>
-        <textarea name="article_text"></textarea>
-    </div>
+    <!-- БЛОК ДЛЯ ОШИБОК ВАЛИДАЦИИ -->
+    {% if error %}
+        <div class="error-message">
+            ⚠️ {{ error }}
+        </div>
+    {% endif %}
 
-    <div>
-        <button type="submit">Готово</button>
-    </div>
-</form>
+    <form method="post" class="article-form">
+        <div class="form-group">
+            <label class="form-label">
+                Название статьи:
+            </label>
+            <input type="text" name="title" maxlength="50" class="title-input" placeholder="Введите название статьи...">
+            <div class="char-counter"><span id="title-counter">0</span>/50 символов</div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">
+                Текст статьи:
+            </label>
+            <textarea name="article_text" class="article-textarea" placeholder="Начните писать вашу статью здесь..."></textarea>
+        </div>
+
+        <div class="form-group">
+            <button type="submit" class="submit-btn">Готово</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    // Счетчик символов для заголовка
+    const titleInput = document.querySelector('.title-input');
+    const titleCounter = document.getElementById('title-counter');
+    
+    titleInput.addEventListener('input', function() {
+        titleCounter.textContent = this.value.length;
+    });
+    
+    // Инициализация счетчика
+    titleCounter.textContent = titleInput.value.length;
+</script>
 {% endblock %}

@@ -3,47 +3,192 @@
 {% block lab %}Лабораторная работа 5{% endblock %}
 
 {% block main %}
-
-<h1>База знаний</h1>
-
-<div class="menu-bar">
-    <a href="/lab5/list" class="menu-btn">Список статей</a>
-    <a href="/lab5/create" class="menu-btn">Создать статью</a>
-    <a href="/lab5/login" class="menu-btn">Войти</a>
-    <a href="/lab5/register" class="menu-btn">Регистрация</a>
-
-    <!-- Вывод имени пользователя -->
-    <span class="username">
-        {{ login if login else "Anonymous" }}
-    </span>
-</div>
-
 <style>
+    .logout-btn {
+        background: linear-gradient(135deg, #e74c3c, #c0392b) !important;
+        color: white !important;
+    }
+
+    .logout-btn:hover {
+        background: linear-gradient(135deg, #c0392b, #e74c3c) !important;
+        transform: translateY(-3px);
+        box-shadow: 0 5px 20px rgba(231, 76, 60, 0.4);
+    }
+    .knowledge-base-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    
+    .page-title {
+        text-align: center;
+        color: #2c3e50;
+        margin-bottom: 40px;
+        font-size: 3em;
+        font-weight: 300;
+        background: linear-gradient(135deg, #3498db, #2c3e50);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    
     .menu-bar {
-        background-color: #b9dce8;
-        padding: 15px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 25px 30px;
         display: flex;
         align-items: center;
-        gap: 15px;
+        gap: 20px;
+        border-radius: 15px;
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        margin-bottom: 40px;
     }
-
+    
     .menu-btn {
-        padding: 6px 12px;
-        background: #eee;
-        border-radius: 5px;
+        padding: 12px 24px;
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 10px;
         text-decoration: none;
-        color: black;
-        border: 1px solid #ccc;
+        color: #2c3e50;
+        border: none;
+        font-weight: 500;
+        font-size: 1em;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     }
-
+    
     .menu-btn:hover {
-        background: #ddd;
+        background: white;
+        transform: translateY(-3px);
+        box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        color: #3498db;
     }
-
+    
     .username {
         margin-left: auto;
-        font-weight: bold;
+        font-weight: 600;
+        font-size: 1.1em;
+        color: white;
+        background: rgba(255, 255, 255, 0.2);
+        padding: 10px 20px;
+        border-radius: 25px;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    
+    .welcome-section {
+        text-align: center;
+        padding: 60px 40px;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        border-radius: 20px;
+        margin-top: 30px;
+    }
+    
+    .welcome-title {
+        color: #2c3e50;
+        font-size: 2.2em;
+        margin-bottom: 20px;
+        font-weight: 300;
+    }
+    
+    .welcome-text {
+        color: #5d6d7e;
+        font-size: 1.2em;
+        line-height: 1.6;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 25px;
+        margin-top: 50px;
+    }
+    
+    .feature-card {
+        background: white;
+        padding: 30px;
+        border-radius: 15px;
+        text-align: center;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease;
+        border: 1px solid #e1e8ed;
+    }
+    
+    .feature-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .feature-icon {
+        font-size: 2.5em;
+        margin-bottom: 15px;
+    }
+    
+    .feature-title {
+        color: #2c3e50;
+        font-size: 1.3em;
+        margin-bottom: 10px;
+        font-weight: 500;
+    }
+    
+    .feature-description {
+        color: #7f8c8d;
+        line-height: 1.5;
     }
 </style>
+
+<div class="knowledge-base-container">
+    <h1 class="page-title">База знаний</h1>
+
+    <div class="menu-bar">
+        <a href="/lab5/list" class="menu-btn">📚 Список статей</a>
+        <a href="/lab5/create" class="menu-btn">✏️ Создать статью</a>
+
+        {% if login %}
+            <!-- Показываем для авторизованных пользователей -->
+            <a href="/lab5/logout" class="menu-btn logout-btn">🚪 Выйти</a>
+        {% else %}
+            <!-- Показываем для неавторизованных пользователей -->
+            <a href="/lab5/login" class="menu-btn">🔑 Войти</a>
+            <a href="/lab5/register" class="menu-btn">📝 Регистрация</a>
+        {% endif %}
+
+        <!-- Вывод имени пользователя -->
+        <span class="username">
+            👤 {{ login if login else "Anonymous" }}
+        </span>
+    </div>
+
+    <div class="welcome-section">
+        <h2 class="welcome-title">Добро пожаловать в Базу Знаний</h2>
+        <p class="welcome-text">
+            Создавайте, храните и делитесь своими знаниями. 
+            Простая и удобная платформа для организации ваших статей и заметок.
+        </p>
+    </div>
+
+    <div class="features-grid">
+        <div class="feature-card">
+            <div class="feature-icon">📖</div>
+            <h3 class="feature-title">Читайте статьи</h3>
+            <p class="feature-description">Изучайте материалы, созданные другими пользователями</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">✍️</div>
+            <h3 class="feature-title">Создавайте контент</h3>
+            <p class="feature-description">Пишите и публикуйте свои собственные статьи</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">🔐</div>
+            <h3 class="feature-title">Безопасность</h3>
+            <p class="feature-description">Ваши данные защищены системой аутентификации</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">⚡</div>
+            <h3 class="feature-title">Быстрый доступ</h3>
+            <p class="feature-description">Мгновенный доступ ко всем вашим материалам</p>
+        </div>
+    </div>
+</div>
 
 {% endblock %}

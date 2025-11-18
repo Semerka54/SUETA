@@ -3,12 +3,151 @@
 {% block lab %}Лабораторная работа 5{% endblock %}
 
 {% block main %}
+<style>
+    .article-actions {
+        margin-bottom: 15px;
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
 
-<h1>Статьи</h1>
+    .edit-btn {
+        background: linear-gradient(135deg, #f39c12, #e67e22);
+        color: white;
+        padding: 8px 16px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 0.9em;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        display: inline-block;
+    }
 
-{% for article in articles %}
-    <h2>{{ article['title'] }}</h2>
-    <blockquote>{{ article['article_text'] }}</blockquote>
-{% endfor %}
+    .edit-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(243, 156, 18, 0.3);
+        background: linear-gradient(135deg, #e67e22, #f39c12);
+    }
+
+    .delete-btn {
+        background: linear-gradient(135deg, #e74c3c, #c0392b);
+        color: white;
+        padding: 8px 16px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 0.9em;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        display: inline-block;
+    }
+
+    .delete-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+        background: linear-gradient(135deg, #c0392b, #e74c3c);
+    }
+
+    .article-actions {
+        margin-bottom: 15px;
+    }
+
+    .edit-btn {
+        background: linear-gradient(135deg, #f39c12, #e67e22);
+        color: white;
+        padding: 8px 16px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 0.9em;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        display: inline-block;
+    }
+
+    .edit-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(243, 156, 18, 0.3);
+        background: linear-gradient(135deg, #e67e22, #f39c12);
+    }
+
+    .articles-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    
+    .page-title {
+        text-align: center;
+        color: #2c3e50;
+        margin-bottom: 30px;
+        font-size: 2.5em;
+        font-weight: 300;
+    }
+    
+    .article-item {
+        background: white;
+        border-radius: 10px;
+        padding: 25px;
+        margin-bottom: 25px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        border-left: 4px solid #3498db;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    
+    .article-item:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    }
+    
+    .article-title {
+        color: #2c3e50;
+        margin-top: 0;
+        margin-bottom: 15px;
+        font-size: 1.5em;
+        font-weight: 500;
+    }
+    
+    .article-text {
+        color: #555;
+        line-height: 1.6;
+        font-size: 1.1em;
+        margin: 0;
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 5px;
+        border-left: 3px solid #e9ecef;
+    }
+    
+    .no-articles {
+        text-align: center;
+        color: #7f8c8d;
+        font-style: italic;
+        padding: 40px;
+        background: #f8f9fa;
+        border-radius: 10px;
+        margin-top: 20px;
+    }
+</style>
+
+<div class="articles-container">
+    <h1 class="page-title">Статьи</h1>
+
+    {% if articles %}
+        {% for article in articles %}
+            <div class="article-item">
+                <h2 class="article-title">{{ article['title'] }}</h2>
+                <div class="article-actions">
+                    <a href="/lab5/edit/{{ article['id'] }}" class="edit-btn">✏️ Редактировать</a>
+                    <a href="/lab5/delete/{{ article['id'] }}" class="delete-btn" 
+                    onclick="return confirm('Вы уверены, что хотите удалить статью «{{ article['title'] }}»?')">🗑️ Удалить</a>
+                </div>
+                <blockquote class="article-text">{{ article['article_text'] }}</blockquote>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="no-articles">
+            <p>Пока нет ни одной статьи. <a href="/lab5/create" style="color: #3498db;">Создайте первую!</a></p>
+        </div>
+    {% endif %}
+</div>
 
 {% endblock %}
