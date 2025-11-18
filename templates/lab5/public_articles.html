@@ -162,7 +162,7 @@
             <a href="/lab5/users" class="menu-btn">👥 Все пользователи</a>
             <a href="/lab5/change-profile" class="menu-btn">⚙️ Изменить профиль</a>
             <a href="/lab5/logout" class="menu-btn logout-btn">🚪 Выйти</a>
-            <span class="username">👤 {{ login }}</span>
+            <span class="username">👤 {{ real_name if real_name else login }}</span>
         {% else %}
             <a href="/lab5/login" class="menu-btn">🔑 Войти</a>
             <a href="/lab5/register" class="menu-btn">📝 Регистрация</a>
