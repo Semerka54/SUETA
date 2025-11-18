@@ -1,0 +1,182 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 5{% endblock %}
+
+{% block main %}
+<style>
+    .users-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    
+    .page-title {
+        text-align: center;
+        color: #2c3e50;
+        margin-bottom: 40px;
+        font-size: 3em;
+        font-weight: 300;
+        background: linear-gradient(135deg, #3498db, #2c3e50);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    
+    .menu-bar {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 25px 30px;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        border-radius: 15px;
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        margin-bottom: 40px;
+    }
+    
+    .menu-btn {
+        padding: 12px 24px;
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 10px;
+        text-decoration: none;
+        color: #2c3e50;
+        border: none;
+        font-weight: 500;
+        font-size: 1em;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    
+    .menu-btn:hover {
+        background: white;
+        transform: translateY(-3px);
+        box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        color: #3498db;
+    }
+    
+    .username {
+        margin-left: auto;
+        font-weight: 600;
+        font-size: 1.1em;
+        color: white;
+        background: rgba(255, 255, 255, 0.2);
+        padding: 10px 20px;
+        border-radius: 25px;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    
+    .users-table-container {
+        background: white;
+        border-radius: 15px;
+        padding: 30px;
+        box-shadow: 0 5px 25px rgba(0,0,0,0.1);
+        margin-top: 20px;
+    }
+    
+    .users-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+    
+    .users-table th {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 15px;
+        text-align: left;
+        font-weight: 500;
+        font-size: 1.1em;
+    }
+    
+    .users-table td {
+        padding: 15px;
+        border-bottom: 1px solid #e1e8ed;
+        color: #2c3e50;
+    }
+    
+    .users-table tr:hover {
+        background-color: #f8f9fa;
+        transform: scale(1.01);
+        transition: all 0.2s ease;
+    }
+    
+    .users-table tr:nth-child(even) {
+        background-color: #f8f9fa;
+    }
+    
+    .users-count {
+        text-align: center;
+        color: #7f8c8d;
+        font-size: 1.1em;
+        margin-bottom: 20px;
+        padding: 10px;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        border-radius: 10px;
+    }
+    
+    .empty-message {
+        text-align: center;
+        padding: 60px 40px;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        border-radius: 20px;
+        margin-top: 30px;
+    }
+    
+    .empty-title {
+        color: #2c3e50;
+        font-size: 1.5em;
+        margin-bottom: 15px;
+    }
+    
+    .empty-text {
+        color: #5d6d7e;
+        font-size: 1.1em;
+    }
+</style>
+
+<div class="users-container">
+    <h1 class="page-title">Список пользователей</h1>
+
+    <div class="menu-bar">
+        <a href="/lab5" class="menu-btn">🏠 Главная</a>
+        <a href="/lab5/list" class="menu-btn">📚 Список статей</a>
+        <a href="/lab5/create" class="menu-btn">✏️ Создать статью</a>
+        <a href="/lab5/logout" class="menu-btn logout-btn">🚪 Выйти</a>
+
+        <span class="username">
+            👤 {{ real_name if real_name else login }}
+        </span>
+    </div>
+
+    {% if users %}
+        <div class="users-count">
+            Всего зарегистрированных пользователей: {{ users|length }}
+        </div>
+        
+        <div class="users-table-container">
+            <table class="users-table">
+                <thead>
+                    <tr>
+                        <th>Логин</th>
+                        <th>Имя пользователя</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td>{{ user.login }}</td>
+                        <td>{{ user.real_name }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="empty-message">
+            <h2 class="empty-title">Пользователи не найдены</h2>
+            <p class="empty-text">В системе пока нет зарегистрированных пользователей.</p>
+        </div>
+    {% endif %}
+</div>
+
+{% endblock %}

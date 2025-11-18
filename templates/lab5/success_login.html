@@ -171,7 +171,7 @@
     
     <div class="welcome-message">
         <p class="user-greeting">
-            Добро пожаловать, <span class="username">{{ login }}</span>!
+            Добро пожаловать, <span class="username">{{ real_name if real_name else login }}</span>!
         </p>
         <p class="success-text">
             Вы успешно вошли в систему базы знаний. Теперь у вас есть доступ ко всем функциям платформы.

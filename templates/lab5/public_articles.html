@@ -1,0 +1,210 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 5{% endblock %}
+
+{% block main %}
+<style>
+    .public-articles-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    
+    .page-title {
+        text-align: center;
+        color: #2c3e50;
+        margin-bottom: 40px;
+        font-size: 3em;
+        font-weight: 300;
+        background: linear-gradient(135deg, #27ae60, #2c3e50);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    
+    .menu-bar {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 25px 30px;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        border-radius: 15px;
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        margin-bottom: 40px;
+    }
+    
+    .menu-btn {
+        padding: 12px 24px;
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 10px;
+        text-decoration: none;
+        color: #2c3e50;
+        border: none;
+        font-weight: 500;
+        font-size: 1em;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    
+    .menu-btn:hover {
+        background: white;
+        transform: translateY(-3px);
+        box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        color: #3498db;
+    }
+    
+    .username {
+        margin-left: auto;
+        font-weight: 600;
+        font-size: 1.1em;
+        color: white;
+        background: rgba(255, 255, 255, 0.2);
+        padding: 10px 20px;
+        border-radius: 25px;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    
+    .articles-grid {
+        display: grid;
+        gap: 25px;
+        margin-top: 30px;
+    }
+    
+    .article-card {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        border: 1px solid #e1e8ed;
+        transition: transform 0.3s ease;
+        border-left: 5px solid #27ae60;
+    }
+    
+    .article-card:hover {
+        transform: translateY(-3px);
+    }
+    
+    .article-title {
+        color: #2c3e50;
+        font-size: 1.4em;
+        font-weight: 500;
+        margin-bottom: 15px;
+    }
+    
+    .article-content {
+        color: #5d6d7e;
+        line-height: 1.6;
+        margin-bottom: 15px;
+    }
+    
+    .article-meta {
+        display: flex;
+        gap: 20px;
+        color: #7f8c8d;
+        font-size: 0.9em;
+        border-top: 1px solid #e1e8ed;
+        padding-top: 15px;
+        flex-wrap: wrap;
+    }
+    
+    .author-info {
+        background: #27ae60;
+        color: white;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.8em;
+    }
+    
+    .empty-message {
+        text-align: center;
+        padding: 60px 40px;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        border-radius: 20px;
+        margin-top: 30px;
+    }
+    
+    .empty-title {
+        color: #2c3e50;
+        font-size: 1.5em;
+        margin-bottom: 15px;
+    }
+    
+    .empty-text {
+        color: #5d6d7e;
+        font-size: 1.1em;
+    }
+    
+    .auth-prompt {
+        text-align: center;
+        background: linear-gradient(135deg, #fffaf0, #fff5e6);
+        padding: 30px;
+        border-radius: 15px;
+        margin-bottom: 30px;
+        border: 2px solid #f39c12;
+    }
+    
+    .auth-title {
+        color: #2c3e50;
+        font-size: 1.3em;
+        margin-bottom: 15px;
+    }
+</style>
+
+<div class="public-articles-container">
+    <h1 class="page-title">Публичные статьи</h1>
+
+    <div class="menu-bar">
+        <a href="/lab5" class="menu-btn">🏠 Главная</a>
+        {% if login %}
+            <a href="/lab5/list" class="menu-btn">📚 Мои статьи</a>
+            <a href="/lab5/create" class="menu-btn">✏️ Создать статью</a>
+            <a href="/lab5/users" class="menu-btn">👥 Все пользователи</a>
+            <a href="/lab5/change-profile" class="menu-btn">⚙️ Изменить профиль</a>
+            <a href="/lab5/logout" class="menu-btn logout-btn">🚪 Выйти</a>
+            <span class="username">👤 {{ login }}</span>
+        {% else %}
+            <a href="/lab5/login" class="menu-btn">🔑 Войти</a>
+            <a href="/lab5/register" class="menu-btn">📝 Регистрация</a>
+        {% endif %}
+    </div>
+
+    {% if not login %}
+    <div class="auth-prompt">
+        <h3 class="auth-title">🔒 Хотите создавать свои статьи?</h3>
+        <p>Зарегистрируйтесь или войдите в систему, чтобы создавать собственные статьи и делиться ими с сообществом!</p>
+    </div>
+    {% endif %}
+
+    {% if articles %}
+        <div class="articles-grid">
+            {% for article in articles %}
+            <div class="article-card">
+                <h3 class="article-title">{{ article.title }}</h3>
+                
+                <div class="article-content">
+                    {{ article.article_text[:300] }}{% if article.article_text|length > 300 %}...{% endif %}
+                </div>
+                
+                <div class="article-meta">
+                    <span class="author-info">👤 Автор: {{ article.author_name }}</span>
+                    <span>📅 {{ article.created_at.strftime('%d.%m.%Y %H:%M') if article.created_at else 'Дата не указана' }}</span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-message">
+            <h2 class="empty-title">Публичные статьи не найдены</h2>
+            <p class="empty-text">
+                {% if login %}
+                    Пока никто не поделился публичными статьями. 
+                    <a href="/lab5/create" style="color: #3498db;">Создайте первую публичную статью</a>!
+                {% else %}
+                    Пока нет публичных статей. Зарегистрируйтесь, чтобы стать первым автором!
+                {% endif %}
+            </p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

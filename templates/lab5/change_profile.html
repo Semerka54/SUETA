@@ -4,7 +4,7 @@
 
 {% block main %}
 <style>
-    .register-container {
+    .profile-container {
         max-width: 450px;
         margin: 0 auto;
         padding: 40px 20px;
@@ -16,13 +16,13 @@
         margin-bottom: 40px;
         font-size: 2.5em;
         font-weight: 300;
-        background: linear-gradient(135deg, #27ae60, #2c3e50);
+        background: linear-gradient(135deg, #3498db, #2c3e50);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
     }
     
-    .register-form {
+    .profile-form {
         background: white;
         border-radius: 15px;
         padding: 40px;
@@ -55,9 +55,9 @@
     
     .form-input:focus {
         outline: none;
-        border-color: #27ae60;
+        border-color: #3498db;
         background: white;
-        box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.1);
+        box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
     }
     
     .error-message {
@@ -74,7 +74,7 @@
     
     .submit-btn {
         width: 100%;
-        background: linear-gradient(135deg, #27ae60, #219653);
+        background: linear-gradient(135deg, #3498db, #2980b9);
         color: white;
         border: none;
         padding: 16px;
@@ -88,30 +88,30 @@
     
     .submit-btn:hover {
         transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(39, 174, 96, 0.4);
-        background: linear-gradient(135deg, #219653, #27ae60);
+        box-shadow: 0 8px 20px rgba(52, 152, 219, 0.4);
+        background: linear-gradient(135deg, #2980b9, #3498db);
     }
     
     .submit-btn:active {
         transform: translateY(0);
     }
     
-    .register-links {
+    .profile-links {
         text-align: center;
         margin-top: 25px;
         padding-top: 20px;
         border-top: 1px solid #e1e8ed;
     }
     
-    .register-link {
-        color: #27ae60;
+    .profile-link {
+        color: #3498db;
         text-decoration: none;
         font-weight: 500;
         transition: color 0.3s ease;
     }
     
-    .register-link:hover {
-        color: #219653;
+    .profile-link:hover {
+        color: #2980b9;
         text-decoration: underline;
     }
     
@@ -127,6 +127,7 @@
         cursor: pointer;
         color: #7f8c8d;
         font-size: 1.2em;
+        user-select: none;
     }
     
     .form-icon {
@@ -144,43 +145,52 @@
     .strength-medium { color: #f39c12; }
     .strength-strong { color: #27ae60; }
     
-    .benefits-list {
+    .info-box {
         background: linear-gradient(135deg, #f8f9fa, #e9ecef);
         padding: 20px;
         border-radius: 10px;
         margin-top: 25px;
     }
     
-    .benefits-title {
+    .info-title {
         color: #2c3e50;
         font-weight: 500;
         margin-bottom: 10px;
         text-align: center;
     }
     
-    .benefits-list ul {
+    .info-list ul {
         list-style: none;
         padding: 0;
         margin: 0;
     }
     
-    .benefits-list li {
+    .info-list li {
         padding: 8px 0;
         color: #5d6d7e;
+        font-size: 0.9em;
     }
     
-    .benefits-list li:before {
-        content: "✓ ";
-        color: #27ae60;
+    .info-list li:before {
+        content: "💡 ";
+        color: #3498db;
         font-weight: bold;
         margin-right: 8px;
     }
+    
+    .section-title {
+        color: #2c3e50;
+        font-size: 1.2em;
+        margin: 30px 0 15px 0;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #3498db;
+    }
 </style>
 
-<div class="register-container">
-    <h1 class="page-title">Регистрация</h1>
+<div class="profile-container">
+    <h1 class="page-title">Изменение профиля</h1>
 
-    <form action="/lab5/register" method="post" class="register-form">
+    <form action="/lab5/change-profile" method="post" class="profile-form">
         {% if error %}
             <div class="error-message">
                 ⚠️ {{ error }}
@@ -191,48 +201,69 @@
             <label class="form-label">
                 <span class="form-icon">👤</span>Логин:
             </label>
-            <input type="text" name="login" class="form-input" placeholder="Придумайте уникальный логин" required>
+            <input type="text" class="form-input" value="{{ login }}" disabled style="background: #e9ecef;">
+            <small style="color: #7f8c8d; font-size: 0.85em;">Логин нельзя изменить</small>
         </div>
 
-         <!-- ДОБАВЛЕННОЕ ПОЛЕ ДЛЯ РЕАЛЬНОГО ИМЕНИ -->
         <div class="form-group">
             <label class="form-label">
                 <span class="form-icon">📝</span>Реальное имя:
             </label>
-            <input type="text" name="real_name" class="form-input" placeholder="Введите ваше настоящее имя" required>
+            <input type="text" name="real_name" class="form-input" value="{{ real_name }}" placeholder="Введите ваше имя" required>
+        </div>
+
+        <h3 class="section-title">Смена пароля</h3>
+        <small style="color: #7f8c8d; display: block; margin-bottom: 15px;">Заполняйте только если хотите сменить пароль</small>
+
+        <div class="form-group password-toggle">
+            <label class="form-label">
+                <span class="form-icon">🔒</span>Текущий пароль:
+            </label>
+            <input type="password" name="current_password" id="currentPassword" class="form-input" placeholder="Введите текущий пароль">
+            <span class="toggle-icon" onclick="togglePassword('currentPassword', 'currentToggle')" id="currentToggle">👁️</span>
         </div>
 
         <div class="form-group password-toggle">
             <label class="form-label">
-                <span class="form-icon">🔒</span>Пароль:
+                <span class="form-icon">🔄</span>Новый пароль:
             </label>
-            <input type="password" name="password" id="password" class="form-input" placeholder="Создайте надежный пароль" required oninput="checkPasswordStrength(this.value)">
-            <span class="toggle-icon" onclick="togglePassword()">👁️</span>
+            <input type="password" name="new_password" id="newPassword" class="form-input" placeholder="Введите новый пароль" oninput="checkPasswordStrength(this.value)">
+            <span class="toggle-icon" onclick="togglePassword('newPassword', 'newToggle')" id="newToggle">👁️</span>
             <div id="password-strength" class="password-strength"></div>
         </div>
 
-        <button type="submit" class="submit-btn">🎉 Зарегистрироваться</button>
-
-        <div class="register-links">
-            <p>Уже есть аккаунт? <a href="/lab5/login" class="register-link">Войдите здесь</a></p>
+        <div class="form-group password-toggle">
+            <label class="form-label">
+                <span class="form-icon">✅</span>Подтверждение пароля:
+            </label>
+            <input type="password" name="confirm_password" id="confirmPassword" class="form-input" placeholder="Повторите новый пароль">
+            <span class="toggle-icon" onclick="togglePassword('confirmPassword', 'confirmToggle')" id="confirmToggle">👁️</span>
         </div>
 
-        <div class="benefits-list">
-            <div class="benefits-title">Преимущества регистрации:</div>
-            <ul>
-                <li>Создание собственных статей</li>
-                <li>Доступ ко всем материалам</li>
-                <li>Безопасное хранение данных</li>
-                <li>Персональная база знаний</li>
-            </ul>
+        <button type="submit" class="submit-btn">💾 Сохранить изменения</button>
+
+        <div class="profile-links">
+            <p><a href="/lab5" class="profile-link">← Вернуться на главную</a></p>
+        </div>
+
+        <div class="info-box">
+            <div class="info-title">Информация:</div>
+            <div class="info-list">
+                <ul>
+                    <li>Для смены пароля необходимо ввести текущий пароль</li>
+                    <li>Пароль должен содержать минимум 6 символов</li>
+                    <li>Если не хотите менять пароль - оставьте поля пустыми</li>
+                    <li>Имя пользователя будет отображаться в системе</li>
+                </ul>
+            </div>
         </div>
     </form>
 </div>
 
 <script>
-    function togglePassword() {
-        const passwordInput = document.getElementById('password');
-        const toggleIcon = document.querySelector('.toggle-icon');
+    function togglePassword(inputId, toggleId) {
+        const passwordInput = document.getElementById(inputId);
+        const toggleIcon = document.getElementById(toggleId);
         
         if (passwordInput.type === 'password') {
             passwordInput.type = 'text';
@@ -245,16 +276,17 @@
     
     function checkPasswordStrength(password) {
         const strengthElement = document.getElementById('password-strength');
-        let strength = '';
-        let strengthClass = '';
         
         if (password.length === 0) {
             strengthElement.textContent = '';
             return;
         }
         
+        let strength = '';
+        let strengthClass = '';
+        
         if (password.length < 6) {
-            strength = 'Слабый пароль';
+            strength = 'Слабый пароль (минимум 6 символов)';
             strengthClass = 'strength-weak';
         } else if (password.length < 10) {
             strength = 'Средний пароль';

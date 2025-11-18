@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 5{% endblock %}
+
+{% block main %}
+<style>
+    .success-container {
+        max-width: 500px;
+        margin: 0 auto;
+        padding: 40px 20px;
+        text-align: center;
+    }
+    
+    .success-icon {
+        font-size: 4em;
+        margin-bottom: 20px;
+    }
+    
+    .success-title {
+        color: #27ae60;
+        font-size: 2em;
+        margin-bottom: 20px;
+        font-weight: 300;
+    }
+    
+    .success-message {
+        background: white;
+        border-radius: 15px;
+        padding: 30px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        margin-bottom: 30px;
+        border: 2px solid #27ae60;
+    }
+    
+    .user-info {
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 10px;
+        margin: 20px 0;
+    }
+    
+    .info-item {
+        margin: 10px 0;
+        color: #2c3e50;
+    }
+    
+    .back-btn {
+        display: inline-block;
+        background: linear-gradient(135deg, #3498db, #2980b9);
+        color: white;
+        padding: 12px 30px;
+        border-radius: 10px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        margin-top: 20px;
+    }
+    
+    .back-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+    }
+</style>
+
+<div class="success-container">
+    <div class="success-icon">✅</div>
+    <h1 class="success-title">Профиль успешно обновлен!</h1>
+    
+    <div class="success-message">
+        <p>Ваши данные были успешно сохранены в системе.</p>
+        
+        <div class="user-info">
+            <div class="info-item"><strong>Логин:</strong> {{ login }}</div>
+            <div class="info-item"><strong>Имя:</strong> {{ real_name }}</div>
+        </div>
+        
+        <p>Изменения вступят в силу сразу после обновления страницы.</p>
+    </div>
+    
+    <a href="/lab5" class="back-btn">🏠 Вернуться на главную</a>
+</div>
+{% endblock %}

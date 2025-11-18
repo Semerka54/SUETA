@@ -146,6 +146,8 @@
 
         {% if login %}
             <!-- Показываем для авторизованных пользователей -->
+            <a href="/lab5/users" class="menu-btn">👥 Все пользователи</a>
+            <a href="/lab5/change-profile" class="menu-btn">⚙️ Изменить профиль</a>
             <a href="/lab5/logout" class="menu-btn logout-btn">🚪 Выйти</a>
         {% else %}
             <!-- Показываем для неавторизованных пользователей -->
@@ -155,7 +157,7 @@
 
         <!-- Вывод имени пользователя -->
         <span class="username">
-            👤 {{ login if login else "Anonymous" }}
+            👤 {{ real_name if real_name else login }}
         </span>
     </div>
 
