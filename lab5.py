@@ -51,7 +51,7 @@ def login():
     conn, cur = db_connect()
 
     # Проверка существования пользователя
-    cur.execute("SELECT * FROM users WHERE login=%s;", (login,))
+    cur.execute("SELECT * FROM users WHERE login=?;", (login,))
     user = cur.fetchone()
 
     if not user:
@@ -81,14 +81,14 @@ def register():
     conn, cur = db_connect()
 
     # Проверка существования пользователя
-    cur.execute("SELECT * FROM users WHERE login=%s;", (login,))
+    cur.execute("SELECT * FROM users WHERE login=?;", (login,))
     if cur.fetchone():
         db_close(conn, cur)
         return render_template('lab5/register.html', error='Такой пользователь уже существует')
 
     password_hash = generate_password_hash(password)
     # Добавление нового пользователя
-    cur.execute("INSERT INTO users (login, password) VALUES (%s, %s);", (login, password_hash))
+    cur.execute("INSERT INTO users (login, password) VALUES (?, ?);", (login, password_hash))
     
     db_close(conn, cur)
     return render_template('lab5/success.html', login=login)
@@ -101,7 +101,7 @@ def articles_list():
     
     conn, cur = db_connect()
 
-    cur.execute("SELECT id FROM users WHERE login=%s;", (login,))
+    cur.execute("SELECT id FROM users WHERE login=?;", (login,))
     user = cur.fetchone()
 
     if not user:
@@ -110,7 +110,7 @@ def articles_list():
     
     user_id = user["id"]
 
-    cur.execute("SELECT * FROM articles WHERE user_id=%s;", (user_id,))
+    cur.execute("SELECT * FROM articles WHERE user_id=?;", (user_id,))
     articles = cur.fetchall()
 
     db_close(conn, cur)
@@ -132,7 +132,7 @@ def create():
     conn, cur = db_connect()
     
     # Получаем ID пользователя по логину
-    cur.execute("SELECT id FROM users WHERE login=%s;", (login,))
+    cur.execute("SELECT id FROM users WHERE login=?;", (login,))
     user = cur.fetchone()
     
     if not user:
@@ -142,7 +142,7 @@ def create():
     user_id = user["id"]  # Теперь user_id определен
     
     # Вставляем статью в базу
-    cur.execute("INSERT INTO articles(user_id, title, article_text) VALUES (%s, %s, %s);", 
+    cur.execute("INSERT INTO articles(user_id, title, article_text) VALUES (?, ?, ?);", 
                 (user_id, title, article_text))
     
     db_close(conn, cur)
