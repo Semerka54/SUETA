@@ -19,7 +19,7 @@ def lab():
         cur.execute("SELECT real_name FROM users WHERE login=?;", (login,))
         user = cur.fetchone()
         if user:
-            real_name = user['real_name']
+            real_name = user['real_name'] if user and 'real_name' in user else None
         db_close(conn, cur)
     
     return render_template('lab5/lab5.html', login=login, real_name=real_name)
@@ -76,7 +76,7 @@ def login():
     session['login'] = login
     
     # Получаем реальное имя для отображения
-    real_name = user.get('real_name')
+    real_name = user['real_name'] if 'real_name' in user else None
     
     db_close(conn, cur)
     return render_template('lab5/success_login.html', login=login, real_name=real_name)
