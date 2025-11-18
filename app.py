@@ -1,3 +1,4 @@
+import os
 from flask import Flask, url_for, request, redirect, render_template, Response, abort
 import datetime
 from lab1 import lab1
