@@ -1,9 +1,11 @@
-from flask import Blueprint, url_for, request, redirect, Response, render_template, abort, make_response, session
+from flask import Blueprint, url_for, request, redirect, Response, render_template, abort, make_response, session, current_app
 from functools import wraps
 import datetime
 import psycopg2
 from psycopg2.extras import RealDictCursor
 from werkzeug.security import check_password_hash, generate_password_hash
+import sqlite3
+from os import path
 
 lab5 = Blueprint('lab5', __name__)
 
@@ -12,13 +14,21 @@ def lab():
     return render_template('lab5/lab5.html', login=session.get('login'))
 
 def db_connect():
-    conn = psycopg2.connect(
-        host='127.0.0.1',
-        database='saymon_bogdanov_knowledge_base',  
-        user='saymon_bogdanov_knowledge_base',
-        password='123'
-    )
-    cur = conn.cursor(cursor_factory=RealDictCursor)
+    if current_app.config['DB_TYPE'] == 'postgres':
+        conn = psycopg2.connect(
+            host='127.0.0.1',
+            database='saymon_bogdanov_knowledge_base',
+            user='saymon_bogdanov_knowledge_base',
+            password='123'
+        )
+        cur = conn.cursor(cursor_factory=RealDictCursor)
+    else:
+        dir_path = path.dirname(path.realpath(__file__))
+        db_path = path.join(dir_path, "database.db")
+        conn = sqlite3.connect(db_path)
+        conn.row_factory = sqlite3.Row
+        cur = conn.cursor()
+    
     return conn, cur
 
 def db_close(conn, cur):
@@ -48,7 +58,7 @@ def login():
         db_close(conn, cur)
         return render_template('lab5/login.html', error='Логин и/или пароль неверны')
 
-    if not check_password_hash(user['password'] != password):
+    if not check_password_hash(user['password'], password):
         db_close(conn, cur)
         return render_template('lab5/login.html', error='Логин и/или пароль неверны')
     
@@ -92,9 +102,15 @@ def articles_list():
     conn, cur = db_connect()
 
     cur.execute("SELECT id FROM users WHERE login=%s;", (login,))
-    login_id = cur.fetchone()["id"]
+    user = cur.fetchone()
 
-    cur.execute("SELECT * FROM articles WHERE login_id=%s;", (login_id,))
+    if not user:
+        db_close(conn, cur)
+        return redirect('/lab5/login')
+    
+    user_id = user["id"]
+
+    cur.execute("SELECT * FROM articles WHERE user_id=%s;", (user_id,))
     articles = cur.fetchall()
 
     db_close(conn, cur)
@@ -108,18 +124,26 @@ def create():
     
     if request.method == 'GET':
         return render_template('lab5/create_article.html')
-
+    
+    # Обработка POST-запроса
     title = request.form.get('title')
     article_text = request.form.get('article_text')
-
+    
     conn, cur = db_connect()
-
-    cur.execute("SELECT * FROM users WHERE login=%s;", (login,))
+    
+    # Получаем ID пользователя по логину
+    cur.execute("SELECT id FROM users WHERE login=%s;", (login,))
     user = cur.fetchone()
-    login_id = user["id"]
-
-    cur.execute("INSERT INTO articles(login_id, title, article_text) VALUES (%s, %s, %s);", 
-                (login_id, title, article_text))
-
+    
+    if not user:
+        db_close(conn, cur)
+        return redirect('/lab5/login')
+    
+    user_id = user["id"]  # Теперь user_id определен
+    
+    # Вставляем статью в базу
+    cur.execute("INSERT INTO articles(user_id, title, article_text) VALUES (%s, %s, %s);", 
+                (user_id, title, article_text))
+    
     db_close(conn, cur)
     return redirect('/lab5')

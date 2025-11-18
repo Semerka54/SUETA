@@ -8,9 +8,8 @@ from lab5 import lab5
 
 app = Flask(__name__)
 
-app.secret_key = '777'
-
-app.config['SECRET_KEY'] = '777'
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', '777')
+app.config['DB_TYPE'] = os.getenv('DB_TYPE', 'postgres')
 
 app.register_blueprint(lab1)
 app.register_blueprint(lab2)
