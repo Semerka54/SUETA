@@ -7,7 +7,7 @@ lab6 = Blueprint('lab6', __name__)
 DB_PATH = "/home/Semerka54/SUETA/database.db"
 
 
-# --- Функции работы с БД ---
+# --- Работа с БД ---
 def get_db():
     if "db" not in g:
         g.db = sqlite3.connect(DB_PATH)
@@ -15,19 +15,20 @@ def get_db():
     return g.db
 
 
-@lab6.teardown_appcontext
+@lab6.teardown_request
 def close_db(exception):
     db = g.pop("db", None)
     if db is not None:
         db.close()
 
 
-# --- Маршруты ---
+# --- Маршрут страницы ---
 @lab6.route('/lab6/')
 def lab():
     return render_template('lab6/lab6.html')
 
 
+# --- JSON-RPC API ---
 @lab6.route('/lab6/json-rpc-api/', methods=['POST'])
 def api():
     data = request.json
@@ -35,9 +36,10 @@ def api():
     req_id = data.get("id")
     db = get_db()
 
-    # --------------------- METHOD: info --------------------------
+    # ----------- METHOD: info -----------
     if method == "info":
         offices = db.execute("SELECT * FROM offices").fetchall()
+
         return {
             "jsonrpc": "2.0",
             "result": {
@@ -47,7 +49,7 @@ def api():
             "id": req_id
         }
 
-    # --------------------- Проверка авторизации ---------------------
+    # ----------- Проверка авторизации -----------
     login = session.get("login")
     if not login:
         return {
@@ -56,7 +58,7 @@ def api():
             "id": req_id
         }
 
-    # --------------------- METHOD: booking --------------------------
+    # ----------- METHOD: booking -----------
     if method == "booking":
         office_number = data["params"]
 
@@ -81,13 +83,9 @@ def api():
         )
         db.commit()
 
-        return {
-            "jsonrpc": "2.0",
-            "result": "success",
-            "id": req_id
-        }
+        return {"jsonrpc": "2.0", "result": "success", "id": req_id}
 
-    # --------------------- METHOD: cancellation --------------------------
+    # ----------- METHOD: cancellation -----------
     if method == "cancellation":
         office_number = data["params"]
 
@@ -117,13 +115,9 @@ def api():
         )
         db.commit()
 
-        return {
-            "jsonrpc": "2.0",
-            "result": "success",
-            "id": req_id
-        }
+        return {"jsonrpc": "2.0", "result": "success", "id": req_id}
 
-    # --------------------- UNKNOWN METHOD --------------------------
+    # ----------- UNKNOWN METHOD -----------
     return {
         "jsonrpc": "2.0",
         "error": {"code": -32601, "message": "Method not found"},
