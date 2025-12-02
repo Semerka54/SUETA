@@ -3,7 +3,81 @@
 {% block lab %}Лабораторная работа 6{% endblock %}
 
 {% block script %}
+<style>
+    body {
+        font-family: "Segoe UI", sans-serif;
+        background: #f5f7fa;
+        margin: 0;
+        padding: 20px;
+    }
+
+    h1, h2 {
+        text-align: center;
+        color: #333;
+    }
+
+    #office-list {
+        list-style: none;
+        padding: 0;
+        max-width: 600px;
+        margin: 20px auto;
+    }
+
+    #office-list li {
+        background: white;
+        padding: 15px 20px;
+        margin-bottom: 12px;
+        border-radius: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        font-size: 16px;
+    }
+
+    #office-list li span {
+        flex: 1;
+    }
+
+    button {
+        padding: 6px 12px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: 0.2s;
+    }
+
+    button:hover {
+        opacity: 0.85;
+    }
+
+    .book-btn {
+        background: #4CAF50;
+        color: white;
+    }
+
+    .cancel-btn {
+        background: #f44336;
+        color: white;
+    }
+
+    #total-cost {
+        text-align: center;
+        background: #fff;
+        max-width: 400px;
+        padding: 15px;
+        margin: 25px auto 0 auto;
+        border-radius: 10px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        font-size: 18px;
+        color: #444;
+    }
+</style>
+
 <script>
+
     function getOfficeList() {
         const url = '/lab6/json-rpc-api/';
         const json = {
@@ -23,32 +97,43 @@
             const ul = document.getElementById('office-list');
             ul.innerHTML = '';
 
+            let total = 0;
+
             for (let i = 0; i < office_list.length; i++) {
                 const office = office_list[i];
+
                 const li = document.createElement('li');
-                li.innerText = `${office.number}: ${office.tenant || 'свободен'} `;
+
+                const text = document.createElement('span');
+                text.innerText = `Кабинет №${office.number}: ${office.tenant || 'свободен'}  — ${office.price} ₽`;
+                li.appendChild(text);
 
                 if (office.tenant === "") {
-                    // офис свободен → кнопка "зарезервировать"
                     const bookingButton = document.createElement('button');
                     bookingButton.innerText = 'зарезервировать';
+                    bookingButton.className = "book-btn";
                     bookingButton.onclick = function() {
                         booking(office.number);
                     };
                     li.appendChild(bookingButton);
                 }
                 else {
-                    // офис занят → кнопка "освободить"
                     const cancelButton = document.createElement('button');
                     cancelButton.innerText = 'освободить';
+                    cancelButton.className = "cancel-btn";
                     cancelButton.onclick = function() {
                         cancel(office.number);
                     };
                     li.appendChild(cancelButton);
+
+                    total += office.price;
                 }
 
                 ul.appendChild(li);
             }
+
+            document.getElementById('total-cost').innerText =
+                `Итого ваша аренда: ${total} ₽`;
         });
     }
 
@@ -102,7 +187,7 @@
                 switch (data.error.code) {
                     case 1: alert('Вы не авторизованы'); break;
                     case 3: alert('Офис не арендован'); break;
-                    case 4: alert('Вы не можете снять чужую аренду'); break;
+                    case 4: alert('Это не ваша аренда'); break;
                     default: alert('Ошибка'); break;
                 }
             } else {
@@ -115,10 +200,14 @@
     document.addEventListener('DOMContentLoaded', function() {
         getOfficeList();
     });
+
 </script>
 {% endblock %}
 
 {% block main %}
 <h1>Список кабинетов</h1>
+
 <ul id="office-list"></ul>
+
+<div id="total-cost">Итого ваша аренда: 0 ₽</div>
 {% endblock %}
