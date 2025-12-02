@@ -93,7 +93,8 @@
         })
         .then(response => response.json())
         .then(data => {
-            const office_list = data.result;
+            const office_list = data.result.offices;
+            const currentUser = data.result.login;
             const ul = document.getElementById('office-list');
             ul.innerHTML = '';
 
@@ -108,7 +109,7 @@
                 text.innerText = `Кабинет №${office.number}: ${office.tenant || 'свободен'}  — ${office.price} ₽`;
                 li.appendChild(text);
 
-                if (office.tenant === "") {
+                if (office.tenant === currentUser) {
                     const bookingButton = document.createElement('button');
                     bookingButton.innerText = 'зарезервировать';
                     bookingButton.className = "book-btn";

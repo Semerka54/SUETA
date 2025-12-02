@@ -29,9 +29,13 @@ def api():
     if data['method'] == 'info':
         return {
             'jsonrpc': '2.0',
-            'result': offices,
+            'result': {
+                "offices": offices,
+                "login": session.get('login')
+            },
             'id': id
         }
+
 
     login = session.get('login')
     if not login:
