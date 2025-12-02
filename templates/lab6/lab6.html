@@ -10,55 +10,48 @@
             'jsonrpc': '2.0',
             'method': 'info',
             'id': Math.round(Math.random()*1000)
-        };       
+        };
+
         fetch(url, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(json)
         })
-        .then(function(response) {
-            return response.json();
-        })
-        .then(function(data) {
+        .then(response => response.json())
+        .then(data => {
             const office_list = data.result;
             const ul = document.getElementById('office-list');
-            ul.innerHTML = ''; // Очищаем список перед обновлением
-            
-            for(let i = 0; i < office_list.length; i++) {
+            ul.innerHTML = '';
+
+            for (let i = 0; i < office_list.length; i++) {
                 const office = office_list[i];
                 const li = document.createElement('li');
-                li.innerText = `Офис ${office.number}: ${office.tenant ? 'Арендован (' + office.tenant + ')' : 'Свободен'}`;
-                
-                // Добавляем отступ между текстом и кнопками
-                li.appendChild(document.createElement('br'));
-                
-                // Кнопка бронирования (только для свободных офисов)
-                if (office.tenant === '') {
+                li.innerText = `${office.number}: ${office.tenant || 'свободен'} `;
+
+                if (office.tenant === "") {
+                    // офис свободен → кнопка "зарезервировать"
                     const bookingButton = document.createElement('button');
-                    bookingButton.innerText = 'Зарезервировать';
-                    bookingButton.onclick = function() { 
-                        booking(office.number); 
+                    bookingButton.innerText = 'зарезервировать';
+                    bookingButton.onclick = function() {
+                        booking(office.number);
                     };
-                    bookingButton.style.marginRight = '10px';
                     li.appendChild(bookingButton);
                 }
-                
-                // Кнопка освобождения (только для офисов, арендованных текущим пользователем)
-                if (office.tenant === currentUser) {
-                    const cancellationButton = document.createElement('button');
-                    cancellationButton.innerText = 'Освободить';
-                    cancellationButton.onclick = function() { 
-                        cancellation(office.number); 
+                else {
+                    // офис занят → кнопка "освободить"
+                    const cancelButton = document.createElement('button');
+                    cancelButton.innerText = 'освободить';
+                    cancelButton.onclick = function() {
+                        cancel(office.number);
                     };
-                    cancellationButton.style.backgroundColor = '#ff6b6b';
-                    cancellationButton.style.color = 'white';
-                    li.appendChild(cancellationButton);
+                    li.appendChild(cancelButton);
                 }
-                
+
                 ul.appendChild(li);
             }
-        }); 
+        });
     }
+
 
     function booking(officeNumber) {
         const url = '/lab6/json-rpc-api/';
@@ -68,38 +61,28 @@
             'params': officeNumber,
             'id': Math.round(Math.random()*1000)
         };
+
         fetch(url, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(json)
         })
-        .then(function(response) {
-            return response.json()
-        })
-        .then(function(data) {
-            if(data.error) {
-                switch(data.error.code) {
-                    case 1:
-                        alert('Вы не авторизованы, пожалуйста, авторизуйтесь');
-                        break;
-                    case 2:
-                        alert('Офис уже арендуется');
-                        break;
-                    case -32601:
-                        alert('Странная ошибка');
-                        break;
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                switch (data.error.code) {
+                    case 1: alert('Вы не авторизованы'); break;
+                    case 2: alert('Офис уже занят'); break;
+                    default: alert('Ошибка'); break;
                 }
-            }
-            else {
-                document.getElementById('office-list').innerHTML = '';
+            } else {
                 getOfficeList();
-                alert('Офис успешно забронирован!');
             }
         });
     }
 
-    // Новая функция для снятия аренды
-    function cancellation(officeNumber) {
+
+    function cancel(officeNumber) {
         const url = '/lab6/json-rpc-api/';
         const json = {
             'jsonrpc': '2.0',
@@ -107,54 +90,35 @@
             'params': officeNumber,
             'id': Math.round(Math.random()*1000)
         };
-        
+
         fetch(url, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(json)
         })
-        .then(function(response) {
-            return response.json();
-        })
-        .then(function(data) {
-            if(data.error) {
-                switch(data.error.code) {
-                    case 1:
-                        alert('Вы не авторизованы, пожалуйста, авторизуйтесь');
-                        break;
-                    case 3:
-                        alert('Офис не арендован');
-                        break;
-                    case 4:
-                        alert('Это не ваш офис, вы не можете его освободить');
-                        break;
-                    default:
-                        alert('Ошибка: ' + data.error.message);
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                switch (data.error.code) {
+                    case 1: alert('Вы не авторизованы'); break;
+                    case 3: alert('Офис не арендован'); break;
+                    case 4: alert('Вы не можете снять чужую аренду'); break;
+                    default: alert('Ошибка'); break;
                 }
             } else {
-                document.getElementById('office-list').innerHTML = '';
                 getOfficeList();
-                alert('Офис успешно освобожден!');
             }
-        })
-        .catch(function(error) {
-            console.error('Error:', error);
-            alert('Произошла ошибка при запросе');
         });
     }
+
 
     document.addEventListener('DOMContentLoaded', function() {
         getOfficeList();
     });
-</script>   
+</script>
 {% endblock %}
 
 {% block main %}
-    <h1>Список кабинетов</h1>
-    {% if session.get('login') %}
-        <p>Вы вошли как: <strong>{{ session.get('login') }}</strong></p>
-    {% else %}
-        <p style="color: red;">Вы не авторизованы. Пожалуйста, авторизуйтесь для бронирования офисов.</p>
-    {% endif %}
-    <ul id="office-list"></ul>
+<h1>Список кабинетов</h1>
+<ul id="office-list"></ul>
 {% endblock %}
