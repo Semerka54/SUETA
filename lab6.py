@@ -22,13 +22,16 @@ def lab():
 def api():
     data = request.json
     id = data['id']
+    
+    # Метод info доступен всем
     if data['method'] == 'info':
         return {
             'jsonrpc': '2.0',
             'result': offices,
             'id': id
         }
-
+    
+    # Для остальных методов нужна авторизация
     login = session.get('login')
     if not login:
         return {
@@ -39,7 +42,8 @@ def api():
             },
             'id': id
         }
-
+    
+    # Метод booking
     if data['method'] == 'booking':
         office_number = data['params']
         for office in offices:
@@ -60,12 +64,47 @@ def api():
                     'result': 'success',
                     'id': id
                 }
-
+    
+    # Метод cancellation (добавлен новый)
+    if data['method'] == 'cancellation':
+        office_number = data['params']
+        for office in offices:
+            if office['number'] == office_number:
+                # Проверка арендованности
+                if office['tenant'] == '':
+                    return {
+                        'jsonrpc': '2.0',
+                        'error': {
+                            'code': 3,
+                            'message': 'Office is not booked'
+                        },
+                        'id': id
+                    }
+                
+                # Проверка, что офис арендован текущим пользователем
+                if office['tenant'] != login:
+                    return {
+                        'jsonrpc': '2.0',
+                        'error': {
+                            'code': 4,
+                            'message': 'You are not the tenant of this office'
+                        },
+                        'id': id
+                    }
+                
+                # Снятие аренды
+                office['tenant'] = ''
+                return {
+                    'jsonrpc': '2.0',
+                    'result': 'success',
+                    'id': id
+                }
+    
     return {
-    'jsonrpc': '2.0',
-    'error': {
-        'code': -32601,
-        'message': 'Method not found'
-    },
-    'id': id
-}
+        'jsonrpc': '2.0',
+        'error': {
+            'code': -32601,
+            'message': 'Method not found'
+        },
+        'id': id
+    }
