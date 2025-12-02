@@ -36,7 +36,6 @@ def api():
             'id': id
         }
 
-
     login = session.get('login')
     if not login:
         return {
