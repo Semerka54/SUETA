@@ -9,6 +9,12 @@ from os import path
 
 lab5 = Blueprint('lab5', __name__)
 
+def get_param_placeholder():
+    if current_app.config['DB_TYPE'] == 'postgres':
+        return '%s'
+    else:
+        return '?'
+
 @lab5.route("/lab5/")
 def lab():
     login = session.get('login')
@@ -16,7 +22,8 @@ def lab():
     
     if login:
         conn, cur = db_connect()
-        cur.execute("SELECT real_name FROM users WHERE login=?;", (login,))
+        placeholder = get_param_placeholder()
+        cur.execute(f"SELECT real_name FROM users WHERE login={placeholder};", (login,))
         user = cur.fetchone()
         if user:
             # Безопасное получение real_name
@@ -60,8 +67,9 @@ def login():
         return render_template('lab5/login.html', error="Заполните все поля")
 
     conn, cur = db_connect()
+    placeholder = get_param_placeholder()
 
-    cur.execute("SELECT * FROM users WHERE login=?;", (login,))
+    cur.execute(f"SELECT * FROM users WHERE login={placeholder};", (login,))
     user = cur.fetchone()
 
     if not user:
@@ -94,9 +102,10 @@ def register():
 
     # Используем функции для работы с БД
     conn, cur = db_connect()
+    placeholder = get_param_placeholder()
 
     # Проверка существования пользователя
-    cur.execute("SELECT * FROM users WHERE login=?;", (login,))
+    cur.execute(f"SELECT * FROM users WHERE login={placeholder};", (login,))
     if cur.fetchone():
         db_close(conn, cur)
         return render_template('lab5/register.html', error='Такой пользователь уже существует')
@@ -105,7 +114,7 @@ def register():
     password_hash = generate_password_hash(password)
     
     # Добавление нового пользователя с реальным именем
-    cur.execute("INSERT INTO users (login, password, real_name) VALUES (?, ?, ?);", 
+    cur.execute(f"INSERT INTO users (login, password, real_name) VALUES ({placeholder}, {placeholder}, {placeholder});", 
                 (login, password_hash, real_name))
     
     db_close(conn, cur)
@@ -114,27 +123,28 @@ def register():
 @lab5.route('/lab5/list')
 def articles_list():
     login = session.get('login')
-    if not login:
+    if not login: # Проверка авторизации
         return redirect('/lab5/login')
     
     conn, cur = db_connect()
+    placeholder = get_param_placeholder()
 
-    cur.execute("SELECT id FROM users WHERE login=?;", (login,))
+    cur.execute(f"SELECT id FROM users WHERE login={placeholder};", (login,))
     user = cur.fetchone()
 
     if not user:
         db_close(conn, cur)
         return redirect('/lab5/login')
     
-    user_id = user["id"]
+    user_id = user["id"] # Находим числовой ID пользователя по его логину
 
     # Получаем статьи пользователя, любимые статьи выводятся первыми
-    cur.execute("""
+    cur.execute(f"""
         SELECT * FROM articles 
-        WHERE user_id=? 
+        WHERE user_id={placeholder} 
         ORDER BY is_favorite DESC, id DESC;
     """, (user_id,))
-    articles = cur.fetchall()
+    articles = cur.fetchall() # избранные статьи показываются первыми, новые статьи показываются выше старых
 
     db_close(conn, cur)
     return render_template('lab5/articles.html', articles=articles, login=login)
@@ -163,9 +173,10 @@ def create():
         return render_template('lab5/create_article.html', error=error_message)
     
     conn, cur = db_connect()
+    placeholder = get_param_placeholder()
     
     # Получаем ID пользователя по логину
-    cur.execute("SELECT id FROM users WHERE login=?;", (login,))
+    cur.execute(f"SELECT id FROM users WHERE login={placeholder};", (login,))
     user = cur.fetchone()
     
     if not user:
@@ -175,7 +186,7 @@ def create():
     user_id = user["id"]  # Теперь user_id определен
     
     # Вставляем статью в базу
-    cur.execute("INSERT INTO articles(user_id, title, article_text, is_favorite, is_public) VALUES (?, ?, ?, ?, ?);", 
+    cur.execute(f"INSERT INTO articles(user_id, title, article_text, is_favorite, is_public) VALUES ({placeholder}, {placeholder}, {placeholder}, {placeholder}, {placeholder});", 
             (user_id, title, article_text, False, False))
     
     db_close(conn, cur)
@@ -197,9 +208,10 @@ def edit_article(article_id):
         return redirect('/lab5/login')
     
     conn, cur = db_connect()
+    placeholder = get_param_placeholder()
     
     # Получаем ID пользователя
-    cur.execute("SELECT id FROM users WHERE login=?;", (login,))
+    cur.execute(f"SELECT id FROM users WHERE login={placeholder};", (login,))
     user = cur.fetchone()
     
     if not user:
@@ -209,7 +221,7 @@ def edit_article(article_id):
     user_id = user["id"]
     
     # Проверяем, принадлежит ли статья пользователю
-    cur.execute("SELECT * FROM articles WHERE id=? AND user_id=?;", (article_id, user_id))
+    cur.execute(f"SELECT * FROM articles WHERE id={placeholder} AND user_id={placeholder};", (article_id, user_id))
     article = cur.fetchone()
     
     if not article:
@@ -244,7 +256,7 @@ def edit_article(article_id):
                              error=error_message)
     
     # Обновляем статью в базе данных
-    cur.execute("UPDATE articles SET title=?, article_text=? WHERE id=? AND user_id=?;",
+    cur.execute(f"UPDATE articles SET title={placeholder}, article_text={placeholder} WHERE id={placeholder} AND user_id={placeholder};",
                 (title, article_text, article_id, user_id))
     
     db_close(conn, cur)
@@ -258,9 +270,10 @@ def confirm_delete(article_id):
         return redirect('/lab5/login')
     
     conn, cur = db_connect()
+    placeholder = get_param_placeholder()
     
     # Получаем ID пользователя и данные статьи
-    cur.execute("SELECT id FROM users WHERE login=?;", (login,))
+    cur.execute(f"SELECT id FROM users WHERE login={placeholder};", (login,))
     user = cur.fetchone()
     
     if not user:
@@ -270,7 +283,7 @@ def confirm_delete(article_id):
     user_id = user["id"]
     
     # Получаем данные статьи для отображения названия
-    cur.execute("SELECT * FROM articles WHERE id=? AND user_id=?;", (article_id, user_id))
+    cur.execute(f"SELECT * FROM articles WHERE id={placeholder} AND user_id={placeholder};", (article_id, user_id))
     article = cur.fetchone()
     
     if not article:
@@ -289,9 +302,10 @@ def delete_article(article_id):
         return redirect('/lab5/login')
     
     conn, cur = db_connect()
+    placeholder = get_param_placeholder()
     
     # Получаем ID пользователя
-    cur.execute("SELECT id FROM users WHERE login=?;", (login,))
+    cur.execute(f"SELECT id FROM users WHERE login={placeholder};", (login,))
     user = cur.fetchone()
     
     if not user:
@@ -301,7 +315,7 @@ def delete_article(article_id):
     user_id = user["id"]
     
     # Удаляем статью
-    cur.execute("DELETE FROM articles WHERE id=? AND user_id=?;", (article_id, user_id))
+    cur.execute(f"DELETE FROM articles WHERE id={placeholder} AND user_id={placeholder};", (article_id, user_id))
     
     db_close(conn, cur)
     return redirect('/lab5/list')
@@ -331,7 +345,8 @@ def change_profile():
     
     if request.method == 'GET':
         conn, cur = db_connect()
-        cur.execute("SELECT real_name FROM users WHERE login=?;", (login,))
+        placeholder = get_param_placeholder()
+        cur.execute(f"SELECT real_name FROM users WHERE login={placeholder};", (login,))
         user = cur.fetchone()
         real_name = user['real_name'] if user else ''
         db_close(conn, cur)
@@ -348,9 +363,10 @@ def change_profile():
     confirm_password = request.form.get('confirm_password')
     
     conn, cur = db_connect()
+    placeholder = get_param_placeholder()
     
     # Получаем текущие данные пользователя
-    cur.execute("SELECT * FROM users WHERE login=?;", (login,))
+    cur.execute(f"SELECT * FROM users WHERE login={placeholder};", (login,))
     user = cur.fetchone()
     
     if not user:
@@ -386,11 +402,11 @@ def change_profile():
     if new_password:
         # Обновляем имя и пароль
         password_hash = generate_password_hash(new_password)
-        cur.execute("UPDATE users SET real_name=?, password=? WHERE login=?;",
+        cur.execute(f"UPDATE users SET real_name={placeholder}, password={placeholder} WHERE login={placeholder};",
                     (new_real_name, password_hash, login))
     else:
         # Обновляем только имя
-        cur.execute("UPDATE users SET real_name=? WHERE login=?;",
+        cur.execute(f"UPDATE users SET real_name={placeholder} WHERE login={placeholder};",
                     (new_real_name, login))
     
     db_close(conn, cur)
@@ -433,14 +449,15 @@ def favorite_article(article_id):
         return redirect('/lab5/login')
     
     conn, cur = db_connect()
+    placeholder = get_param_placeholder()
     
     # Проверяем принадлежность статьи
-    cur.execute("SELECT id FROM users WHERE login=?;", (login,))
+    cur.execute(f"SELECT id FROM users WHERE login={placeholder};", (login,))
     user = cur.fetchone()
     
     if user:
         user_id = user["id"]
-        cur.execute("UPDATE articles SET is_favorite=TRUE WHERE id=? AND user_id=?;", 
+        cur.execute(f"UPDATE articles SET is_favorite=TRUE WHERE id={placeholder} AND user_id={placeholder};", 
                     (article_id, user_id))
     
     db_close(conn, cur)
@@ -453,14 +470,15 @@ def unfavorite_article(article_id):
         return redirect('/lab5/login')
     
     conn, cur = db_connect()
+    placeholder = get_param_placeholder()
     
     # Проверяем принадлежность статьи
-    cur.execute("SELECT id FROM users WHERE login=?;", (login,))
+    cur.execute(f"SELECT id FROM users WHERE login={placeholder};", (login,))
     user = cur.fetchone()
     
     if user:
         user_id = user["id"]
-        cur.execute("UPDATE articles SET is_favorite=FALSE WHERE id=? AND user_id=?;", 
+        cur.execute(f"UPDATE articles SET is_favorite=FALSE WHERE id={placeholder} AND user_id={placeholder};", 
                     (article_id, user_id))
     
     db_close(conn, cur)
@@ -474,14 +492,15 @@ def make_article_public(article_id):
         return redirect('/lab5/login')
     
     conn, cur = db_connect()
+    placeholder = get_param_placeholder()
     
     # Проверяем принадлежность статьи
-    cur.execute("SELECT id FROM users WHERE login=?;", (login,))
+    cur.execute(f"SELECT id FROM users WHERE login={placeholder};", (login,))
     user = cur.fetchone()
     
     if user:
         user_id = user["id"]
-        cur.execute("UPDATE articles SET is_public=TRUE WHERE id=? AND user_id=?;", 
+        cur.execute(f"UPDATE articles SET is_public=TRUE WHERE id={placeholder} AND user_id={placeholder};", 
                     (article_id, user_id))
     
     db_close(conn, cur)
@@ -494,14 +513,15 @@ def make_article_private(article_id):
         return redirect('/lab5/login')
     
     conn, cur = db_connect()
+    placeholder = get_param_placeholder()
     
     # Проверяем принадлежность статьи
-    cur.execute("SELECT id FROM users WHERE login=?;", (login,))
+    cur.execute(f"SELECT id FROM users WHERE login={placeholder};", (login,))
     user = cur.fetchone()
     
     if user:
         user_id = user["id"]
-        cur.execute("UPDATE articles SET is_public=FALSE WHERE id=? AND user_id=?;", 
+        cur.execute(f"UPDATE articles SET is_public=FALSE WHERE id={placeholder} AND user_id={placeholder};", 
                     (article_id, user_id))
     
     db_close(conn, cur)
