@@ -78,3 +78,15 @@ def put_film(id):
     films[id] = film
     # Возврат обновленного фильма
     return films[id]
+
+
+@lab7.route('/lab7/rest-api/films/', methods=['POST'])
+def add_film():
+    # Получение данных о новом фильме из тела запроса
+    film = request.get_json()
+    # Добавление нового фильма в конец списка
+    films.append(film)
+    # Возвращаем индекс нового элемента (последний индекс в списке)
+    # который равен новой длине списка минус 1
+    new_index = len(films) - 1
+    return str(new_index), 201  
