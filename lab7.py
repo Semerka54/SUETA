@@ -65,3 +65,16 @@ def del_film(id):
     
     # Возвращаем успешный ответ без содержимого
     return '', 204
+
+
+@lab7.route('/lab7/rest-api/films/<int:id>', methods=['PUT'])
+def put_film(id):
+    # Проверка корректности id
+    if id < 0 or id >= len(films):
+        abort(404)
+    # Получение данных из запроса
+    film = request.get_json()
+    # Обновление фильма
+    films[id] = film
+    # Возврат обновленного фильма
+    return films[id]
