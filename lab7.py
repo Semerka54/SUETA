@@ -1,100 +1,151 @@
 from flask import Blueprint, request, render_template, session, g, abort
 import sqlite3
+from datetime import datetime
 
 lab7 = Blueprint('lab7', __name__)
+
+# Путь к базе данных
+DB_PATH = "/home/Semerka54/SUETA/database.db"
+
+
+# --- Работа с БД ---
+def get_db():
+    if "db" not in g:
+        g.db = sqlite3.connect(DB_PATH)
+        g.db.row_factory = sqlite3.Row
+    return g.db
+
+
+@lab7.teardown_request
+def close_db(exception):
+    db = g.pop("db", None)
+    if db is not None:
+        db.close()
 
 @lab7.route('/lab7/')
 def lab():
     return render_template('lab7/lab7.html')
 
 
-films = [
-  {
-    "title": "Inception",
-    "title_ru": "Начало",
-    "year": 2010,
-    "description": "Научно-фантастический триллер о воре, который проникает в сны, чтобы украсть или внедрить идею."
-  },
-  {
-    "title": "The Matrix",
-    "title_ru": "Матрица",
-    "year": 1999,
-    "description": "Хакер узнаёт, что реальность — это симуляция, созданная искусственным интеллектом."
-  },
-  {
-    "title": "Interstellar",
-    "title_ru": "Интерстеллар",
-    "year": 2014,
-    "description": "Команда исследователей путешествует через червоточину, чтобы найти новую обитаемую планету."
-  },
-  {
-    "title": "The Shawshank Redemption",
-    "title_ru": "Побег из Шоушенка",
-    "year": 1994,
-    "description": "История несправедливо осуждённого банкира, который не теряет надежды на свободу."
-  },
-  {
-    "title": "The Lord of the Rings: The Fellowship of the Ring",
-    "title_ru": "Властелин колец: Братство кольца",
-    "year": 2001,
-    "description": "Хоббит Фродо отправляется в опасное путешествие, чтобы уничтожить могущественное Кольцо Всевластья."
-  }
-]
-
-
 @lab7.route('/lab7/rest-api/films/', methods=['GET'])
 def get_films():
-    return films
+    db = get_db()
+    cursor = db.execute('SELECT * FROM films')
+    films = cursor.fetchall()
+    return [dict(film) for film in films]
 
 
 @lab7.route('/lab7/rest-api/films/<int:id>', methods=['GET'])
 def get_film(id):
-    if id < 0 or id >= len(films):
+    db = get_db()
+    film = db.execute(
+        'SELECT * FROM films WHERE id = ?',
+        (id,)
+    ).fetchone()
+
+    if film is None:
         abort(404)
-    return films[id]
+
+    return dict(film)
 
 
 @lab7.route('/lab7/rest-api/films/<int:id>', methods=['DELETE'])
 def del_film(id):
-    # Проверка корректности id
-    if id < 0 or id >= len(films):
+    db = get_db()
+    cur = db.execute(
+        'DELETE FROM films WHERE id = ?',
+        (id,)
+    )
+    db.commit()
+
+    if cur.rowcount == 0:
         abort(404)
-    
-    # Удаление фильма
-    del films[id]
-    
-    # Возвращаем успешный ответ без содержимого
+
     return '', 204
 
 
 @lab7.route('/lab7/rest-api/films/<int:id>', methods=['PUT'])
 def put_film(id):
-    # Проверка корректности id
-    if id < 0 or id >= len(films):
-        abort(404)
-    # Получение данных из запроса
+    db = get_db()
     film = request.get_json()
-    if film['description'] == '':
-            return {'description': 'Заполните описание'}, 400
-    if film.get('title_ru') and film.get('title') == '':
-        film['title'] = film['title_ru']
-    # Обновление фильма
-    films[id] = film
-    # Возврат обновленного фильма
-    return films[id]
+    errors = {}
+
+    title = film.get('title', '').strip()
+    title_ru = film.get('title_ru', '').strip()
+    year = film.get('year')
+    description = film.get('description', '').strip()
+
+    if title_ru == '':
+        errors['title_ru'] = 'Русское название обязательно'
+
+    if title_ru == '' and title == '':
+        errors['title'] = 'Оригинальное название обязательно, если русское не указано'
+
+    current_year = 2025
+    if not year or int(year) < 1895 or int(year) > current_year:
+        errors['year'] = f'Год должен быть от 1895 до {current_year}'
+
+    if description == '':
+        errors['description'] = 'Описание не должно быть пустым'
+    elif len(description) > 2000:
+        errors['description'] = 'Описание не должно превышать 2000 символов'
+
+    if errors:
+        return errors, 400
+
+    if title == '' and title_ru != '':
+        title = title_ru
+
+    cur = db.execute("""
+        UPDATE films
+        SET title = ?, title_ru = ?, year = ?, description = ?
+        WHERE id = ?
+    """, (title, title_ru, year, description, id))
+
+    db.commit()
+
+    if cur.rowcount == 0:
+        abort(404)
+
+    return film
 
 
 @lab7.route('/lab7/rest-api/films/', methods=['POST'])
 def add_film():
-    # Получение данных о новом фильме из тела запроса
+    db = get_db()
     film = request.get_json()
-    if film.get('description', '') == '':
-        return {'description': 'Заполните описание'}, 400
-    if film.get('title_ru') and film.get('title') == '':
-        film['title'] = film['title_ru']
-    # Добавление нового фильма в конец списка
-    films.append(film)
-    # Возвращаем индекс нового элемента (последний индекс в списке)
-    # который равен новой длине списка минус 1
-    new_index = len(films) - 1
-    return str(new_index), 201  
+    errors = {}
+
+    title = film.get('title', '').strip()
+    title_ru = film.get('title_ru', '').strip()
+    year = film.get('year')
+    description = film.get('description', '').strip()
+
+    if title_ru == '':
+        errors['title_ru'] = 'Русское название обязательно'
+
+    if title_ru == '' and title == '':
+        errors['title'] = 'Оригинальное название обязательно, если русское не указано'
+
+    current_year = 2025
+    if not year or int(year) < 1895 or int(year) > current_year:
+        errors['year'] = f'Год должен быть от 1895 до {current_year}'
+
+    if description == '':
+        errors['description'] = 'Описание не должно быть пустым'
+    elif len(description) > 2000:
+        errors['description'] = 'Описание не должно превышать 2000 символов'
+
+    if errors:
+        return errors, 400
+
+    if title == '' and title_ru != '':
+        title = title_ru
+
+    cursor = db.execute("""
+        INSERT INTO films (title, title_ru, year, description)
+        VALUES (?, ?, ?, ?)
+    """, (title, title_ru, year, description))
+
+    db.commit()
+    return str(cursor.lastrowid), 201

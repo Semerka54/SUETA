@@ -166,26 +166,30 @@ td button:last-child {
 <div class="modal">
     <input type="hidden" id="id">
     <label>
-        Название фильма на русском:
-        <input type="text" id="title_ru">
-    </label><br>
+    Название фильма на русском:
+    <input type="text" id="title_ru">
+    <div id="title_ru-error" class="error-message"></div>
+</label><br>
 
-    <label>
-        Название фильма на оригинальном языке
-        <i>(если фильм русский, то оставить пустым)</i>
-        <input type="text" id="title">
-    </label><br>
+<label>
+    Название фильма на оригинальном языке
+    <i>(если фильм русский, то оставить пустым)</i>
+    <input type="text" id="title">
+    <div id="title-error" class="error-message"></div>
+</label><br>
 
-    <label>
-        Год выпуска:
-        <input type="number" id="year">
-    </label><br>
+<label>
+    Год выпуска:
+    <input type="number" id="year">
+    <div id="year-error" class="error-message"></div>
+</label><br>
 
-    <label>
-        Описание:
-        <textarea id="description"></textarea>
-        <div id="description-error" class="error-message"></div>
-    </label><br>
+<label>
+    Описание:
+    <textarea id="description"></textarea>
+    <div id="description-error" class="error-message"></div>
+</label><br>
+
 
     <button onclick="sendFilm()">OK</button>
     <button onclick="cancel()">Отмена</button>

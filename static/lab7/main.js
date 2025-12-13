@@ -15,7 +15,7 @@ function fillFilmList() {
 
             // Устанавливаем значения
             tdTitle.innerText = films[i].title_ru ? films[i].title_ru : films[i].title;
-            
+
             if (films[i].title_ru && films[i].title) {
                 tdTitleRus.innerHTML = `<i>(${films[i].title})</i>`;
             } else {
@@ -59,8 +59,13 @@ function deleteFilm(id, title) {
 
 function showModal() {
     document.querySelector('div.modal').style.display = 'block';
+
+    document.getElementById('title-error').innerText = '';
+    document.getElementById('title_ru-error').innerText = '';
+    document.getElementById('year-error').innerText = '';
     document.getElementById('description-error').innerText = '';
 }
+
 
 function hideModal() {
     document.querySelector('div.modal').style.display = 'none';
@@ -81,6 +86,10 @@ function addFilm() {
 }
 
 function sendFilm() {
+    document.getElementById('title-error').innerText = '';
+    document.getElementById('title_ru-error').innerText = '';
+    document.getElementById('year-error').innerText = '';
+    document.getElementById('description-error').innerText = '';
     const id = document.getElementById('id').value;
     const film = {
         title: document.getElementById('title').value,
@@ -106,7 +115,16 @@ function sendFilm() {
         return resp.json();
     })
     .then(function(errors) {
-        if(errors.description)
+        if (errors.title)
+            document.getElementById('title-error').innerText = errors.title;
+
+        if (errors.title_ru)
+            document.getElementById('title_ru-error').innerText = errors.title_ru;
+
+        if (errors.year)
+            document.getElementById('year-error').innerText = errors.year;
+
+        if (errors.description)
             document.getElementById('description-error').innerText = errors.description;
     });
 }
