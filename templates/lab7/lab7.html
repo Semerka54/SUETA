@@ -64,6 +64,10 @@
 .modal button:last-of-type {
     background-color: #e0e0e0;
 }
+
+.error-message {
+    color: red;
+}
 </style>
 
 {% endblock %}
@@ -110,6 +114,7 @@
     <label>
         Описание:
         <textarea id="description"></textarea>
+        <div id="description-error" class="error-message"></div>
     </label><br>
 
     <button onclick="sendFilm()">OK</button>

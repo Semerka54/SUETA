@@ -74,6 +74,8 @@ def put_film(id):
         abort(404)
     # Получение данных из запроса
     film = request.get_json()
+    if film['description'] == '':
+            return {'description': 'Заполните описание'}, 400
     # Обновление фильма
     films[id] = film
     # Возврат обновленного фильма
@@ -84,6 +86,8 @@ def put_film(id):
 def add_film():
     # Получение данных о новом фильме из тела запроса
     film = request.get_json()
+    if film.get('description', '') == '':
+        return {'description': 'Заполните описание'}, 400
     # Добавление нового фильма в конец списка
     films.append(film)
     # Возвращаем индекс нового элемента (последний индекс в списке)
