@@ -5,6 +5,80 @@
 {% block script %}
 <script src="{{ url_for('static', filename='lab7/main.js') }}"></script>
 <style>
+/* ===== Общие стили ===== */
+body {
+    font-family: Arial, sans-serif;
+}
+
+/* ===== Таблица ===== */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+thead {
+    background-color: #f2f2f2;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+
+th {
+    font-weight: bold;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #fafafa;
+}
+
+tbody tr:hover {
+    background-color: #f0f0f0;
+}
+
+/* ===== Кнопки ===== */
+button {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+button:hover {
+    opacity: 0.9;
+}
+
+button:active {
+    transform: scale(0.97);
+}
+
+/* Кнопка "Добавить фильм" */
+div > button {
+    margin-top: 15px;
+    background-color: #1976d2;
+    color: #fff;
+}
+
+/* Кнопки в таблице */
+td button {
+    margin-right: 6px;
+}
+
+td button:first-child {
+    background-color: #4caf50;
+    color: white;
+}
+
+td button:last-child {
+    background-color: #f44336;
+    color: white;
+}
+
+/* ===== Модальное окно ===== */
 .modal {
     display: none;
     position: fixed;
@@ -12,20 +86,18 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-
     width: 90%;
-    max-width: 400px;
-
+    max-width: 420px;
     background: #ffffff;
     padding: 20px;
-
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
     border-radius: 8px;
 }
 
+/* Поля формы */
 .modal label {
     display: block;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
     font-size: 14px;
 }
 
@@ -34,8 +106,7 @@
     width: 100%;
     box-sizing: border-box;
     margin-top: 4px;
-    padding: 6px 8px;
-
+    padding: 7px 9px;
     border: 1px solid #ccc;
     border-radius: 4px;
     font-size: 14px;
@@ -46,14 +117,10 @@
     min-height: 80px;
 }
 
+/* Кнопки модального окна */
 .modal button {
     margin-top: 10px;
     margin-right: 8px;
-    padding: 6px 14px;
-
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
 }
 
 .modal button:first-of-type {
@@ -65,8 +132,11 @@
     background-color: #e0e0e0;
 }
 
+/* ===== Ошибки ===== */
 .error-message {
-    color: red;
+    color: #d32f2f;
+    font-size: 13px;
+    margin-top: 4px;
 }
 </style>
 

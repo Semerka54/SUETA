@@ -14,8 +14,13 @@ function fillFilmList() {
             let tdActions = document.createElement('td');
 
             // Устанавливаем значения
-            tdTitle.innerText = films[i].title;  
-            tdTitleRus.innerText = films[i].title_ru ? films[i].title_ru : '';
+            tdTitle.innerText = films[i].title_ru ? films[i].title_ru : films[i].title;
+            
+            if (films[i].title_ru && films[i].title) {
+                tdTitleRus.innerHTML = `<i>(${films[i].title})</i>`;
+            } else {
+                tdTitleRus.innerText = '';
+            }
             tdYear.innerText = films[i].year;
 
             let editButton = document.createElement('button');

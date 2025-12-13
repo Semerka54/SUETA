@@ -76,6 +76,8 @@ def put_film(id):
     film = request.get_json()
     if film['description'] == '':
             return {'description': 'Заполните описание'}, 400
+    if film.get('title_ru') and film.get('title') == '':
+        film['title'] = film['title_ru']
     # Обновление фильма
     films[id] = film
     # Возврат обновленного фильма
@@ -88,6 +90,8 @@ def add_film():
     film = request.get_json()
     if film.get('description', '') == '':
         return {'description': 'Заполните описание'}, 400
+    if film.get('title_ru') and film.get('title') == '':
+        film['title'] = film['title_ru']
     # Добавление нового фильма в конец списка
     films.append(film)
     # Возвращаем индекс нового элемента (последний индекс в списке)
