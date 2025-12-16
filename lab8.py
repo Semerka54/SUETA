@@ -3,7 +3,7 @@ from database import db
 from database.models import Users, Articles
 from flask_login import login_user, login_required, current_user, logout_user
 from werkzeug.security import generate_password_hash, check_password_hash
-from sqlalchemy import or_
+from sqlalchemy import or_, func
 
 lab8 = Blueprint('lab8', __name__)
 
@@ -122,10 +122,12 @@ def article_list():
 
     # поиск (регистронезависимый)
     if search:
+        search_lower = search.lower()
+
         query = query.filter(
             or_(
-                Articles.title.ilike(f'%{search}%'),
-                Articles.article_text.ilike(f'%{search}%')
+                func.lower(Articles.title).contains(search_lower),
+                func.lower(Articles.article_text).contains(search_lower)
             )
         )
 
