@@ -23,7 +23,7 @@
             placeholder="Поиск по статьям..."
             value="{{ search }}"
         >
-        <button type="submit">Найти</button>
+        <button type="submit" class="btn">Найти</button>
     </form>
 
     {% if articles|length == 0 %}
@@ -32,6 +32,7 @@
 
     {% for article in articles %}
         <div class="article-card">
+
             <h3>{{ article.title }}</h3>
 
             <p>{{ article.article_text }}</p>
@@ -46,6 +47,7 @@
 
             {% if current_user.is_authenticated and article.login_id == current_user.id %}
                 <div class="article-actions">
+
                     <a href="{{ url_for('lab8.edit', article_id=article.id) }}" class="btn">
                         Редактировать
                     </a>
@@ -63,6 +65,7 @@
                             Удалить
                         </button>
                     </form>
+
                 </div>
             {% endif %}
         </div>
@@ -93,7 +96,7 @@
 
 .search-form input {
     flex: 1;
-    padding: 8px;
+    padding: 10px;
     border-radius: 5px;
     border: 1px solid #ccc;
 }
@@ -134,7 +137,7 @@
     background: #4a6ee0;
     color: white;
     border: none;
-    padding: 8px 14px;
+    padding: 8px 16px;
     border-radius: 5px;
     text-decoration: none;
     cursor: pointer;
