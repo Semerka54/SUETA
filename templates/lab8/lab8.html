@@ -217,6 +217,10 @@
         <div class="user-info">
             <div class="user-icon">A</div>
             <div class="username">{{ username }}</div>
+            
+            {% if username != 'anonymous' %}
+                <a href="{{ url_for('lab8.logout') }}" class="logout-btn">Выйти</a>
+            {% endif %}
         </div>
     </div>
 
