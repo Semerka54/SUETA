@@ -16,6 +16,9 @@ def lab():
 
 @lab8.route('/lab8/login', methods=['GET', 'POST'])
 def login():
+    if current_user.is_authenticated:
+        # Уже авторизован — редирект на главную или список статей
+        return redirect(url_for('lab8.lab'))
     next_page = request.args.get('next') if request.method == 'GET' else request.form.get('next')
 
     if request.method == 'POST':
@@ -41,6 +44,9 @@ def login():
 
 @lab8.route('/lab8/register/', methods=['GET', 'POST'])
 def register():
+    if current_user.is_authenticated:
+        # Уже авторизован — редирект на главную или список статей
+        return redirect(url_for('lab8.lab'))
     if request.method == 'GET':
         return render_template('lab8/register.html')
 

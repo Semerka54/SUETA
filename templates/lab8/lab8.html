@@ -226,10 +226,15 @@
 
     <nav class="nav">
         <ul class="nav-links">
-            <li><a href="/lab8/login">Вход в систему</a></li>
-            <li><a href="/lab8/register">Регистрация</a></li>
-            <li><a href="/lab8/articles">Список статей</a></li>
-            <li><a href="/lab8/create">Создать статью</a></li>
+            {% if current_user.is_authenticated %}
+                <li>Привет, {{ current_user.login }}</li>
+                <li><a href="{{ url_for('lab8.logout') }}" class="btn">Выйти</a></li>
+            {% else %}
+                <li><a href="{{ url_for('lab8.login') }}">Вход в систему</a></li>
+                <li><a href="{{ url_for('lab8.register') }}">Регистрация</a></li>
+            {% endif %}
+            <li><a href="{{ url_for('lab8.article_list') }}">Список статей</a></li>
+            <li><a href="{{ url_for('lab8.create') }}">Создать статью</a></li>
         </ul>
     </nav>
 
