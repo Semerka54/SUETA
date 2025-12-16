@@ -3,7 +3,7 @@ from database import db
 from database.models import Users, Articles
 from flask_login import login_user, login_required, current_user, logout_user
 from werkzeug.security import generate_password_hash, check_password_hash
-from sqlalchemy import or_, and_
+from sqlalchemy import or_
 
 lab8 = Blueprint('lab8', __name__)
 
@@ -15,12 +15,16 @@ def lab():
 
 
 # ---------------- ЛОГИН ----------------
-@lab8.route('/lab8/login', methods=['GET', 'POST'])
+@lab8.route('/lab8/login/', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
         return redirect(url_for('lab8.article_list'))
 
-    next_page = request.args.get('next') or request.form.get('next') or url_for('lab8.article_list')
+    next_page = (
+        request.args.get('next')
+        or request.form.get('next')
+        or url_for('lab8.article_list')
+    )
 
     if request.method == 'POST':
         login_form = request.form.get('login', '').strip()
@@ -50,7 +54,7 @@ def login():
 
 
 # ---------------- РЕГИСТРАЦИЯ ----------------
-@lab8.route('/lab8/register', methods=['GET', 'POST'])
+@lab8.route('/lab8/register/', methods=['GET', 'POST'])
 def register():
     if current_user.is_authenticated:
         return redirect(url_for('lab8.article_list'))
@@ -60,15 +64,22 @@ def register():
         password_form = request.form.get('password', '').strip()
 
         if not login_form:
-            return render_template('lab8/register.html',
-                                   error='Имя пользователя не может быть пустым')
+            return render_template(
+                'lab8/register.html',
+                error='Имя пользователя не может быть пустым'
+            )
+
         if not password_form:
-            return render_template('lab8/register.html',
-                                   error='Пароль не может быть пустым')
+            return render_template(
+                'lab8/register.html',
+                error='Пароль не может быть пустым'
+            )
 
         if Users.query.filter_by(login=login_form).first():
-            return render_template('lab8/register.html',
-                                   error='Такой пользователь уже существует')
+            return render_template(
+                'lab8/register.html',
+                error='Такой пользователь уже существует'
+            )
 
         new_user = Users(
             login=login_form,
@@ -77,7 +88,7 @@ def register():
         db.session.add(new_user)
         db.session.commit()
 
-        # 🔥 автоматический логин
+        # автоматический логин
         login_user(new_user, remember=True)
 
         return redirect(url_for('lab8.article_list'))
@@ -86,7 +97,7 @@ def register():
 
 
 # ---------------- ВЫХОД ----------------
-@lab8.route('/lab8/logout')
+@lab8.route('/lab8/logout/')
 @login_required
 def logout():
     logout_user()
@@ -94,22 +105,22 @@ def logout():
 
 
 # ---------------- СПИСОК СТАТЕЙ + ПОИСК ----------------
-@lab8.route('/lab8/articles')
+@lab8.route('/lab8/articles/')
 def article_list():
     search = request.args.get('q', '').strip()
 
-    # Базовое условие
+    # базовый фильтр
     if current_user.is_authenticated:
         base_filter = or_(
             Articles.login_id == current_user.id,   # свои
-            Articles.is_public == True               # публичные чужие
+            Articles.is_public == True               # публичные
         )
     else:
         base_filter = Articles.is_public == True    # только публичные
 
     query = Articles.query.filter(base_filter)
 
-    # Поиск (регистронезависимый)
+    # поиск (регистронезависимый)
     if search:
         query = query.filter(
             or_(
@@ -129,7 +140,7 @@ def article_list():
 
 
 # ---------------- СОЗДАНИЕ ----------------
-@lab8.route('/lab8/create', methods=['GET', 'POST'])
+@lab8.route('/lab8/create/', methods=['GET', 'POST'])
 @login_required
 def create():
     if request.method == 'POST':
@@ -158,7 +169,7 @@ def create():
 
 
 # ---------------- РЕДАКТИРОВАНИЕ ----------------
-@lab8.route('/lab8/edit/<int:article_id>', methods=['GET', 'POST'])
+@lab8.route('/lab8/edit/<int:article_id>/', methods=['GET', 'POST'])
 @login_required
 def edit(article_id):
     article = Articles.query.get_or_404(article_id)
@@ -189,7 +200,7 @@ def edit(article_id):
 
 
 # ---------------- УДАЛЕНИЕ ----------------
-@lab8.route('/lab8/delete/<int:article_id>', methods=['POST'])
+@lab8.route('/lab8/delete/<int:article_id>/', methods=['POST'])
 @login_required
 def delete(article_id):
     article = Articles.query.get_or_404(article_id)
