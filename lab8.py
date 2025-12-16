@@ -121,15 +121,16 @@ def article_list():
     query = Articles.query.filter(base_filter)
 
     # поиск (регистронезависимый)
-    if search:
-        query = query.filter(
-            or_(
-                Articles.title.ilike(f'%{search}%'),
-                Articles.article_text.ilike(f'%{search}%')
-            )
-        )
-
     articles = query.order_by(Articles.id.desc()).all()
+
+    if search:
+        search_lower = search.lower()
+
+        articles = [
+            article for article in articles
+            if search_lower in article.title.lower()
+            or search_lower in article.article_text.lower()
+        ]
 
     return render_template(
         'lab8/articles.html',
