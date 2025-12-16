@@ -2,7 +2,7 @@ from . import db
 from flask_login import UserMixin
 
 class Users(db.Model, UserMixin):
-    __tablename__ = 'users'
+    __tablename__ = 'user'   
 
     id = db.Column(db.Integer, primary_key=True)
     login = db.Column(db.String(30), nullable=False, unique=True)
@@ -15,7 +15,11 @@ class Articles(db.Model):
     __tablename__ = 'articles'
 
     id = db.Column(db.Integer, primary_key=True)
-    login_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    login_id = db.Column(
+        db.Integer,
+        db.ForeignKey('user.id'), 
+        nullable=False
+    )
     title = db.Column(db.String(50), nullable=False)
     article_text = db.Column(db.Text, nullable=False)
     is_favorite = db.Column(db.Boolean, default=False)
