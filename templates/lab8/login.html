@@ -11,6 +11,9 @@
 {% endif %}
 
 <form action="/lab8/login" method="post">
+    <!-- Скрытое поле для перенаправления после логина -->
+    <input type="hidden" name="next" value="{{ next }}">
+
     <div>
         <label>
             Логин: <input type="text" name="login">

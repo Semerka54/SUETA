@@ -21,12 +21,13 @@ def login():
     
     login_form = request.form.get('login', '').strip()
     password_form = request.form.get('password', '').strip()
-    next_page = request.args.get('next')  # Страница, на которую пользователь пытался попасть
+    next_page = request.form.get('next')  # берём из скрытого поля формы
 
     # Проверка на пустые поля
     if not login_form or not password_form:
         return render_template('lab8/login.html',
-                               error='Логин и пароль не могут быть пустыми')
+                               error='Логин и пароль не могут быть пустыми',
+                               next=next_page)
 
     user = Users.query.filter_by(login=login_form).first()
 
@@ -37,7 +38,8 @@ def login():
     
     # Ошибка, если логин или пароль неверные
     return render_template('lab8/login.html',
-                           error='Ошибка входа: логин и/или пароль неверны')
+                           error='Ошибка входа: логин и/или пароль неверны',
+                           next=next_page)
 
 
 @lab8.route('/lab8/register/', methods=['GET', 'POST'])
