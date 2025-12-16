@@ -7,24 +7,150 @@
 
     <div class="nav-home">
         <a href="{{ url_for('lab8.lab') }}" class="btn">На главную</a>
-        <a href="{{ url_for('lab8.create') }}" class="btn">Создать статью</a>
+
+        {% if current_user.is_authenticated %}
+            <a href="{{ url_for('lab8.create') }}" class="btn">Создать статью</a>
+        {% endif %}
     </div>
 
-    <h1>Ваши статьи</h1>
+    <h1>Статьи</h1>
+
+    <!-- ПОИСК -->
+    <form method="get" class="search-form">
+        <input
+            type="text"
+            name="q"
+            placeholder="Поиск по статьям..."
+            value="{{ search }}"
+        >
+        <button type="submit">Найти</button>
+    </form>
 
     {% if articles|length == 0 %}
-        <p>У вас пока нет статей.</p>
+        <p>Статей не найдено.</p>
     {% endif %}
 
     {% for article in articles %}
-    <div class="article-card">
-        <h3>{{ article.title }}</h3>
-        <p>{{ article.article_text }}</p>
-        <a href="{{ url_for('lab8.edit', article_id=article.id) }}" class="btn">Редактировать</a>
-        <form action="{{ url_for('lab8.delete', article_id=article.id) }}" method="post" style="display:inline;">
-            <button type="submit" onclick="return confirm('Удалить эту статью?')">Удалить</button>
-        </form>
-    </div>
+        <div class="article-card">
+            <h3>{{ article.title }}</h3>
+
+            <p>{{ article.article_text }}</p>
+
+            <div class="article-meta">
+                {% if article.is_public %}
+                    <span class="public">Публичная</span>
+                {% else %}
+                    <span class="private">Приватная</span>
+                {% endif %}
+            </div>
+
+            {% if current_user.is_authenticated and article.login_id == current_user.id %}
+                <div class="article-actions">
+                    <a href="{{ url_for('lab8.edit', article_id=article.id) }}" class="btn">
+                        Редактировать
+                    </a>
+
+                    <form
+                        action="{{ url_for('lab8.delete', article_id=article.id) }}"
+                        method="post"
+                        style="display:inline;"
+                    >
+                        <button
+                            type="submit"
+                            class="btn danger"
+                            onclick="return confirm('Удалить эту статью?')"
+                        >
+                            Удалить
+                        </button>
+                    </form>
+                </div>
+            {% endif %}
+        </div>
     {% endfor %}
 </div>
+
+<style>
+.main-container {
+    max-width: 900px;
+    margin: 30px auto;
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.nav-home {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.search-form {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 25px;
+}
+
+.search-form input {
+    flex: 1;
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.article-card {
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.article-card h3 {
+    margin-bottom: 10px;
+}
+
+.article-meta {
+    margin: 10px 0;
+    font-size: 0.9em;
+}
+
+.public {
+    color: green;
+    font-weight: 500;
+}
+
+.private {
+    color: red;
+    font-weight: 500;
+}
+
+.article-actions {
+    margin-top: 15px;
+    display: flex;
+    gap: 10px;
+}
+
+.btn {
+    background: #4a6ee0;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 5px;
+    text-decoration: none;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.btn:hover {
+    background: #3653b3;
+}
+
+.btn.danger {
+    background: #e04a4a;
+}
+
+.btn.danger:hover {
+    background: #c03939;
+}
+</style>
 {% endblock %}
