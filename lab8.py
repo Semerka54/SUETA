@@ -16,15 +16,16 @@ def lab():
 
 @lab8.route('/lab8/login', methods=['GET', 'POST'])
 def login():
+    # Если пользователь уже авторизован — редирект на список статей
     if current_user.is_authenticated:
-        # Уже авторизован — редирект на главную или список статей
-        return redirect(url_for('lab8.lab'))
+        return redirect(url_for('lab8.article_list'))
+
     next_page = request.args.get('next') if request.method == 'GET' else request.form.get('next')
 
     if request.method == 'POST':
         login_form = request.form.get('login', '').strip()
         password_form = request.form.get('password', '').strip()
-        remember = True if request.form.get('remember') == 'on' else False  # Галочка "Запомнить меня"
+        remember = True if request.form.get('remember') == 'on' else False
 
         if not login_form or not password_form:
             return render_template('lab8/login.html',
@@ -35,18 +36,22 @@ def login():
 
         if user and check_password_hash(user.password, password_form):
             login_user(user, remember=remember)
-            return redirect(next_page or url_for('lab8.lab'))
+            return redirect(next_page or url_for('lab8.article_list'))
 
         return render_template('lab8/login.html',
                                error='Ошибка входа: логин и/или пароль неверны',
                                next=next_page)
 
+    # GET-запрос
+    return render_template('lab8/login.html', next=next_page)
+
 
 @lab8.route('/lab8/register/', methods=['GET', 'POST'])
 def register():
+    # Если уже авторизован — редирект на список статей
     if current_user.is_authenticated:
-        # Уже авторизован — редирект на главную или список статей
-        return redirect(url_for('lab8.lab'))
+        return redirect(url_for('lab8.article_list'))
+
     if request.method == 'GET':
         return render_template('lab8/register.html')
 
@@ -61,16 +66,14 @@ def register():
     if Users.query.filter_by(login=login_form).first():
         return render_template('lab8/register.html', error='Такой пользователь уже существует')
 
-    # Создание нового пользователя
-    password_hash = generate_password_hash(password_form)
-    new_user = Users(login=login_form, password=password_hash)
+    new_user = Users(login=login_form, password=generate_password_hash(password_form))
     db.session.add(new_user)
     db.session.commit()
 
-    # Автоматический вход после регистрации
-    login_user(new_user, remember=True)  # можно поставить remember=True по умолчанию
+    # Автоматический логин после регистрации
+    login_user(new_user, remember=True)
 
-    return redirect(url_for('lab8.lab'))  # или можно редирект на список статей
+    return redirect(url_for('lab8.article_list'))
 
 
 @lab8.route('/lab8/logout')
