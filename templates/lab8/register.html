@@ -1,31 +1,73 @@
 {% extends "base.html" %}
 
-{% block lab %}Лабораторная работа 8{% endblock %}
+{% block lab %}Регистрация{% endblock %}
 
 {% block main %}
-<h1>Регистрация</h1>
+<div class="main-container">
 
-<!-- Вывод ошибки, если она есть -->
-{% if error %}
-    <p style="color: red;">{{ error }}</p>
-{% endif %}
-
-<!-- Сообщение об успешной регистрации -->
-{% if success %}
-    <p style="color: green;">{{ success }}</p>
-{% endif %}
-
-<form action="/lab8/register/" method="post">
-    <div>
-        <label>
-            Логин: <input type="text" name="login">
-        </label>
+    <div class="nav-home">
+        <a href="{{ url_for('lab8.lab') }}" class="btn">На главную</a>
     </div>
-    <div>
-        <label>
-            Пароль: <input type="password" name="password">
-        </label>
-    </div>
-    <button type="submit">Зарегистрироваться</button>
-</form>
+
+    <h1>Регистрация</h1>
+
+    {% if error %}
+        <p style="color: red;">{{ error }}</p>
+    {% endif %}
+
+    {% if success %}
+        <p style="color: green;">{{ success }}</p>
+    {% endif %}
+
+    <form action="{{ url_for('lab8.register') }}" method="post">
+        <div class="form-group">
+            <label>Логин:</label>
+            <input type="text" name="login">
+        </div>
+
+        <div class="form-group">
+            <label>Пароль:</label>
+            <input type="password" name="password">
+        </div>
+
+        <button type="submit">Зарегистрироваться</button>
+    </form>
+</div>
+
+<style>
+.form-group {
+    margin-bottom: 15px;
+}
+
+input[type="text"], input[type="password"] {
+    width: 100%;
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+button, .btn {
+    background: #4a6ee0;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 5px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+button:hover, .btn:hover {
+    background: #3653b3;
+}
+
+.main-container {
+    max-width: 500px;
+    margin: 30px auto;
+    padding: 30px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+</style>
 {% endblock %}

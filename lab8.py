@@ -90,8 +90,60 @@ def logout():
 @lab8.route('/lab8/articles/')
 @login_required
 def article_list():
-    return "Список статей"
+    articles = Articles.query.filter_by(login_id=current_user.id).all()
+    return render_template('lab8/articles.html', articles=articles, username=current_user.login)
 
-@lab8.route('/lab8/create')
+@lab8.route('/lab8/create', methods=['GET', 'POST'])
+@login_required
 def create():
-    return render_template('lab8/create.html')
+    if request.method == 'POST':
+        title = request.form.get('title', '').strip()
+        text = request.form.get('article_text', '').strip()
+
+        if not title or not text:
+            return render_template('lab8/create.html', 
+                                   error='Заголовок и текст статьи не могут быть пустыми',
+                                   username=current_user.login)
+
+        new_article = Articles(title=title, article_text=text, login_id=current_user.id)
+        db.session.add(new_article)
+        db.session.commit()
+        return redirect(url_for('lab8.article_list'))
+
+    return render_template('lab8/create.html', username=current_user.login)
+
+
+@lab8.route('/lab8/edit/<int:article_id>', methods=['GET', 'POST'])
+@login_required
+def edit(article_id):
+    article = Articles.query.get_or_404(article_id)
+    if article.login_id != current_user.id:
+        return "Нет доступа", 403
+
+    if request.method == 'POST':
+        title = request.form.get('title', '').strip()
+        text = request.form.get('article_text', '').strip()
+
+        if not title or not text:
+            return render_template('lab8/edit.html', article=article, 
+                                   error='Заголовок и текст статьи не могут быть пустыми',
+                                   username=current_user.login)
+
+        article.title = title
+        article.article_text = text
+        db.session.commit()
+        return redirect(url_for('lab8.article_list'))
+
+    return render_template('lab8/edit.html', article=article, username=current_user.login)
+
+
+@lab8.route('/lab8/delete/<int:article_id>', methods=['POST'])
+@login_required
+def delete(article_id):
+    article = Articles.query.get_or_404(article_id)
+    if article.login_id != current_user.id:
+        return "Нет доступа", 403
+
+    db.session.delete(article)
+    db.session.commit()
+    return redirect(url_for('lab8.article_list'))

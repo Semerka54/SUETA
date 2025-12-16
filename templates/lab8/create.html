@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block lab %}Создание статьи{% endblock %}
+
+{% block main %}
+<div class="main-container">
+
+    <div class="nav-home">
+        <a href="{{ url_for('lab8.lab') }}" class="btn">На главную</a>
+    </div>
+
+    <h1>Создание статьи</h1>
+
+    {% if error %}
+        <p style="color:red;">{{ error }}</p>
+    {% endif %}
+
+    <form action="{{ url_for('lab8.create') }}" method="post">
+        <div class="form-group">
+            <label>Заголовок:</label>
+            <input type="text" name="title">
+        </div>
+        <div class="form-group">
+            <label>Текст статьи:</label>
+            <textarea name="article_text" rows="8"></textarea>
+        </div>
+        <button type="submit">Создать</button>
+    </form>
+</div>
+{% endblock %}

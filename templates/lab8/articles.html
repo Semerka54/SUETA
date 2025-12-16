@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block lab %}Список статей{% endblock %}
+
+{% block main %}
+<div class="main-container">
+
+    <div class="nav-home">
+        <a href="{{ url_for('lab8.lab') }}" class="btn">На главную</a>
+        <a href="{{ url_for('lab8.create') }}" class="btn">Создать статью</a>
+    </div>
+
+    <h1>Ваши статьи</h1>
+
+    {% if articles|length == 0 %}
+        <p>У вас пока нет статей.</p>
+    {% endif %}
+
+    {% for article in articles %}
+    <div class="article-card">
+        <h3>{{ article.title }}</h3>
+        <p>{{ article.article_text }}</p>
+        <a href="{{ url_for('lab8.edit', article_id=article.id) }}" class="btn">Редактировать</a>
+        <form action="{{ url_for('lab8.delete', article_id=article.id) }}" method="post" style="display:inline;">
+            <button type="submit" onclick="return confirm('Удалить эту статью?')">Удалить</button>
+        </form>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
