@@ -16,11 +16,11 @@ def lab():
 
 @lab8.route('/lab8/login', methods=['GET', 'POST'])
 def login():
-    # Если пользователь уже авторизован — редирект на список статей
     if current_user.is_authenticated:
         return redirect(url_for('lab8.article_list'))
 
-    next_page = request.args.get('next') if request.method == 'GET' else request.form.get('next')
+    # Получаем next_page из GET, POST или по умолчанию на список статей
+    next_page = request.args.get('next') or request.form.get('next') or url_for('lab8.article_list')
 
     if request.method == 'POST':
         login_form = request.form.get('login', '').strip()
@@ -36,13 +36,12 @@ def login():
 
         if user and check_password_hash(user.password, password_form):
             login_user(user, remember=remember)
-            return redirect(next_page or url_for('lab8.article_list'))
+            return redirect(next_page)  # теперь next_page всегда корректный
 
         return render_template('lab8/login.html',
                                error='Ошибка входа: логин и/или пароль неверны',
                                next=next_page)
 
-    # GET-запрос
     return render_template('lab8/login.html', next=next_page)
 
 
