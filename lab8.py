@@ -122,12 +122,10 @@ def article_list():
 
     # поиск (регистронезависимый)
     if search:
-        search_lower = search.lower()
-
         query = query.filter(
             or_(
-                func.lower(Articles.title).contains(search_lower),
-                func.lower(Articles.article_text).contains(search_lower)
+                Articles.title.ilike(f'%{search}%'),
+                Articles.article_text.ilike(f'%{search}%')
             )
         )
 
