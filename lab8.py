@@ -1,14 +1,18 @@
-from flask import Blueprint, request, render_template, session, redirect
+from flask import Blueprint, request, render_template, session, redirect, url_for
 from database import db
 from database.models import Users, Articles
-from flask_login import login_user, login_required, current_user
+from flask_login import login_user, login_required, current_user, logout_user
+
 from werkzeug.security import generate_password_hash, check_password_hash
 
 lab8 = Blueprint('lab8', __name__)
 
 @lab8.route('/lab8/')
 def lab():
-    return render_template('lab8/lab8.html', username='anonymous')
+    # Если пользователь авторизован, берем его логин, иначе "anonymous"
+    username = current_user.login if current_user.is_authenticated else 'anonymous'
+    return render_template('lab8/lab8.html', username=username)
+
 
 @lab8.route('/lab8/login', methods=['GET', 'POST'])
 def login():
@@ -17,6 +21,7 @@ def login():
     
     login_form = request.form.get('login', '').strip()
     password_form = request.form.get('password', '').strip()
+    next_page = request.args.get('next')  # Страница, на которую пользователь пытался попасть
 
     # Проверка на пустые поля
     if not login_form or not password_form:
@@ -26,12 +31,14 @@ def login():
     user = Users.query.filter_by(login=login_form).first()
 
     if user and check_password_hash(user.password, password_form):
-        login_user(user, remember = False)
-        return redirect('/lab8/')
+        login_user(user, remember=False)
+        # Редирект на страницу next_page, если она есть, иначе на главную
+        return redirect(next_page or url_for('lab8.lab'))
     
     # Ошибка, если логин или пароль неверные
     return render_template('lab8/login.html',
                            error='Ошибка входа: логин и/или пароль неверны')
+
 
 @lab8.route('/lab8/register/', methods=['GET', 'POST'])
 def register():
@@ -67,6 +74,14 @@ def register():
     return render_template('lab8/register.html', 
                            success='Пользователь успешно зарегистрирован',
                            username=login_form)
+
+
+@lab8.route('/lab8/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect('/lab8/')
+
 
 @lab8.route('/lab8/articles/')
 @login_required
