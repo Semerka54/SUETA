@@ -16,14 +16,13 @@ def lab():
 
 @lab8.route('/lab8/login', methods=['GET', 'POST'])
 def login():
-    # Берём next из query string (GET) или формы (POST)
     next_page = request.args.get('next') if request.method == 'GET' else request.form.get('next')
 
     if request.method == 'POST':
         login_form = request.form.get('login', '').strip()
         password_form = request.form.get('password', '').strip()
+        remember = True if request.form.get('remember') == 'on' else False  # Галочка "Запомнить меня"
 
-        # Проверка на пустые поля
         if not login_form or not password_form:
             return render_template('lab8/login.html',
                                    error='Логин и пароль не могут быть пустыми',
@@ -32,52 +31,40 @@ def login():
         user = Users.query.filter_by(login=login_form).first()
 
         if user and check_password_hash(user.password, password_form):
-            login_user(user, remember=False)
+            login_user(user, remember=remember)
             return redirect(next_page or url_for('lab8.lab'))
 
-        # Неверный логин или пароль
         return render_template('lab8/login.html',
                                error='Ошибка входа: логин и/или пароль неверны',
                                next=next_page)
-
-    # GET-запрос
-    return render_template('lab8/login.html', next=next_page)
 
 
 @lab8.route('/lab8/register/', methods=['GET', 'POST'])
 def register():
     if request.method == 'GET':
         return render_template('lab8/register.html')
-    
+
     login_form = request.form.get('login', '').strip()
     password_form = request.form.get('password', '').strip()
 
-    # Проверка на пустые поля
     if not login_form:
-        return render_template('lab8/register.html', 
-                               error='Имя пользователя не может быть пустым',
-                               username='anonymous')
+        return render_template('lab8/register.html', error='Имя пользователя не может быть пустым')
     if not password_form:
-        return render_template('lab8/register.html', 
-                               error='Пароль не может быть пустым',
-                               username='anonymous')
+        return render_template('lab8/register.html', error='Пароль не может быть пустым')
 
-    # Проверка существующего пользователя
-    login_exists = Users.query.filter_by(login=login_form).first()
-    if login_exists:
-        return render_template('lab8/register.html', 
-                               error='Такой пользователь уже существует',
-                               username='anonymous')
-    
+    if Users.query.filter_by(login=login_form).first():
+        return render_template('lab8/register.html', error='Такой пользователь уже существует')
+
     # Создание нового пользователя
     password_hash = generate_password_hash(password_form)
     new_user = Users(login=login_form, password=password_hash)
     db.session.add(new_user)
     db.session.commit()
 
-    return render_template('lab8/register.html', 
-                           success='Пользователь успешно зарегистрирован',
-                           username=login_form)
+    # Автоматический вход после регистрации
+    login_user(new_user, remember=True)  # можно поставить remember=True по умолчанию
+
+    return redirect(url_for('lab8.lab'))  # или можно редирект на список статей
 
 
 @lab8.route('/lab8/logout')
