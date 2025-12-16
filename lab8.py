@@ -16,30 +16,32 @@ def lab():
 
 @lab8.route('/lab8/login', methods=['GET', 'POST'])
 def login():
-    if request.method == 'GET':
-        return render_template('lab8/login.html')
-    
-    login_form = request.form.get('login', '').strip()
-    password_form = request.form.get('password', '').strip()
-    next_page = request.form.get('next')  # берём из скрытого поля формы
+    # Берём next из query string (GET) или формы (POST)
+    next_page = request.args.get('next') if request.method == 'GET' else request.form.get('next')
 
-    # Проверка на пустые поля
-    if not login_form or not password_form:
+    if request.method == 'POST':
+        login_form = request.form.get('login', '').strip()
+        password_form = request.form.get('password', '').strip()
+
+        # Проверка на пустые поля
+        if not login_form or not password_form:
+            return render_template('lab8/login.html',
+                                   error='Логин и пароль не могут быть пустыми',
+                                   next=next_page)
+
+        user = Users.query.filter_by(login=login_form).first()
+
+        if user and check_password_hash(user.password, password_form):
+            login_user(user, remember=False)
+            return redirect(next_page or url_for('lab8.lab'))
+
+        # Неверный логин или пароль
         return render_template('lab8/login.html',
-                               error='Логин и пароль не могут быть пустыми',
+                               error='Ошибка входа: логин и/или пароль неверны',
                                next=next_page)
 
-    user = Users.query.filter_by(login=login_form).first()
-
-    if user and check_password_hash(user.password, password_form):
-        login_user(user, remember=False)
-        # Редирект на страницу next_page, если она есть, иначе на главную
-        return redirect(next_page or url_for('lab8.lab'))
-    
-    # Ошибка, если логин или пароль неверные
-    return render_template('lab8/login.html',
-                           error='Ошибка входа: логин и/или пароль неверны',
-                           next=next_page)
+    # GET-запрос
+    return render_template('lab8/login.html', next=next_page)
 
 
 @lab8.route('/lab8/register/', methods=['GET', 'POST'])
