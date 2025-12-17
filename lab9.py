@@ -66,7 +66,7 @@ def init_boxes():
 
 
 @lab9.route('/lab9/')
-def page():
+def lab():
     init_boxes()
     session.setdefault("opened_count", 0)
     session.setdefault("user", None)
