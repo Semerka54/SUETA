@@ -2,7 +2,21 @@
 
 {% block lab %}Лабораторная работа 9{% endblock %}
 
-{% block script %}{% endblock %}
+{% block script %}
+<link rel="stylesheet" href="{{ url_for('static', filename='lab9/style.css') }}">
+<script src="{{ url_for('static', filename='lab9/script.js') }}"></script>
+{% endblock %}
+
 {% block main %}
-<h1>Поздравления</h1>
+<h1>🎄 Новогодние поздравления 🎄</h1>
+
+<p>Неоткрытых коробок: <span id="counter"></span></p>
+
+<div id="field"></div>
+
+<div id="popup" class="hidden">
+    <p id="message"></p>
+    <img id="popup-image">
+    <button onclick="closePopup()">Закрыть</button>
+</div>
 {% endblock %}

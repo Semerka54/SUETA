@@ -1,0 +1,35 @@
+body {
+    background: linear-gradient(#0b3d91, #001f3f);
+    color: white;
+}
+
+#field {
+    position: relative;
+    height: 500px;
+}
+
+.box {
+    position: absolute;
+    width: 140px;   /* БОЛЬШЕ */
+    height: auto;
+    cursor: pointer;
+}
+
+#popup {
+    position: fixed;
+    top: 25%;
+    left: 35%;
+    background: white;
+    color: black;
+    padding: 20px;
+    border-radius: 15px;
+    text-align: center;
+}
+
+#popup img {
+    width: 150px;
+}
+
+.hidden {
+    display: none;
+}
