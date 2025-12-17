@@ -1,10 +1,20 @@
-from flask import Blueprint, render_template, request, jsonify, session, redirect
+from flask import Blueprint, render_template, request, jsonify, session
 import random
 
 lab9 = Blueprint('lab9', __name__)
 
 BOX_COUNT = 10
+BOX_SIZE = 140
+FIELD_WIDTH = 1200
+FIELD_HEIGHT = 500
+PADDING = 20
+
 boxes = []
+
+USERS = {
+    "admin": "1234",
+    "user": "qwerty"
+}
 
 congratulations = [
     "С Новым годом!",
@@ -19,19 +29,14 @@ congratulations = [
     "Успехов во всём!"
 ]
 
-MIN_DISTANCE = 15  # минимальное расстояние между коробками (в процентах)
 
-# --------------------------------------------------
-# ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
-# --------------------------------------------------
-
-def is_far_enough(x, y, existing):
-    for box in existing:
-        dx = x - box["x"]
-        dy = y - box["y"]
-        if (dx * dx + dy * dy) ** 0.5 < MIN_DISTANCE:
-            return False
-    return True
+def intersects(x, y, other):
+    return not (
+        x + BOX_SIZE + PADDING < other["x"] or
+        x > other["x"] + BOX_SIZE + PADDING or
+        y + BOX_SIZE + PADDING < other["y"] or
+        y > other["y"] + BOX_SIZE + PADDING
+    )
 
 
 def init_boxes():
@@ -41,11 +46,11 @@ def init_boxes():
     random.shuffle(congratulations)
 
     for i in range(BOX_COUNT):
-        while True:
-            x = random.randint(10, 90)
-            y = random.randint(10, 80)
+        for _ in range(1000):
+            x = random.randint(0, FIELD_WIDTH - BOX_SIZE)
+            y = random.randint(0, FIELD_HEIGHT - BOX_SIZE)
 
-            if is_far_enough(x, y, boxes):
+            if all(not intersects(x, y, b) for b in boxes):
                 boxes.append({
                     "id": i,
                     "x": x,
@@ -53,71 +58,61 @@ def init_boxes():
                     "opened": False,
                     "text": congratulations[i],
                     "image": f"/static/lab9/box{i}.png",
-                    "auth_only": i % 3 == 0  # некоторые подарки только для авторизованных
+                    "auth_only": i % 3 == 0
                 })
                 break
+        else:
+            raise RuntimeError("Не удалось разместить коробки без пересечений")
 
-
-# --------------------------------------------------
-# ОСНОВНАЯ СТРАНИЦА
-# --------------------------------------------------
 
 @lab9.route('/lab9/')
 def page():
     init_boxes()
     session.setdefault("opened_count", 0)
-    session.setdefault("auth", False)
+    session.setdefault("user", None)
     return render_template("lab9/index.html")
 
 
-# --------------------------------------------------
-# АВТОРИЗАЦИЯ (упрощённая)
-# --------------------------------------------------
-
-@lab9.route('/lab9/login')
+@lab9.route('/lab9/login', methods=["POST"])
 def login():
-    session["auth"] = True
-    return redirect('/lab9/')
+    data = request.json
+    if data["login"] in USERS and USERS[data["login"]] == data["password"]:
+        session["user"] = data["login"]
+        session["opened_count"] = 0
+        return jsonify({"ok": True})
+    return jsonify({"error": "Неверный логин или пароль"}), 401
 
 
-@lab9.route('/lab9/logout')
+@lab9.route('/lab9/logout', methods=["POST"])
 def logout():
-    session["auth"] = False
+    session["user"] = None
     session["opened_count"] = 0
-    return redirect('/lab9/')
+    return jsonify({"ok": True})
 
 
-# --------------------------------------------------
-# API
-# --------------------------------------------------
-
-@lab9.route('/lab9/state', methods=['POST'])
+@lab9.route('/lab9/state', methods=["POST"])
 def state():
-    unopened = sum(not b["opened"] for b in boxes)
     return jsonify({
         "boxes": boxes,
-        "unopened": unopened,
+        "unopened": sum(not b["opened"] for b in boxes),
         "opened_count": session["opened_count"],
-        "auth": session["auth"]
+        "auth": session["user"] is not None,
+        "user": session["user"]
     })
 
 
-@lab9.route('/lab9/open', methods=['POST'])
+@lab9.route('/lab9/open', methods=["POST"])
 def open_box():
-    box_id = request.json.get("id")
-    box = boxes[box_id]
+    box = boxes[request.json["id"]]
 
-    # ограничение по количеству коробок
     if session["opened_count"] >= 3:
         return jsonify({"error": "Можно открыть не более 3 коробок"}), 403
 
-    # ограничение для неавторизованных
-    if box["auth_only"] and not session["auth"]:
-        return jsonify({"error": "Этот подарок доступен только авторизованным пользователям"}), 403
+    if box["auth_only"] and not session["user"]:
+        return jsonify({"error": "Требуется авторизация"}), 403
 
-    # если коробка уже открыта — ничего не делаем
     if box["opened"]:
-        return jsonify({}), 200
+        return jsonify({})
 
     box["opened"] = True
     session["opened_count"] += 1
@@ -128,14 +123,13 @@ def open_box():
     })
 
 
-@lab9.route('/lab9/reset', methods=['POST'])
+@lab9.route('/lab9/reset', methods=["POST"])
 def reset_boxes():
-    if not session["auth"]:
+    if not session["user"]:
         return jsonify({"error": "Требуется авторизация"}), 403
 
     for box in boxes:
         box["opened"] = False
 
     session["opened_count"] = 0
-
-    return jsonify({"status": "ok"})
+    return jsonify({"ok": True})

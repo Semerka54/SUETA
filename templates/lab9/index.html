@@ -10,7 +10,13 @@
 {% block main %}
 <h1>🎄 Новогодние поздравления 🎄</h1>
 
+<div id="auth-block"></div>
+
 <p>Неоткрытых коробок: <span id="counter"></span></p>
+
+<div id="santa-panel" class="hidden">
+    <button class="santa-btn" onclick="resetBoxes()">🎅 Дед Мороз</button>
+</div>
 
 <div id="field"></div>
 

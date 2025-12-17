@@ -1,35 +1,64 @@
 body {
-    background: linear-gradient(#0b3d91, #001f3f);
+    background: linear-gradient(#0a2540, #1b4b7a);
     color: white;
+}
+
+h1 {
+    text-align: center;
 }
 
 #field {
     position: relative;
+    width: 1200px;
     height: 500px;
+    margin: auto;
+    border: 3px dashed white;
 }
 
 .box {
     position: absolute;
-    width: 140px;   /* БОЛЬШЕ */
-    height: auto;
+    width: 140px;
+}
+
+.login-form, .user-panel {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+input {
+    padding: 6px;
+    margin: 5px;
+    border-radius: 5px;
+}
+
+button {
+    padding: 6px 12px;
+    border-radius: 8px;
+    background: #e63946;
+    color: white;
+    border: none;
     cursor: pointer;
+}
+
+button:hover {
+    background: #ff6b6b;
+}
+
+.santa-btn {
+    background: #2a9d8f;
+}
+
+.hidden {
+    display: none;
 }
 
 #popup {
     position: fixed;
-    top: 25%;
+    top: 30%;
     left: 35%;
     background: white;
     color: black;
     padding: 20px;
     border-radius: 15px;
     text-align: center;
-}
-
-#popup img {
-    width: 150px;
-}
-
-.hidden {
-    display: none;
 }
