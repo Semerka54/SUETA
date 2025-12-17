@@ -32,7 +32,7 @@ def get_films():
     db = get_db()
     cursor = db.execute('SELECT * FROM films')
     films = cursor.fetchall()
-    return [dict(film) for film in films]
+    return [dict(film) for film in films] # превращаем каждую строку в словарь, чтобы Flask мог вернуть JSON
 
 
 @lab7.route('/lab7/rest-api/films/<int:id>', methods=['GET'])
@@ -41,7 +41,7 @@ def get_film(id):
     film = db.execute(
         'SELECT * FROM films WHERE id = ?',
         (id,)
-    ).fetchone()
+    ).fetchone() # берёт только одну строку
 
     if film is None:
         abort(404)
@@ -67,14 +67,16 @@ def del_film(id):
 @lab7.route('/lab7/rest-api/films/<int:id>', methods=['PUT'])
 def put_film(id):
     db = get_db()
-    film = request.get_json()
+    film = request.get_json() # получает данные из тела запроса (JSON)
     errors = {}
 
+    # Извлекаем данные из JSON и убираем лишние пробелы
     title = film.get('title', '').strip()
     title_ru = film.get('title_ru', '').strip()
     year = film.get('year')
     description = film.get('description', '').strip()
 
+    # Проверяем обязательные поля: русское или оригинальное название
     if title_ru == '':
         errors['title_ru'] = 'Русское название обязательно'
 
@@ -93,9 +95,11 @@ def put_film(id):
     if errors:
         return errors, 400
 
+    # Если нет оригинального названия, но есть русское — используем русское
     if title == '' and title_ru != '':
         title = title_ru
 
+    # Обновляем фильм в базе
     cur = db.execute("""
         UPDATE films
         SET title = ?, title_ru = ?, year = ?, description = ?

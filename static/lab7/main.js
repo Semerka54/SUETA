@@ -1,12 +1,12 @@
 function fillFilmList() {
-    fetch('/lab7/rest-api/films/')
+    fetch('/lab7/rest-api/films/') // Отправляем HTTP-запрос GET на сервер (Flask REST API), чтобы получить список фильмов
     .then(function(data) {
-        return data.json();
+        return data.json(); // Сервер возвращает JSON → превращаем его в JavaScript-объект (films)
     })
-    .then(function (films) {  // <-- ДОБАВЛЕНА ТОЧКА перед then
-        let tbody = document.getElementById('film-list');
-        tbody.innerHTML = '';
-        for(let i = 0; i < films.length; i++) {
+    .then(function (films) {  
+        let tbody = document.getElementById('film-list'); // Находим <tbody> таблицы, где будем показывать фильмы
+        tbody.innerHTML = ''; // Очищаем таблицу перед заполнением новыми данными
+        for(let i = 0; i < films.length; i++) { // Создаём <tr> (строку таблицы) и <td> (ячейки) для каждого фильма
             let tr = document.createElement('tr');
             let tdTitle = document.createElement('td');
             let tdTitleRus = document.createElement('td');
@@ -38,6 +38,7 @@ function fillFilmList() {
             tdActions.append(editButton);
             tdActions.append(delButton);
 
+            // Добавляем ячейки в строку → строку в таблицу
             tr.append(tdTitle);
             tr.append(tdTitleRus);
             tr.append(tdYear);
@@ -51,15 +52,16 @@ function deleteFilm(id, title) {
     if(! confirm(`Вы точно хотите удалить фильм "${title}"?`))
         return;
     
-    fetch(`/lab7/rest-api/films/${id}`, {method: 'DELETE'})
+    fetch(`/lab7/rest-api/films/${id}`, {method: 'DELETE'}) // отправляем DELETE-запрос на сервер для удаления фильма
     .then(function () {
-        fillFilmList();
+        fillFilmList(); // После удаления вызываем fillFilmList(), чтобы обновить таблицу
     });
 }
 
 function showModal() {
-    document.querySelector('div.modal').style.display = 'block';
+    document.querySelector('div.modal').style.display = 'block'; // Показываем модальное окно
 
+    // Очищаем старые ошибки перед заполнением формы
     document.getElementById('title-error').innerText = '';
     document.getElementById('title_ru-error').innerText = '';
     document.getElementById('year-error').innerText = '';
@@ -71,6 +73,7 @@ function hideModal() {
     document.querySelector('div.modal').style.display = 'none';
 }
 
+// Скрываем модальное окно, например при отмене
 function cancel() {
     hideModal();
 }
@@ -85,11 +88,13 @@ function addFilm() {
     showModal();
 }
 
+// Сначала очищаем старые ошибки
 function sendFilm() {
     document.getElementById('title-error').innerText = '';
     document.getElementById('title_ru-error').innerText = '';
     document.getElementById('year-error').innerText = '';
     document.getElementById('description-error').innerText = '';
+    // Собираем данные формы в объект film
     const id = document.getElementById('id').value;
     const film = {
         title: document.getElementById('title').value,
@@ -99,8 +104,14 @@ function sendFilm() {
     }
 
     const url = `/lab7/rest-api/films/${id}`;
+    // Если id пустой → это новый фильм → POST, иначе PUT (редактируем)
     const method = id === '' ? 'POST' : 'PUT';
 
+    // Отправляем JSON на сервер.
+
+    // Если ответ успешный (resp.ok) → обновляем таблицу и закрываем модальное окно
+
+    // Если сервер вернул ошибки (например, невалидные поля) → показываем их под соответствующими полями
     fetch(url, {
         method: method,
         headers: {"Content-Type": "application/json"},
@@ -129,11 +140,13 @@ function sendFilm() {
     });
 }
 
+// GET-запрос на сервер, чтобы получить данные фильма по id
 function editFilm(id) {
     fetch(`/lab7/rest-api/films/${id}`)
     .then(function(data) {
         return data.json();
     })
+    // Заполняем форму модального окна данными фильма
     .then(function(film) {
         document.getElementById('id').value = id;
         document.getElementById('title').value = film.title;
