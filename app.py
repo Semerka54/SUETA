@@ -59,8 +59,7 @@ else:
     app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{main_db_path}'
 
 # -------- БД РГЗ (ОТДЕЛЬНАЯ SQLite) --------
-rgz_db_path = path.join(path.dirname(path.realpath(__file__)), "rgz.db")
-
+rgz_db_path = path.join(base_dir, "rgz.db")
 app.config['SQLALCHEMY_BINDS'] = {
     'rgz': f'sqlite:///{rgz_db_path}'
 }
@@ -78,6 +77,7 @@ db_rgz.init_app(app)    # БД РГЗ
 # REGISTER BLUEPRINTS
 # =====================================================
 
+# лабораторные
 app.register_blueprint(lab1)
 app.register_blueprint(lab2)
 app.register_blueprint(lab3)
@@ -88,6 +88,7 @@ app.register_blueprint(lab7)
 app.register_blueprint(lab8)
 app.register_blueprint(lab9)
 
+# РГЗ
 app.register_blueprint(rgz)
 
 # =====================================================
@@ -140,7 +141,6 @@ def not_found(error):
         </body>
     </html>
     """, 404
-
 
 @app.errorhandler(500)
 def internal_error(error):
