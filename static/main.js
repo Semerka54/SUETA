@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     console.log('✅ Кадровая система загружена');
     
-    // 2. Автоматическое форматирование телефона
+    // 1. Автоматическое форматирование телефона
     const phoneInputs = document.querySelectorAll('input[name="phone"]');
     phoneInputs.forEach(input => {
         // Устанавливаем начальное значение +7
@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // 3. Подсветка строк таблицы при наведении
+    // 2. Подсветка строк таблицы при наведении
     const tableRows = document.querySelectorAll('table tr');
     tableRows.forEach(row => {
         row.addEventListener('mouseenter', function() {
@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // 4. Поиск с задержкой (debounce) - ТОЛЬКО для поиска
+    // 3. Поиск с задержкой (debounce) - ТОЛЬКО для поиска
     const searchInput = document.querySelector('input[name="search"]');
     if (searchInput) {
         let timeout;
@@ -83,7 +83,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // 5. Показ/скрытие пароля
+    // 4. Показ/скрытие пароля
     const passwordInput = document.querySelector('input[name="password"]');
     if (passwordInput) {
         const passwordContainer = passwordInput.parentElement;
@@ -115,7 +115,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // 7. Динамическое обновление даты в футере
+    // 5. Динамическое обновление даты в футере
     const yearSpan = document.querySelector('#current-year');
     if (!yearSpan) {
         const footer = document.querySelector('.footer p');
@@ -124,7 +124,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // 8. Предотвращаем двойной сабмит форм
+    // 6. Предотвращаем двойной сабмит форм
     const forms = document.querySelectorAll('form');
     forms.forEach(form => {
         let isSubmitting = false;

@@ -637,7 +637,6 @@
     {% block main %}{% endblock %}
 </main>
 
-<!-- ИЗМЕНЕНИЕ ЗДЕСЬ: Всегда показывать кнопку "На главную", кроме самой главной -->
 {% if request.endpoint not in ['index', 'rgz.index'] %}
 <div class="back-wrapper">
     <a href="{{ url_for('index') }}"
@@ -654,7 +653,6 @@
     </div>
 </footer>
 
-<!-- В самом низу base.html, перед закрывающим </body> -->
 <script>
     // Глобальные переменные для использования в JS
     window.appConfig = {

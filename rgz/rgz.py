@@ -194,7 +194,6 @@ def add_employee():
         
         db_rgz.session.add(emp)
         db_rgz.session.commit()
-        flash('✅ Сотрудник успешно добавлен!', 'success')
         return redirect(url_for('rgz.employees'))
     
     return render_template('rgz/employee_form.html', student=STUDENT)
@@ -245,7 +244,6 @@ def edit_employee(id):
         emp.hire_date = datetime.strptime(data['hire_date'], '%Y-%m-%d')
         
         db_rgz.session.commit()
-        flash('✅ Данные сотрудника обновлены!', 'success')
         return redirect(url_for('rgz.employees'))
     
     return render_template(
