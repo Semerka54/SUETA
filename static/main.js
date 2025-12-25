@@ -86,23 +86,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // 6. Анимация загрузки при отправке формы
-    const submitButtons = document.querySelectorAll('button[type="submit"]');
-    submitButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            // Добавляем индикатор загрузки
-            if (!this.querySelector('.spinner')) {
-                const spinner = document.createElement('span');
-                spinner.className = 'spinner';
-                spinner.innerHTML = ' ⏳';
-                this.appendChild(spinner);
-                
-                // Блокируем повторную отправку
-                this.disabled = true;
-                this.style.opacity = '0.7';
-            }
-        });
-    });
     
     // 7. Динамическое обновление даты в футере
     const yearSpan = document.querySelector('#current-year');
@@ -113,17 +96,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // 8. Проверка на мобильное устройство
-    if ('ontouchstart' in window || navigator.maxTouchPoints) {
-        document.body.classList.add('touch-device');
-        
-        // Увеличиваем размер кликабельных элементов на мобильных
-        const buttons = document.querySelectorAll('button, .btn, a');
-        buttons.forEach(btn => {
-            btn.style.minHeight = '44px';
-            btn.style.minWidth = '44px';
-        });
-    }
     
     // 9. Уведомления (toast) - упрощенная версия
     window.showToast = function(message, type = 'info') {
