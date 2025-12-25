@@ -7,7 +7,7 @@ from flask_login import LoginManager
 # ===== RGZ =====
 from rgz import rgz
 from rgz.db_rgz import db_rgz  # отдельный объект SQLAlchemy для РГЗ
-from rgz.models import Employee  # пример модели
+from rgz.models import Employee
 
 # =====================================================
 # Flask app
@@ -27,7 +27,7 @@ login_manager.init_app(app)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', '777')
 base_dir = path.dirname(path.realpath(__file__))
 
-# БД РГЗ (отдельная SQLite)
+# БД РГЗ (отдельная SQLite, через отдельный SQLAlchemy объект)
 rgz_db_path = path.join(base_dir, "rgz.db")
 app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{rgz_db_path}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False

@@ -1,7 +1,6 @@
 from .db_rgz import db_rgz
 
 class Employee(db_rgz.Model):
-    __bind_key__ = 'rgz'  # обязательно
     __tablename__ = 'employee'
 
     id = db_rgz.Column(db_rgz.Integer, primary_key=True)
