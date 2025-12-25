@@ -1,3 +1,7 @@
+/* =========================
+   RESET + BASE
+========================= */
+
 * {
     box-sizing: border-box;
     font-family: Arial, sans-serif;
@@ -12,45 +16,147 @@ body {
     flex-direction: column;
 }
 
+/* =========================
+   HEADER
+========================= */
+
 .header {
     background: #6c6fa6;
     color: white;
-    padding: 15px 0;
+    padding: 15px 30px;
+}
+
+.header-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .header h1 {
     margin: 0;
     font-size: 20px;
+    font-weight: normal;
 }
 
-.header nav a {
-    color: white;
-    margin-right: 15px;
-    text-decoration: none;
-    font-weight: bold;
+/* =========================
+   AUTH BUTTONS
+========================= */
+
+.auth-buttons {
+    display: flex;
+    gap: 10px;
 }
+
+.btn {
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-weight: bold;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    transition: 0.2s;
+}
+
+.btn-login {
+    background: white;
+    color: #6c6fa6;
+}
+
+.btn-login:hover {
+    background: #f0f0f0;
+}
+
+.btn-exit {
+    background: #ffdddd;
+    color: #a00;
+}
+
+.btn-exit:hover {
+    background: #ffcfcf;
+}
+
+/* =========================
+   MAIN CONTAINER
+========================= */
 
 .container {
     width: 1100px;
-    margin: auto;
+    margin: 20px auto;
 }
 
 .main {
-    flex: 1;
     background: white;
     padding: 30px;
-    margin-top: 20px;
-    border-radius: 8px;
-    min-height: 400px;
+    border-radius: 10px;
+    flex: 1;
 }
+
+/* =========================
+   BACK BUTTON
+========================= */
+
+.back-wrapper {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.btn-back {
+    background: #6c6fa6;
+    color: white;
+}
+
+.btn-back:hover {
+    background: #5a5d8f;
+}
+
+/* =========================
+   FOOTER
+========================= */
 
 .footer {
     background: #6c6fa6;
     color: white;
     text-align: center;
-    padding: 15px;
-    margin-top: 30px;
+    padding: 12px;
 }
+
+/* =========================
+   FORMS
+========================= */
+
+form {
+    margin-top: 20px;
+}
+
+input,
+select {
+    padding: 8px;
+    margin: 5px 5px 5px 0;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+input[type="checkbox"] {
+    margin-right: 5px;
+}
+
+button {
+    padding: 8px 16px;
+    background: #6c6fa6;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #5a5d8f;
+}
+
+/* =========================
+   TABLE
+========================= */
 
 table {
     width: 100%;
@@ -58,28 +164,24 @@ table {
     margin-top: 20px;
 }
 
-table th, table td {
+table th,
+table td {
     border: 1px solid #ddd;
     padding: 8px;
+    text-align: left;
 }
 
 table th {
-    background: #eee;
+    background: #f0f0f0;
 }
 
-button {
-    padding: 8px 15px;
-    background: #6c6fa6;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+table tr:nth-child(even) {
+    background: #fafafa;
 }
 
-input, select {
-    padding: 7px;
-    margin-right: 5px;
-}
+/* =========================
+   CARDS (INDEX)
+========================= */
 
 .cards {
     display: flex;
@@ -91,13 +193,29 @@ input, select {
     flex: 1;
     background: #eef;
     padding: 20px;
-    border-radius: 10px;
+    border-radius: 12px;
     text-decoration: none;
     color: #333;
     transition: 0.2s;
 }
 
+.card h3 {
+    margin-top: 0;
+}
+
 .card:hover {
     background: #dde;
-    transform: translateY(-5px);
+    transform: translateY(-4px);
+}
+
+/* =========================
+   LINKS
+========================= */
+
+a {
+    color: #6c6fa6;
+}
+
+a:hover {
+    text-decoration: underline;
 }
