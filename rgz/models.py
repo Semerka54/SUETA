@@ -1,5 +1,6 @@
 from .db_rgz import db_rgz
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import UserMixin
 
 class Employee(db_rgz.Model):
     __tablename__ = 'employee'
@@ -12,8 +13,9 @@ class Employee(db_rgz.Model):
     probation = db_rgz.Column(db_rgz.Boolean, default=False)
     hire_date = db_rgz.Column(db_rgz.Date, nullable=False)
 
-class Admin(db_rgz.Model):
+class Admin(UserMixin, db_rgz.Model):
     __tablename__ = 'admin'
+
     id = db_rgz.Column(db_rgz.Integer, primary_key=True)
     username = db_rgz.Column(db_rgz.String(50), unique=True, nullable=False)
     password_hash = db_rgz.Column(db_rgz.String(128), nullable=False)
