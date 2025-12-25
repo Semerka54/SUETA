@@ -61,19 +61,14 @@
 {% endif %}
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Ищем все ссылки, которые ведут на удаление (содержат delete_employee в URL)
-    const deleteLinks = document.querySelectorAll('a[href*="delete_employee"]');
-    console.log('Найдено ссылок на удаление:', deleteLinks.length);
-    
-    deleteLinks.forEach(link => {
-        link.addEventListener('click', function(e) {
-            if (!confirm('Вы уверены, что хотите удалить этого сотрудника?\nЭто действие нельзя отменить.')) {
-                e.preventDefault(); // Отменяем переход по ссылке
-            }
-            // Если confirm вернёт true, переход произойдёт автоматически
-        });
-    });
+// Вместо DOMContentLoaded используем делегирование событий
+document.addEventListener('click', function(e) {
+    // Проверяем, был ли клик по ссылке удаления
+    if (e.target.tagName === 'A' && e.target.href.includes('delete_employee')) {
+        if (!confirm('Вы уверены, что хотите удалить этого сотрудника?\nЭто действие нельзя отменить.')) {
+            e.preventDefault();
+        }
+    }
 });
 </script>
 {% endblock %}
