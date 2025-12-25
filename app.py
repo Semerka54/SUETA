@@ -48,13 +48,15 @@ def load_users(login_id):
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', '777')
 app.config['DB_TYPE'] = os.getenv('DB_TYPE', 'postgres')
 
+# -------- Определяем base_dir один раз для всех БД --------
+base_dir = path.dirname(path.realpath(__file__))
+
 # -------- Основная БД (лабы) --------
 if app.config['DB_TYPE'] == 'postgres':
     app.config['SQLALCHEMY_DATABASE_URI'] = (
         'postgresql://saymon_bogdanov_orm:123@127.0.0.1:5432/saymon_bogdanov_orm'
     )
 else:
-    base_dir = path.dirname(path.realpath(__file__))
     main_db_path = path.join(base_dir, "saymon_bogdanov_orm.db")
     app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{main_db_path}'
 
