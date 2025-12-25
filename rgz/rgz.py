@@ -118,6 +118,7 @@ def employees():
             )
         else:
             # Если это не дата, ищем по всем текстовым полям
+            from sqlalchemy import or_, cast, String
             search_terms = search.split()
             conditions = []
             for term in search_terms:
@@ -132,7 +133,6 @@ def employees():
                     cast(Employee.hire_date, String).ilike(f'%{term}%'),
                 ])
             
-            from sqlalchemy import or_
             query = query.filter(or_(*conditions))
     
     # Сортировка
@@ -151,7 +151,6 @@ def employees():
         current_search=search,
         current_sort=sort
     )
-
 # ===== ДОБАВЛЕНИЕ СОТРУДНИКА =====
 
 @rgz.route('/add', methods=['GET', 'POST'])
