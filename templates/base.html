@@ -25,9 +25,14 @@
     {% block main %}{% endblock %}
 </main>
 
+{% if request.endpoint != 'index' %}
 <div class="back-wrapper">
-    <button class="btn btn-back" onclick="history.back()">← Назад</button>
+    <a href="{{ request.referrer or url_for('index') }}"
+       class="btn btn-back">
+        ← Назад
+    </a>
 </div>
+{% endif %}
 
 <footer class="footer">
     © {{ student }}
