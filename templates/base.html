@@ -3,7 +3,229 @@
 <head>
     <meta charset="UTF-8">
     <title>{{ title if title else "Кадровая система" }}</title>
+    <!-- Оставляем внешний CSS для будущего -->
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=3">
+    
+    <!-- ВСТРАИВАЕМ ВСЕ СТИЛИ ДЛЯ ПРОВЕРКИ -->
+    <style>
+        /* =========================
+           RESET + BASE
+        ========================= */
+        * {
+            box-sizing: border-box !important;
+            font-family: Arial, sans-serif !important;
+        }
+
+        body {
+            margin: 0 !important;
+            background: #f5f6fa !important;
+            color: #333 !important;
+            min-height: 100vh !important;
+            display: flex !important;
+            flex-direction: column !important;
+        }
+
+        /* =========================
+           HEADER
+        ========================= */
+        .header {
+            background: #6c6fa6 !important;
+            color: white !important;
+            padding: 15px 30px !important;
+        }
+
+        .header-inner {
+            display: flex !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+        }
+
+        .header h1 {
+            margin: 0 !important;
+            font-size: 20px !important;
+            font-weight: normal !important;
+        }
+
+        /* =========================
+           AUTH BUTTONS
+        ========================= */
+        .auth-buttons {
+            display: flex !important;
+            gap: 10px !important;
+        }
+
+        .btn {
+            padding: 8px 16px !important;
+            border-radius: 6px !important;
+            font-weight: bold !important;
+            text-decoration: none !important;
+            cursor: pointer !important;
+            border: none !important;
+            transition: 0.2s !important;
+        }
+
+        .btn-login {
+            background: white !important;
+            color: #6c6fa6 !important;
+        }
+
+        .btn-login:hover {
+            background: #f0f0f0 !important;
+        }
+
+        .btn-exit {
+            background: #ffdddd !important;
+            color: #a00 !important;
+        }
+
+        .btn-exit:hover {
+            background: #ffcfcf !important;
+        }
+
+        /* =========================
+           MAIN CONTAINER
+        ========================= */
+        .container {
+            width: 1100px !important;
+            margin: 20px auto !important;
+        }
+
+        .main {
+            background: white !important;
+            padding: 30px !important;
+            border-radius: 10px !important;
+            flex: 1 !important;
+        }
+
+        /* =========================
+           BACK BUTTON
+        ========================= */
+        .back-wrapper {
+            display: flex !important;
+            justify-content: center !important;
+            margin: 20px 0 !important;
+        }
+
+        .btn-back {
+            background: #6c6fa6 !important;
+            color: white !important;
+        }
+
+        .btn-back:hover {
+            background: #5a5d8f !important;
+        }
+
+        /* =========================
+           FOOTER
+        ========================= */
+        .footer {
+            background: #6c6fa6 !important;
+            color: white !important;
+            text-align: center !important;
+            padding: 12px !important;
+        }
+
+        /* =========================
+           FORMS
+        ========================= */
+        form {
+            margin-top: 20px !important;
+        }
+
+        input,
+        select {
+            padding: 8px !important;
+            margin: 5px 5px 5px 0 !important;
+            border-radius: 5px !important;
+            border: 1px solid #ccc !important;
+        }
+
+        input[type="checkbox"] {
+            margin-right: 5px !important;
+        }
+
+        button {
+            padding: 8px 16px !important;
+            background: #6c6fa6 !important;
+            color: white !important;
+            border: none !important;
+            border-radius: 6px !important;
+            cursor: pointer !important;
+        }
+
+        button:hover {
+            background: #5a5d8f !important;
+        }
+
+        /* =========================
+           TABLE
+        ========================= */
+        table {
+            width: 100% !important;
+            border-collapse: collapse !important;
+            margin-top: 20px !important;
+        }
+
+        table th,
+        table td {
+            border: 1px solid #ddd !important;
+            padding: 8px !important;
+            text-align: left !important;
+        }
+
+        table th {
+            background: #f0f0f0 !important;
+        }
+
+        table tr:nth-child(even) {
+            background: #fafafa !important;
+        }
+
+        /* =========================
+           CARDS (INDEX)
+        ========================= */
+        .cards {
+            display: flex !important;
+            gap: 20px !important;
+            margin-top: 30px !important;
+        }
+
+        .card {
+            flex: 1 !important;
+            background: #eef !important;
+            padding: 20px !important;
+            border-radius: 12px !important;
+            text-decoration: none !important;
+            color: #333 !important;
+            transition: 0.2s !important;
+        }
+
+        .card h3 {
+            margin-top: 0 !important;
+        }
+
+        .card:hover {
+            background: #dde !important;
+            transform: translateY(-4px) !important;
+        }
+
+        /* =========================
+           LINKS
+        ========================= */
+        a {
+            color: #6c6fa6 !important;
+        }
+
+        a:hover {
+            text-decoration: underline !important;
+        }
+        
+        /* ТЕСТОВЫЙ СТИЛЬ */
+        h2 {
+            color: red !important;
+            border: 3px solid blue !important;
+        }
+    </style>
 </head>
 <body>
 
