@@ -2,7 +2,7 @@ import datetime
 import os
 from os import path
 from flask import Flask, render_template, request, url_for
-from flask_login import LoginManager
+from flask_login import LoginManager, UserMixin, login_user, current_user
 
 # ===== RGZ =====
 from rgz import rgz
@@ -36,6 +36,20 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # INIT DATABASE
 # =====================================================
 db_rgz.init_app(app)
+
+# =====================================================
+# Тестовый пользователь для Flask-Login
+# =====================================================
+class TestUser(UserMixin):
+    id = 1
+    name = "Test User"
+
+@login_manager.user_loader
+def load_user(user_id):
+    # Возвращаем тестового пользователя всегда
+    if user_id == "1":
+        return TestUser()
+    return None
 
 # =====================================================
 # REGISTER BLUEPRINTS
