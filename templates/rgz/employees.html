@@ -17,10 +17,11 @@
 </form>
 
 {% if current_user.is_authenticated %}
-<a href="{{ url_for('rgz.add_employee') }}">➕ Добавить сотрудника</a>
+<a class="btn" href="{{ url_for('rgz.add_employee') }}">➕ Добавить сотрудника</a>
 {% endif %}
 
-<table border="1" cellpadding="5">
+<!-- УДАЛИТЬ border="1" cellpadding="5" -->
+<table>
 <tr>
     <th>ФИО</th>
     <th>Должность</th>
