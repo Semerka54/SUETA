@@ -289,7 +289,7 @@
         }
         
         /* =========================
-           КНОПКА "НАЗАД"
+           КНОПКА "НА ГЛАВНУЮ"
         ========================= */
         .back-wrapper {
             text-align: center;
@@ -545,11 +545,12 @@
     {% block main %}{% endblock %}
 </main>
 
-{% if request.endpoint != 'index' %}
+<!-- ИЗМЕНЕНИЕ ЗДЕСЬ: Всегда показывать кнопку "На главную", кроме самой главной -->
+{% if request.endpoint not in ['index', 'rgz.index'] %}
 <div class="back-wrapper">
-    <a href="{{ request.referrer or url_for('index') }}"
+    <a href="{{ url_for('index') }}"
        class="btn btn-back">
-        <span>←</span> Назад на главную
+        <span>🏠</span> На главную
     </a>
 </div>
 {% endif %}
