@@ -1,7 +1,8 @@
 from .db_rgz import db_rgz
 
 class Employee(db_rgz.Model):
-    __tablename__ = 'employees'
+    __bind_key__ = 'rgz'
+    __tablename__ = 'employee'
 
     id = db_rgz.Column(db_rgz.Integer, primary_key=True)
     full_name = db_rgz.Column(db_rgz.String(200), nullable=False)
