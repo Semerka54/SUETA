@@ -82,26 +82,60 @@ def employees():
     query = Employee.query
     
     if search:
-        # Разделяем поисковый запрос на слова
-        search_terms = search.split()
+        # Пробуем распознать дату
+        from datetime import datetime
         
-        # Создаем условия для каждого слова
-        conditions = []
-        for term in search_terms:
-            term = f'%{term}%'
-            conditions.extend([
-                Employee.full_name.ilike(term),
-                Employee.position.ilike(term),
-                Employee.gender.ilike(term),
-                Employee.phone.ilike(term),
-                Employee.email.ilike(term),
-            ])
+        # Форматы дат для распознавания
+        date_formats = [
+            '%Y-%m-%d',      # 2023-10-15
+            '%d.%m.%Y',      # 15.10.2023
+            '%d.%m.%y',      # 15.10.23
+            '%d/%m/%Y',      # 15/10/2023
+            '%d/%m/%y',      # 15/10/23
+            '%d-%m-%Y',      # 15-10-2023
+            '%d-%m-%y',      # 15-10-23
+            '%Y.%m.%d',      # 2023.10.15
+            '%Y/%m/%d',      # 2023/10/15
+        ]
         
-        # Объединяем условия через OR
-        from sqlalchemy import or_
-        query = query.filter(or_(*conditions))
+        date_search = None
+        search_is_date = False
+        
+        # Пробуем каждый формат даты
+        for fmt in date_formats:
+            try:
+                date_search = datetime.strptime(search, fmt).date()
+                search_is_date = True
+                break
+            except ValueError:
+                continue
+        
+        # Если введена дата, ищем по дате приёма
+        if search_is_date and date_search:
+            from sqlalchemy import cast, String
+            query = query.filter(
+                cast(Employee.hire_date, String).ilike(f'%{date_search}%')
+            )
+        else:
+            # Если это не дата, ищем по всем текстовым полям
+            search_terms = search.split()
+            conditions = []
+            for term in search_terms:
+                term = f'%{term}%'
+                conditions.extend([
+                    Employee.full_name.ilike(term),
+                    Employee.position.ilike(term),
+                    Employee.gender.ilike(term),
+                    Employee.phone.ilike(term),
+                    Employee.email.ilike(term),
+                    # Добавляем поиск по дате в текстовом виде
+                    cast(Employee.hire_date, String).ilike(f'%{term}%'),
+                ])
+            
+            from sqlalchemy import or_
+            query = query.filter(or_(*conditions))
     
-    # Проверяем, что поле сортировки существует
+    # Сортировка
     valid_sort_fields = ['full_name', 'position', 'gender', 'phone', 'email', 'hire_date']
     if sort in valid_sort_fields:
         query = query.order_by(getattr(Employee, sort))
@@ -117,7 +151,6 @@ def employees():
         current_search=search,
         current_sort=sort
     )
-
 
 # ===== ДОБАВЛЕНИЕ СОТРУДНИКА =====
 
