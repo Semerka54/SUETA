@@ -76,29 +76,46 @@ def delete_account():
 @rgz.route('/employees')
 def employees():
     page = int(request.args.get('page', 1))
-    search = request.args.get('search', '')
+    search = request.args.get('search', '').strip()
     sort = request.args.get('sort', 'full_name')
-
+    
     query = Employee.query
-
+    
     if search:
-        query = query.filter(
-            Employee.full_name.ilike(f'%{search}%') |
-            Employee.position.ilike(f'%{search}%') |
-            Employee.gender.ilike(f'%{search}%') |
-            Employee.phone.ilike(f'%{search}%') |
-            Employee.email.ilike(f'%{search}%')
-        )
-
-    if hasattr(Employee, sort):
+        # Разделяем поисковый запрос на слова
+        search_terms = search.split()
+        
+        # Создаем условия для каждого слова
+        conditions = []
+        for term in search_terms:
+            term = f'%{term}%'
+            conditions.extend([
+                Employee.full_name.ilike(term),
+                Employee.position.ilike(term),
+                Employee.gender.ilike(term),
+                Employee.phone.ilike(term),
+                Employee.email.ilike(term),
+            ])
+        
+        # Объединяем условия через OR
+        from sqlalchemy import or_
+        query = query.filter(or_(*conditions))
+    
+    # Проверяем, что поле сортировки существует
+    valid_sort_fields = ['full_name', 'position', 'gender', 'phone', 'email', 'hire_date']
+    if sort in valid_sort_fields:
         query = query.order_by(getattr(Employee, sort))
-
+    else:
+        query = query.order_by(Employee.full_name)
+    
     employees = query.paginate(page=page, per_page=20)
-
+    
     return render_template(
         'rgz/employees.html',
         employees=employees,
-        student=STUDENT
+        student=STUDENT,
+        current_search=search,
+        current_sort=sort
     )
 
 
@@ -109,16 +126,30 @@ def employees():
 def add_employee():
     if request.method == 'POST':
         data = request.form
-
-        if not (
-            validate_text(data.get('full_name')) and
-            validate_text(data.get('position')) and
-            validate_gender(data.get('gender')) and
-            validate_phone(data.get('phone')) and
-            validate_email(data.get('email'))
-        ):
-            return "Невалидные данные", 400
-
+        
+        # Детальная проверка с сообщениями
+        errors = []
+        
+        if not validate_text(data.get('full_name')):
+            errors.append('ФИО обязательно для заполнения')
+        
+        if not validate_text(data.get('position')):
+            errors.append('Должность обязательна для заполнения')
+        
+        if not validate_gender(data.get('gender')):
+            errors.append('Пол должен быть "М" или "Ж"')
+        
+        if not validate_phone(data.get('phone')):
+            errors.append('Некорректный номер телефона')
+        
+        if not validate_email(data.get('email')):
+            errors.append('Некорректный email адрес')
+        
+        if errors:
+            for error in errors:
+                flash(error, 'error')
+            return redirect(url_for('rgz.add_employee'))
+        
         emp = Employee(
             full_name=data['full_name'],
             position=data['position'],
@@ -128,11 +159,12 @@ def add_employee():
             probation='probation' in data,
             hire_date=datetime.strptime(data['hire_date'], '%Y-%m-%d')
         )
-
+        
         db_rgz.session.add(emp)
         db_rgz.session.commit()
+        flash('✅ Сотрудник успешно добавлен!', 'success')
         return redirect(url_for('rgz.employees'))
-
+    
     return render_template('rgz/employee_form.html', student=STUDENT)
 
 
@@ -142,19 +174,36 @@ def add_employee():
 @login_required
 def edit_employee(id):
     emp = Employee.query.get_or_404(id)
-
+    
     if request.method == 'POST':
         data = request.form
-
-        if not (
-            validate_text(data.get('full_name')) and
-            validate_text(data.get('position')) and
-            validate_gender(data.get('gender')) and
-            validate_phone(data.get('phone')) and
-            validate_email(data.get('email'))
-        ):
-            return "Невалидные данные", 400
-
+        
+        errors = []
+        
+        if not validate_text(data.get('full_name')):
+            errors.append('ФИО обязательно для заполнения')
+        
+        if not validate_text(data.get('position')):
+            errors.append('Должность обязательна для заполнения')
+        
+        if not validate_gender(data.get('gender')):
+            errors.append('Пол должен быть "М" или "Ж"')
+        
+        if not validate_phone(data.get('phone')):
+            errors.append('Некорректный номер телефона')
+        
+        if not validate_email(data.get('email')):
+            errors.append('Некорректный email адрес')
+        
+        if errors:
+            for error in errors:
+                flash(error, 'error')
+            return render_template(
+                'rgz/employee_form.html',
+                employee=emp,
+                student=STUDENT
+            )
+        
         emp.full_name = data['full_name']
         emp.position = data['position']
         emp.gender = data['gender']
@@ -162,10 +211,11 @@ def edit_employee(id):
         emp.email = data['email']
         emp.probation = 'probation' in data
         emp.hire_date = datetime.strptime(data['hire_date'], '%Y-%m-%d')
-
+        
         db_rgz.session.commit()
+        flash('✅ Данные сотрудника обновлены!', 'success')
         return redirect(url_for('rgz.employees'))
-
+    
     return render_template(
         'rgz/employee_form.html',
         employee=emp,

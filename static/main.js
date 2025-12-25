@@ -1,55 +1,56 @@
 document.addEventListener('DOMContentLoaded', function() {
     console.log('✅ Кадровая система загружена');
+    
     // 2. Автоматическое форматирование телефона
-const phoneInputs = document.querySelectorAll('input[name="phone"]');
-phoneInputs.forEach(input => {
-    // Устанавливаем начальное значение +7
-    if (!input.value) {
-        input.value = '+7 ';
-    }
-    
-    input.addEventListener('input', function(e) {
-        let value = this.value.replace(/\D/g, '');
-        let formatted = '+7';
-        
-        // Оставляем только цифры после +7
-        if (value.startsWith('7')) {
-            value = value.substring(1);
-        } else if (value.startsWith('8')) {
-            value = value.substring(1); // для тех, кто начинает с 8
+    const phoneInputs = document.querySelectorAll('input[name="phone"]');
+    phoneInputs.forEach(input => {
+        // Устанавливаем начальное значение +7
+        if (!input.value) {
+            input.value = '+7 ';
         }
         
-        // Форматируем по мере ввода
-        if (value.length > 0) {
-            formatted += ' (' + value.substring(0, 3);
-        }
-        if (value.length > 3) {
-            formatted += ') ' + value.substring(3, 6);
-        }
-        if (value.length > 6) {
-            formatted += '-' + value.substring(6, 8);
-        }
-        if (value.length > 8) {
-            formatted += '-' + value.substring(8, 10);
-        }
+        input.addEventListener('input', function(e) {
+            let value = this.value.replace(/\D/g, '');
+            let formatted = '+7';
+            
+            // Оставляем только цифры после +7
+            if (value.startsWith('7')) {
+                value = value.substring(1);
+            } else if (value.startsWith('8')) {
+                value = value.substring(1); // для тех, кто начинает с 8
+            }
+            
+            // Форматируем по мере ввода
+            if (value.length > 0) {
+                formatted += ' (' + value.substring(0, 3);
+            }
+            if (value.length > 3) {
+                formatted += ') ' + value.substring(3, 6);
+            }
+            if (value.length > 6) {
+                formatted += '-' + value.substring(6, 8);
+            }
+            if (value.length > 8) {
+                formatted += '-' + value.substring(8, 10);
+            }
+            
+            // Устанавливаем курсор в конец
+            const cursorPos = this.selectionStart;
+            this.value = formatted;
+            
+            // Восстанавливаем положение курсора, если пользователь редактирует
+            if (cursorPos < formatted.length) {
+                this.setSelectionRange(cursorPos, cursorPos);
+            }
+        });
         
-        // Устанавливаем курсор в конец
-        const cursorPos = this.selectionStart;
-        this.value = formatted;
-        
-        // Восстанавливаем положение курсора, если пользователь редактирует
-        if (cursorPos < formatted.length) {
-            this.setSelectionRange(cursorPos, cursorPos);
-        }
+        // При фокусе ставим курсор после +7
+        input.addEventListener('focus', function() {
+            if (this.value === '+7' || this.value === '+7 ') {
+                this.setSelectionRange(3, 3);
+            }
+        });
     });
-    
-    // При фокусе ставим курсор после +7
-    input.addEventListener('focus', function() {
-        if (this.value === '+7' || this.value === '+7 ') {
-            this.setSelectionRange(3, 3);
-        }
-    });
-});
     
     // 3. Подсветка строк таблицы при наведении
     const tableRows = document.querySelectorAll('table tr');
@@ -59,15 +60,26 @@ phoneInputs.forEach(input => {
         });
     });
     
-    // 4. Поиск с задержкой (debounce)
+    // 4. Поиск с задержкой (debounce) - ТОЛЬКО для поиска
     const searchInput = document.querySelector('input[name="search"]');
     if (searchInput) {
         let timeout;
+        const form = searchInput.closest('form');
+        
         searchInput.addEventListener('input', function() {
             clearTimeout(timeout);
             timeout = setTimeout(() => {
-                this.closest('form').submit();
-            }, 500);
+                form.submit();
+            }, 3000); // Увеличил задержку
+        });
+        
+        // Предотвращаем сабмит формы по Enter в поле поиска
+        searchInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                clearTimeout(timeout);
+                form.submit();
+            }
         });
     }
     
@@ -103,7 +115,6 @@ phoneInputs.forEach(input => {
         });
     }
     
-    
     // 7. Динамическое обновление даты в футере
     const yearSpan = document.querySelector('#current-year');
     if (!yearSpan) {
@@ -113,12 +124,30 @@ phoneInputs.forEach(input => {
         }
     }
     
-
-    // 9. Уведомления (toast) - упрощенная версия
-    window.showToast = function(message, type = 'info') {
-        // Простой alert для теста
-        alert((type === 'success' ? '✅ ' : type === 'error' ? '❌ ' : 'ℹ️ ') + message);
-    };
+    // 8. Предотвращаем двойной сабмит форм
+    const forms = document.querySelectorAll('form');
+    forms.forEach(form => {
+        let isSubmitting = false;
+        
+        form.addEventListener('submit', function(e) {
+            if (isSubmitting) {
+                e.preventDefault();
+                return;
+            }
+            
+            // Для фильтрации не блокируем
+            if (this.method.toLowerCase() === 'get') {
+                return;
+            }
+            
+            isSubmitting = true;
+            
+            // Через 3 секунды разблокируем (на случай ошибки)
+            setTimeout(() => {
+                isSubmitting = false;
+            }, 3000);
+        });
+    });
 });
 
 // Глобальные функции для использования в других местах

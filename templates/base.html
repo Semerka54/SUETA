@@ -560,6 +560,56 @@
                 transform: translateY(0);
             }
         }
+
+                /* Стили для формы фильтрации */
+        #filterForm {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        #filterForm input[type="text"] {
+            flex: 1;
+            min-width: 200px;
+            max-width: 300px;
+        }
+
+        #filterForm select {
+            min-width: 150px;
+        }
+
+        #filterForm button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        #filterForm button[type="submit"] {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        #filterForm button[type="submit"]:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        #filterForm button[type="button"] {
+            background: #e2e8f0;
+            color: #4a5568;
+        }
+
+        #filterForm button[type="button"]:hover {
+            background: #cbd5e0;
+        }
     </style>
 </head>
 <body>

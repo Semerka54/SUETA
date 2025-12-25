@@ -3,24 +3,41 @@
 {% block main %}
 <h2>Список сотрудников</h2>
 
-<form method="get">
-    <input type="text" name="search" placeholder="Поиск">
-    <select name="sort">
-        <option value="full_name">ФИО</option>
-        <option value="position">Должность</option>
-        <option value="gender">Пол</option>
-        <option value="phone">Телефон</option>
-        <option value="email">Email</option>
-        <option value="hire_date">Дата приёма</option>
+<!-- Форма фильтрации с сохранением значений -->
+<form method="get" id="filterForm">
+    <input type="text" name="search" placeholder="Поиск" 
+           value="{{ request.args.get('search', '') }}">
+    
+    <select name="sort" id="sortSelect">
+        <option value="full_name" {% if request.args.get('sort') == 'full_name' %}selected{% endif %}>
+            ФИО
+        </option>
+        <option value="position" {% if request.args.get('sort') == 'position' %}selected{% endif %}>
+            Должность
+        </option>
+        <option value="gender" {% if request.args.get('sort') == 'gender' %}selected{% endif %}>
+            Пол
+        </option>
+        <option value="phone" {% if request.args.get('sort') == 'phone' %}selected{% endif %}>
+            Телефон
+        </option>
+        <option value="email" {% if request.args.get('sort') == 'email' %}selected{% endif %}>
+            Email
+        </option>
+        <option value="hire_date" {% if request.args.get('sort') == 'hire_date' %}selected{% endif %}>
+            Дата приёма
+        </option>
     </select>
+    
     <button type="submit">Применить</button>
+    <!-- Кнопка для сброса фильтров -->
+    <button type="button" onclick="resetFilters()">Сбросить</button>
 </form>
 
 {% if current_user.is_authenticated %}
 <a class="btn" href="{{ url_for('rgz.add_employee') }}">➕ Добавить сотрудника</a>
 {% endif %}
 
-<!-- УДАЛИТЬ border="1" cellpadding="5" -->
 <table>
 <tr>
     <th>ФИО</th>
@@ -48,18 +65,75 @@
     <td>
         <a href="{{ url_for('rgz.edit_employee', id=e.id) }}">✏</a>
         <a href="{{ url_for('rgz.delete_employee', id=e.id) }}" 
-       onclick="return confirm('Вы уверены, что хотите удалить этого сотрудника?');">
-       ❌</a>
+           onclick="return confirm('Вы уверены, что хотите удалить этого сотрудника?');">
+           ❌
+        </a>
     </td>
     {% endif %}
 </tr>
 {% endfor %}
 </table>
 
-{% if employees.has_next %}
-<a href="{{ url_for('rgz.employees', page=employees.next_num) }}">
-Показать ещё
-</a>
-{% endif %}
+<!-- Пагинация с сохранением параметров фильтрации -->
+<div class="pagination">
+    {% if employees.has_prev %}
+    <a href="{{ url_for('rgz.employees', 
+        page=employees.prev_num,
+        search=request.args.get('search', ''),
+        sort=request.args.get('sort', 'full_name')) }}">
+        ← Назад
+    </a>
+    {% endif %}
+    
+    <span>Страница {{ employees.page }} из {{ employees.pages }}</span>
+    
+    {% if employees.has_next %}
+    <a href="{{ url_for('rgz.employees',
+        page=employees.next_num,
+        search=request.args.get('search', ''),
+        sort=request.args.get('sort', 'full_name')) }}">
+        Далее →
+    </a>
+    {% endif %}
+</div>
 
+<style>
+    .pagination {
+        margin-top: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 20px;
+    }
+    
+    .pagination a {
+        padding: 8px 16px;
+        background: #f7fafc;
+        color: #4a5568;
+        text-decoration: none;
+        border-radius: 6px;
+        transition: all 0.3s ease;
+    }
+    
+    .pagination a:hover {
+        background: #edf2f7;
+    }
+    
+    .pagination span {
+        color: #718096;
+        font-weight: 500;
+    }
+</style>
+
+<script>
+    // Функция для сброса фильтров
+    function resetFilters() {
+        window.location.href = "{{ url_for('rgz.employees') }}";
+    }
+    
+    // Авто-сабмит при изменении сортировки (по желанию)
+    document.getElementById('sortSelect').addEventListener('change', function() {
+        document.getElementById('filterForm').submit();
+    });
+</script>
 {% endblock %}
