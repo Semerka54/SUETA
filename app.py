@@ -1,13 +1,10 @@
-import datetime
 import os
 from os import path
-from flask import Flask, render_template, request, url_for
-from flask_login import LoginManager, UserMixin, login_user, current_user
-
-# ===== RGZ =====
+from flask import Flask, render_template
+from flask_login import LoginManager
 from rgz import rgz
-from rgz.db_rgz import db_rgz  # отдельный объект SQLAlchemy для РГЗ
-from rgz.models import Employee
+from rgz.db_rgz import db_rgz
+from rgz.models import Admin
 
 # =====================================================
 # Flask app
@@ -15,19 +12,10 @@ from rgz.models import Employee
 app = Flask(__name__)
 
 # =====================================================
-# Login manager
-# =====================================================
-login_manager = LoginManager()
-login_manager.login_view = 'rgz.login'
-login_manager.init_app(app)
-
-# =====================================================
 # CONFIG
 # =====================================================
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', '777')
 base_dir = path.dirname(path.realpath(__file__))
-
-# БД РГЗ (отдельная SQLite, через отдельный SQLAlchemy объект)
 rgz_db_path = path.join(base_dir, "rgz.db")
 app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{rgz_db_path}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -38,18 +26,16 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db_rgz.init_app(app)
 
 # =====================================================
-# Тестовый пользователь для Flask-Login
+# Login manager
 # =====================================================
-class TestUser(UserMixin):
-    id = 1
-    name = "Test User"
+login_manager = LoginManager()
+login_manager.login_view = 'rgz.login'
+login_manager.init_app(app)
 
 @login_manager.user_loader
 def load_user(user_id):
-    # Возвращаем тестового пользователя всегда
-    if user_id == "1":
-        return TestUser()
-    return None
+    # Загружаем администратора по id
+    return Admin.query.get(int(user_id))
 
 # =====================================================
 # REGISTER BLUEPRINTS
@@ -71,6 +57,9 @@ log_data = []
 
 @app.errorhandler(404)
 def not_found(error):
+    from flask import request, url_for
+    import datetime
+
     img_path = url_for("static", filename="404.jpg")
     ip = request.remote_addr
     time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")

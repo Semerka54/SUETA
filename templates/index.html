@@ -1,23 +1,15 @@
 {% extends "base.html" %}
 
-{% block lab %}Список лабораторных{% endblock %}
-
-{% block main %}
-<h1>НГТУ, ФБ, WEB-программирование, часть 2</h1>
-<h2>Список лабораторных работ</h2>
-
-<nav class="labs-menu">
-    <ul>
-        <li><a href="{{ url_for('lab1.lab') }}">Первая лабораторная</a></li>
-        <li><a href="{{ url_for('lab2.lab') }}">Вторая лабораторная</a></li>
-        <li><a href="{{ url_for('lab3.lab') }}">Третья лабораторная</a></li>
-        <li><a href="{{ url_for('lab4.lab') }}">Четвёртая лабораторная</a></li>
-        <li><a href="{{ url_for('lab5.lab') }}">Пятая лабораторная</a></li>
-        <li><a href="{{ url_for('lab6.lab') }}">Шестая лабораторная</a></li>
-        <li><a href="{{ url_for('lab7.lab') }}">Седьмая лабораторная</a></li>
-        <li><a href="{{ url_for('lab8.lab') }}">Восьмая лабораторная</a></li>
-        <li><a href="{{ url_for('lab9.lab') }}">Девятая лабораторная</a></li>
-        <li><a href="{{ url_for('rgz.employees') }}">РГЗ</a></li>
-    </ul>
-</nav>
+{% block content %}
+<h1>Главная страница</h1>
+<ul>
+    <li><a href="{{ url_for('rgz.employees') }}">Сотрудники</a></li>
+    {% if current_user.is_authenticated %}
+    <li><a href="{{ url_for('rgz.logout') }}">Выйти</a></li>
+    <li><a href="{{ url_for('rgz.delete_account') }}">Удалить аккаунт</a></li>
+    {% else %}
+    <li><a href="{{ url_for('rgz.login') }}">Вход для кадровика</a></li>
+    {% endif %}
+</ul>
+<footer>{{ student }}</footer>
 {% endblock %}
