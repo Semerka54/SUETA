@@ -1,5 +1,8 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, login_user, current_user, logout_user
+from flask import flash, redirect, url_for, render_template, request
+from flask_login import login_user, logout_user, login_required, current_user
+from werkzeug.security import check_password_hash
 from datetime import datetime
 from .models import Employee, Admin
 from .db_rgz import db_rgz
@@ -40,19 +43,24 @@ def validate_email(email):
 def login():
     if current_user.is_authenticated:
         return redirect(url_for('rgz.employees'))
-
+    
     if request.method == 'POST':
-        username = request.form.get('username', '')
-        password = request.form.get('password', '')
-
-        admin = Admin.query.filter_by(username=username).first()
-        if admin and admin.check_password(password):
-            login_user(admin)
+        username = request.form.get('username')
+        password = request.form.get('password')
+        
+        # Здесь ваша логика проверки пользователя
+        user = Admin.query.filter_by(username=username).first()
+        
+        if user and check_password_hash(user.password, password):
+            login_user(user, remember=True)
+            flash('✅ Вы успешно вошли в систему!', 'success')
             return redirect(url_for('rgz.employees'))
         else:
-            flash("Неверный логин или пароль")
-
-    return render_template('rgz/login.html', student=STUDENT)
+            # Если логин или пароль неверные
+            flash('❌ Неверный логин или пароль. Попробуйте снова.', 'error')
+            return render_template('rgz/login.html')
+    
+    return render_template('rgz/login.html')
 
 
 @rgz.route('/logout')

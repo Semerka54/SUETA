@@ -1,10 +1,141 @@
 {% extends "base.html" %}
 
 {% block main %}
-<h2>Вход для кадровика</h2>
+<h2>🔐 Вход для кадровика</h2>
+
+<!-- Сообщение об ошибке -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">
+                ⚠️ {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+<!-- Форма входа -->
 <form method="post">
-    <input type="text" name="username" placeholder="Логин" required>
-    <input type="password" name="password" placeholder="Пароль" required>
-    <button type="submit">Войти</button>
+    <div class="form-group">
+        <label for="username">Логин</label>
+        <input type="text" 
+               id="username" 
+               name="username" 
+               placeholder="Введите логин" 
+               required
+               value="{{ request.form.username if request.form.username }}">
+    </div>
+    
+    <div class="form-group">
+        <label for="password">Пароль</label>
+        <input type="password" 
+               id="password" 
+               name="password" 
+               placeholder="Введите пароль" 
+               required>
+    </div>
+    
+    <button type="submit">🔓 Войти в систему</button>
 </form>
+
+<style>
+    /* Стили для сообщений об ошибках */
+    .alert {
+        padding: 15px 20px;
+        border-radius: 10px;
+        margin-bottom: 25px;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        animation: slideIn 0.3s ease-out;
+    }
+    
+    .alert-error {
+        background: #fed7d7;
+        color: #c53030;
+        border-left: 5px solid #c53030;
+    }
+    
+    .alert-success {
+        background: #c6f6d5;
+        color: #22543d;
+        border-left: 5px solid #38a169;
+    }
+    
+    .alert-info {
+        background: #bee3f8;
+        color: #2c5282;
+        border-left: 5px solid #3182ce;
+    }
+    
+    /* Стили для формы */
+    .form-group {
+        margin-bottom: 25px;
+    }
+    
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #4a5568;
+        font-size: 15px;
+    }
+    
+    form button[type="submit"] {
+        width: 100%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 16px;
+        border: none;
+        border-radius: 10px;
+        font-size: 17px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: 10px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    form button[type="submit"]:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+    }
+    
+    form button[type="submit"]:active {
+        transform: translateY(-1px);
+    }
+    
+    /* Анимация для сообщений */
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    /* Дополнительные стили для формы */
+    form {
+        background: #f7fafc;
+        padding: 35px;
+        border-radius: 16px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+    }
+    
+    /* Стили для инпутов с ошибкой */
+    input:invalid {
+        border-color: #fc8181 !important;
+    }
+    
+    input:focus:invalid {
+        box-shadow: 0 0 0 3px rgba(252, 129, 129, 0.2) !important;
+    }
+</style>
 {% endblock %}
