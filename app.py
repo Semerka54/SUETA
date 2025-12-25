@@ -7,7 +7,6 @@ from flask_login import LoginManager
 
 # ===== RGZ =====
 from rgz import rgz
-from rgz.db_rgz import db_rgz
 
 # ===== LABS =====
 from database import db
@@ -67,7 +66,6 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # =====================================================
 
 db.init_app(app)        # БД лабораторных
-db_rgz.init_app(app)    # БД РГЗ
 
 # =====================================================
 # REGISTER BLUEPRINTS
