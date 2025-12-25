@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // 2. Автоматическое форматирование телефона
+    // 2. Автоматическое форматирование телефона (курсор всегда в конце)
 const phoneInputs = document.querySelectorAll('input[name="phone"]');
 phoneInputs.forEach(input => {
     // Устанавливаем начальное значение +7
@@ -20,17 +20,21 @@ phoneInputs.forEach(input => {
     }
     
     input.addEventListener('input', function(e) {
+        // Берем все цифры
         let value = this.value.replace(/\D/g, '');
         let formatted = '+7';
         
-        // Оставляем только цифры после +7
+        // Убираем код страны если есть
         if (value.startsWith('7')) {
             value = value.substring(1);
         } else if (value.startsWith('8')) {
-            value = value.substring(1); // для тех, кто начинает с 8
+            value = value.substring(1);
         }
         
-        // Форматируем по мере ввода
+        // Ограничиваем 10 цифрами
+        value = value.substring(0, 10);
+        
+        // Форматируем
         if (value.length > 0) {
             formatted += ' (' + value.substring(0, 3);
         }
@@ -44,21 +48,20 @@ phoneInputs.forEach(input => {
             formatted += '-' + value.substring(8, 10);
         }
         
-        // Устанавливаем курсор в конец
-        const cursorPos = this.selectionStart;
+        // Устанавливаем значение
         this.value = formatted;
         
-        // Восстанавливаем положение курсора, если пользователь редактирует
-        if (cursorPos < formatted.length) {
-            this.setSelectionRange(cursorPos, cursorPos);
-        }
+        // Курсор всегда в конце
+        setTimeout(() => {
+            this.setSelectionRange(formatted.length, formatted.length);
+        }, 0);
     });
     
-    // При фокусе ставим курсор после +7
+    // При фокусе курсор в конце
     input.addEventListener('focus', function() {
-        if (this.value === '+7' || this.value === '+7 ') {
-            this.setSelectionRange(3, 3);
-        }
+        setTimeout(() => {
+            this.setSelectionRange(this.value.length, this.value.length);
+        }, 0);
     });
 });
     
