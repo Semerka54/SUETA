@@ -61,13 +61,18 @@
 {% endif %}
 
 <script>
-// Вместо DOMContentLoaded используем делегирование событий
-document.addEventListener('click', function(e) {
-    // Проверяем, был ли клик по ссылке удаления
-    if (e.target.tagName === 'A' && e.target.href.includes('delete_employee')) {
-        if (!confirm('Вы уверены, что хотите удалить этого сотрудника?\nЭто действие нельзя отменить.')) {
-            e.preventDefault();
-        }
+document.addEventListener('DOMContentLoaded', function() {
+    // Вешаем обработчик на всю таблицу
+    const table = document.querySelector('table');
+    if (table) {
+        table.addEventListener('click', function(e) {
+            const link = e.target.closest('a[href*="delete_employee"]');
+            if (link) {
+                if (!confirm('Вы уверены, что хотите удалить этого сотрудника?\nЭто действие нельзя отменить.')) {
+                    e.preventDefault();
+                }
+            }
+        });
     }
 });
 </script>
