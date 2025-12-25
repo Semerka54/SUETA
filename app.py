@@ -48,7 +48,10 @@ app.register_blueprint(rgz)
 @app.route('/')
 @app.route('/index')
 def index():
-    return render_template('index.html')
+    return render_template(
+        'index.html',
+        student="Богданов Семён Андреевич, ФБИ-32, 2025"
+    )
 
 # =====================================================
 # ERROR HANDLERS
