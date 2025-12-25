@@ -73,7 +73,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # =====================================================
 
 db.init_app(app)        # БД лабораторных
-db_rgz.init_app(app)    # БД РГЗ
+
 
 # =====================================================
 # REGISTER BLUEPRINTS
