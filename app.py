@@ -7,7 +7,6 @@ from flask_login import LoginManager
 
 # ===== RGZ =====
 from rgz import rgz
-from rgz.db_rgz import db_rgz
 
 # ===== LABS =====
 from database import db
