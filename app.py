@@ -42,6 +42,7 @@ else:
     app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
 
 db.init_app(app)
+db_rgz.init_app(app)
 
 app.register_blueprint(lab1)
 app.register_blueprint(lab2)
@@ -52,7 +53,7 @@ app.register_blueprint(lab6)
 app.register_blueprint(lab7)
 app.register_blueprint(lab8)
 app.register_blueprint(lab9)
-
+app.register_blueprint(rgz)
 
 @app.route('/')
 @app.route('/index')
