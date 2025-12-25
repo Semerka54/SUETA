@@ -2,228 +2,522 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ title if title else "Кадровая система" }}</title>
-    <!-- Оставляем внешний CSS для будущего -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=3">
     
-    <!-- ВСТРАИВАЕМ ВСЕ СТИЛИ ДЛЯ ПРОВЕРКИ -->
     <style>
         /* =========================
-           RESET + BASE
+           СБРОС И БАЗОВЫЕ СТИЛИ
         ========================= */
         * {
-            box-sizing: border-box !important;
-            font-family: Arial, sans-serif !important;
-        }
-
-        body {
-            margin: 0 !important;
-            background: #f5f6fa !important;
-            color: #333 !important;
-            min-height: 100vh !important;
-            display: flex !important;
-            flex-direction: column !important;
-        }
-
-        /* =========================
-           HEADER
-        ========================= */
-        .header {
-            background: #6c6fa6 !important;
-            color: white !important;
-            padding: 15px 30px !important;
-        }
-
-        .header-inner {
-            display: flex !important;
-            justify-content: space-between !important;
-            align-items: center !important;
-        }
-
-        .header h1 {
-            margin: 0 !important;
-            font-size: 20px !important;
-            font-weight: normal !important;
-        }
-
-        /* =========================
-           AUTH BUTTONS
-        ========================= */
-        .auth-buttons {
-            display: flex !important;
-            gap: 10px !important;
-        }
-
-        .btn {
-            padding: 8px 16px !important;
-            border-radius: 6px !important;
-            font-weight: bold !important;
-            text-decoration: none !important;
-            cursor: pointer !important;
-            border: none !important;
-            transition: 0.2s !important;
-        }
-
-        .btn-login {
-            background: white !important;
-            color: #6c6fa6 !important;
-        }
-
-        .btn-login:hover {
-            background: #f0f0f0 !important;
-        }
-
-        .btn-exit {
-            background: #ffdddd !important;
-            color: #a00 !important;
-        }
-
-        .btn-exit:hover {
-            background: #ffcfcf !important;
-        }
-
-        /* =========================
-           MAIN CONTAINER
-        ========================= */
-        .container {
-            width: 1100px !important;
-            margin: 20px auto !important;
-        }
-
-        .main {
-            background: white !important;
-            padding: 30px !important;
-            border-radius: 10px !important;
-            flex: 1 !important;
-        }
-
-        /* =========================
-           BACK BUTTON
-        ========================= */
-        .back-wrapper {
-            display: flex !important;
-            justify-content: center !important;
-            margin: 20px 0 !important;
-        }
-
-        .btn-back {
-            background: #6c6fa6 !important;
-            color: white !important;
-        }
-
-        .btn-back:hover {
-            background: #5a5d8f !important;
-        }
-
-        /* =========================
-           FOOTER
-        ========================= */
-        .footer {
-            background: #6c6fa6 !important;
-            color: white !important;
-            text-align: center !important;
-            padding: 12px !important;
-        }
-
-        /* =========================
-           FORMS
-        ========================= */
-        form {
-            margin-top: 20px !important;
-        }
-
-        input,
-        select {
-            padding: 8px !important;
-            margin: 5px 5px 5px 0 !important;
-            border-radius: 5px !important;
-            border: 1px solid #ccc !important;
-        }
-
-        input[type="checkbox"] {
-            margin-right: 5px !important;
-        }
-
-        button {
-            padding: 8px 16px !important;
-            background: #6c6fa6 !important;
-            color: white !important;
-            border: none !important;
-            border-radius: 6px !important;
-            cursor: pointer !important;
-        }
-
-        button:hover {
-            background: #5a5d8f !important;
-        }
-
-        /* =========================
-           TABLE
-        ========================= */
-        table {
-            width: 100% !important;
-            border-collapse: collapse !important;
-            margin-top: 20px !important;
-        }
-
-        table th,
-        table td {
-            border: 1px solid #ddd !important;
-            padding: 8px !important;
-            text-align: left !important;
-        }
-
-        table th {
-            background: #f0f0f0 !important;
-        }
-
-        table tr:nth-child(even) {
-            background: #fafafa !important;
-        }
-
-        /* =========================
-           CARDS (INDEX)
-        ========================= */
-        .cards {
-            display: flex !important;
-            gap: 20px !important;
-            margin-top: 30px !important;
-        }
-
-        .card {
-            flex: 1 !important;
-            background: #eef !important;
-            padding: 20px !important;
-            border-radius: 12px !important;
-            text-decoration: none !important;
-            color: #333 !important;
-            transition: 0.2s !important;
-        }
-
-        .card h3 {
-            margin-top: 0 !important;
-        }
-
-        .card:hover {
-            background: #dde !important;
-            transform: translateY(-4px) !important;
-        }
-
-        /* =========================
-           LINKS
-        ========================= */
-        a {
-            color: #6c6fa6 !important;
-        }
-
-        a:hover {
-            text-decoration: underline !important;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         
-        /* ТЕСТОВЫЙ СТИЛЬ */
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            line-height: 1.6;
+        }
+        
+        /* =========================
+           ШАПКА
+        ========================= */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .header-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header h1 {
+            color: #4a5568;
+            font-size: 24px;
+            font-weight: 600;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        /* =========================
+           КНОПКИ АВТОРИЗАЦИИ
+        ========================= */
+        .auth-buttons {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .btn {
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-login {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-exit {
+            background: #fed7d7;
+            color: #c53030;
+        }
+        
+        .btn-exit:hover {
+            background: #feb2b2;
+            transform: translateY(-2px);
+        }
+        
+        /* =========================
+           ОСНОВНОЙ КОНТЕНТ
+        ========================= */
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+            flex: 1;
+        }
+        
+        .main {
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+        
+        /* =========================
+           ЗАГОЛОВКИ
+        ========================= */
         h2 {
-            color: red !important;
-            border: 3px solid blue !important;
+            color: #2d3748;
+            font-size: 28px;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            position: relative;
+        }
+        
+        h2:after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        h3 {
+            color: #4a5568;
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+        
+        /* =========================
+           ФОРМЫ
+        ========================= */
+        form {
+            background: #f7fafc;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 20px;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 12px 16px;
+            margin: 8px 0;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 15px 0;
+            font-weight: 500;
+            color: #4a5568;
+        }
+        
+        input[type="checkbox"] {
+            width: auto;
+            transform: scale(1.2);
+        }
+        
+        button[type="submit"] {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 14px 28px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+        }
+        
+        button[type="submit"]:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        /* =========================
+           ТАБЛИЦА
+        ========================= */
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-top: 25px;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+        
+        table th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 16px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 15px;
+        }
+        
+        table th:first-child {
+            border-top-left-radius: 12px;
+        }
+        
+        table th:last-child {
+            border-top-right-radius: 12px;
+        }
+        
+        table td {
+            padding: 16px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #4a5568;
+        }
+        
+        table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        table tr:hover {
+            background-color: #f7fafc;
+        }
+        
+        table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        
+        /* =========================
+           КАРТОЧКИ (ГЛАВНАЯ)
+        ========================= */
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+        
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: #667eea;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
+        }
+        
+        .card h3 {
+            color: #4a5568;
+            font-size: 22px;
+            margin-bottom: 12px;
+        }
+        
+        .card p {
+            color: #718096;
+            line-height: 1.6;
+        }
+        
+        /* =========================
+           КНОПКА "НАЗАД"
+        ========================= */
+        .back-wrapper {
+            text-align: center;
+            margin: 25px 0;
+        }
+        
+        .btn-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: white;
+            color: #4a5568;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-back:hover {
+            background: #f7fafc;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+        }
+        
+        /* =========================
+           ССЫЛКИ В ТАБЛИЦЕ
+        ========================= */
+        table a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        
+        table a:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+        
+        table td:last-child a {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            margin: 0 5px;
+            padding: 6px 12px;
+            border-radius: 6px;
+            background: #f7fafc;
+        }
+        
+        table td:last-child a:hover {
+            background: #edf2f7;
+        }
+        
+        /* =========================
+           ФОРМА ПОИСКА
+        ========================= */
+        form[method="get"] {
+            background: transparent;
+            padding: 0;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        
+        form[method="get"] input[type="text"] {
+            flex: 1;
+            max-width: 300px;
+        }
+        
+        form[method="get"] select {
+            max-width: 200px;
+        }
+        
+        form[method="get"] button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        form[method="get"] button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        /* =========================
+           КНОПКА "ДОБАВИТЬ СОТРУДНИКА"
+        ========================= */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(72, 187, 120, 0.4);
+        }
+        
+        /* =========================
+           ПАГИНАЦИЯ
+        ========================= */
+        a[href*="page="] {
+            display: inline-block;
+            margin-top: 25px;
+            padding: 12px 24px;
+            background: #f7fafc;
+            color: #4a5568;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        a[href*="page="]:hover {
+            background: #edf2f7;
+            transform: translateY(-2px);
+        }
+        
+        /* =========================
+           ПОДВАЛ
+        ========================= */
+        .footer {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 25px 0;
+            margin-top: auto;
+            text-align: center;
+            color: #4a5568;
+            font-size: 14px;
+            border-top: 1px solid #e2e8f0;
+        }
+        
+        /* =========================
+           АДАПТИВНОСТЬ
+        ========================= */
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .main {
+                padding: 20px;
+            }
+            
+            .header-inner {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .auth-buttons {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            form[method="get"] {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            form[method="get"] input,
+            form[method="get"] select {
+                max-width: 100%;
+            }
+            
+            .cards {
+                grid-template-columns: 1fr;
+            }
+            
+            table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+        
+        /* =========================
+           АНИМАЦИИ
+        ========================= */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .main {
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        .card {
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        /* =========================
+           СПЕЦИАЛЬНЫЕ ЭФФЕКТЫ
+        ========================= */
+        ::selection {
+            background: rgba(102, 126, 234, 0.3);
+            color: #4a5568;
+        }
+        
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 5px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #5a6fd4 0%, #6b4290 100%);
         }
     </style>
 </head>
@@ -231,13 +525,17 @@
 
 <header class="header">
     <div class="header-inner">
-        <h1>WEB-программирование, часть 2</h1>
-
+        <h1>📊 Кадровая информационная система</h1>
+        
         <div class="auth-buttons">
             {% if current_user.is_authenticated %}
-                <a class="btn btn-exit" href="{{ url_for('rgz.logout') }}">Выйти</a>
+                <a class="btn btn-exit" href="{{ url_for('rgz.logout') }}">
+                    <span>🚪</span> Выйти
+                </a>
             {% else %}
-                <a class="btn btn-login" href="{{ url_for('rgz.login') }}">Войти</a>
+                <a class="btn btn-login" href="{{ url_for('rgz.login') }}">
+                    <span>🔐</span> Войти
+                </a>
             {% endif %}
         </div>
     </div>
@@ -251,15 +549,17 @@
 <div class="back-wrapper">
     <a href="{{ request.referrer or url_for('index') }}"
        class="btn btn-back">
-        ← Назад
+        <span>←</span> Назад на главную
     </a>
 </div>
 {% endif %}
 
 <footer class="footer">
-    © {{ student }}
+    <div style="max-width: 1200px; margin: 0 auto; padding: 0 20px;">
+        <p style="margin-bottom: 8px; font-weight: 600;">© {{ student }}</p>
+        <p style="color: #718096; font-size: 13px;">Система управления персоналом • Версия 1.0</p>
+    </div>
 </footer>
 
-<script src="{{ url_for('static', filename='main.js') }}"></script>
 </body>
 </html>
