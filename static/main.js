@@ -1,16 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
     console.log('✅ Кадровая система загружена');
-    
-    // 1. Подтверждение удаления сотрудника
-    const deleteLinks = document.querySelectorAll('a[href*="delete_employee"]');
-    deleteLinks.forEach(link => {
-        link.addEventListener('click', function(e) {
-            if (!confirm('Вы уверены, что хотите удалить этого сотрудника?\nЭто действие нельзя отменить.')) {
-                e.preventDefault();
-            }
-        });
-    });
-    
     // 2. Автоматическое форматирование телефона
 const phoneInputs = document.querySelectorAll('input[name="phone"]');
 phoneInputs.forEach(input => {
