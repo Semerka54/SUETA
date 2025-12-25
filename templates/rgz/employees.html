@@ -47,7 +47,9 @@
     {% if current_user.is_authenticated %}
     <td>
         <a href="{{ url_for('rgz.edit_employee', id=e.id) }}">✏</a>
-        <a href="{{ url_for('rgz.delete_employee', id=e.id) }}">❌</a>
+        <a href="{{ url_for('rgz.delete_employee', id=e.id) }}" 
+       onclick="return confirm('Вы уверены, что хотите удалить этого сотрудника?\\nЭто действие нельзя отменить.');">
+       ❌</a>
     </td>
     {% endif %}
 </tr>
@@ -60,20 +62,4 @@
 </a>
 {% endif %}
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Вешаем обработчик на всю таблицу
-    const table = document.querySelector('table');
-    if (table) {
-        table.addEventListener('click', function(e) {
-            const link = e.target.closest('a[href*="delete_employee"]');
-            if (link) {
-                if (!confirm('Вы уверены, что хотите удалить этого сотрудника?\nЭто действие нельзя отменить.')) {
-                    e.preventDefault();
-                }
-            }
-        });
-    }
-});
-</script>
 {% endblock %}
