@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Список сотрудников</h2>
+
+<form method="get">
+    <input type="text" name="search" placeholder="Поиск">
+    <select name="sort">
+        <option value="full_name">ФИО</option>
+        <option value="position">Должность</option>
+        <option value="gender">Пол</option>
+        <option value="phone">Телефон</option>
+        <option value="email">Email</option>
+        <option value="hire_date">Дата приёма</option>
+    </select>
+    <button type="submit">Применить</button>
+</form>
+
+{% if current_user.is_authenticated %}
+<a href="{{ url_for('rgz.add_employee') }}">➕ Добавить сотрудника</a>
+{% endif %}
+
+<table border="1" cellpadding="5">
+<tr>
+    <th>ФИО</th>
+    <th>Должность</th>
+    <th>Пол</th>
+    <th>Телефон</th>
+    <th>Email</th>
+    <th>Испытательный срок</th>
+    <th>Дата приёма</th>
+    {% if current_user.is_authenticated %}
+    <th>Действия</th>
+    {% endif %}
+</tr>
+
+{% for e in employees.items %}
+<tr>
+    <td>{{ e.full_name }}</td>
+    <td>{{ e.position }}</td>
+    <td>{{ e.gender }}</td>
+    <td>{{ e.phone }}</td>
+    <td>{{ e.email }}</td>
+    <td>{{ 'Да' if e.probation else 'Нет' }}</td>
+    <td>{{ e.hire_date }}</td>
+    {% if current_user.is_authenticated %}
+    <td>
+        <a href="{{ url_for('rgz.edit_employee', id=e.id) }}">✏</a>
+        <a href="{{ url_for('rgz.delete_employee', id=e.id) }}">❌</a>
+    </td>
+    {% endif %}
+</tr>
+{% endfor %}
+</table>
+
+{% if employees.has_next %}
+<a href="{{ url_for('rgz.employees', page=employees.next_num) }}">
+Показать ещё
+</a>
+{% endif %}
+
+<footer>{{ student }}</footer>
+{% endblock %}

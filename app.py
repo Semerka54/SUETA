@@ -3,6 +3,8 @@ import os
 from os import path
 
 from flask import Flask, render_template, request, url_for
+from rgz import rgz
+from rgz.db_rgz import db_rgz
 from database import db
 from database.models import Users
 from flask_login import LoginManager

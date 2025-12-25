@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Карточка сотрудника</h2>
+
+<form method="post">
+    <input name="full_name" placeholder="ФИО" required
+           value="{{ employee.full_name if employee }}">
+
+    <input name="position" placeholder="Должность" required
+           value="{{ employee.position if employee }}">
+
+    <input name="gender" placeholder="Пол" required
+           value="{{ employee.gender if employee }}">
+
+    <input name="phone" placeholder="Телефон" required
+           value="{{ employee.phone if employee }}">
+
+    <input name="email" placeholder="Email" required
+           value="{{ employee.email if employee }}">
+
+    <input type="date" name="hire_date" required
+           value="{{ employee.hire_date if employee }}">
+
+    <label>
+        <input type="checkbox" name="probation"
+        {% if employee and employee.probation %}checked{% endif %}>
+        Испытательный срок
+    </label>
+
+    <button type="submit">Сохранить</button>
+</form>
+
+<footer>{{ student }}</footer>
+{% endblock %}
