@@ -11,28 +11,56 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // 2. Автоматическое форматирование телефона (без валидации)
-    const phoneInputs = document.querySelectorAll('input[name="phone"]');
-    phoneInputs.forEach(input => {
-        input.addEventListener('input', function(e) {
-            let value = this.value.replace(/\D/g, '');
-            
-            if (value.length > 0) {
-                if (!value.startsWith('+')) {
-                    value = '+7' + value;
-                }
-                
-                // Форматирование: +7 (XXX) XXX-XX-XX
-                if (value.length > 2) {
-                    value = value.substring(0, 2) + ' (' + value.substring(2, 5) + ') ' + 
-                            value.substring(5, 8) + '-' + value.substring(8, 10) + '-' + 
-                            value.substring(10, 12);
-                }
-            }
-            
-            this.value = value;
-        });
+    // 2. Автоматическое форматирование телефона
+const phoneInputs = document.querySelectorAll('input[name="phone"]');
+phoneInputs.forEach(input => {
+    // Устанавливаем начальное значение +7
+    if (!input.value) {
+        input.value = '+7 ';
+    }
+    
+    input.addEventListener('input', function(e) {
+        let value = this.value.replace(/\D/g, '');
+        let formatted = '+7';
+        
+        // Оставляем только цифры после +7
+        if (value.startsWith('7')) {
+            value = value.substring(1);
+        } else if (value.startsWith('8')) {
+            value = value.substring(1); // для тех, кто начинает с 8
+        }
+        
+        // Форматируем по мере ввода
+        if (value.length > 0) {
+            formatted += ' (' + value.substring(0, 3);
+        }
+        if (value.length > 3) {
+            formatted += ') ' + value.substring(3, 6);
+        }
+        if (value.length > 6) {
+            formatted += '-' + value.substring(6, 8);
+        }
+        if (value.length > 8) {
+            formatted += '-' + value.substring(8, 10);
+        }
+        
+        // Устанавливаем курсор в конец
+        const cursorPos = this.selectionStart;
+        this.value = formatted;
+        
+        // Восстанавливаем положение курсора, если пользователь редактирует
+        if (cursorPos < formatted.length) {
+            this.setSelectionRange(cursorPos, cursorPos);
+        }
     });
+    
+    // При фокусе ставим курсор после +7
+    input.addEventListener('focus', function() {
+        if (this.value === '+7' || this.value === '+7 ') {
+            this.setSelectionRange(3, 3);
+        }
+    });
+});
     
     // 3. Подсветка строк таблицы при наведении
     const tableRows = document.querySelectorAll('table tr');
@@ -96,7 +124,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    
+
     // 9. Уведомления (toast) - упрощенная версия
     window.showToast = function(message, type = 'info') {
         // Простой alert для теста
