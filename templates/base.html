@@ -603,5 +603,24 @@
     </div>
 </footer>
 
+<!-- В самом низу base.html, перед закрывающим </body> -->
+<script>
+    // Глобальные переменные для использования в JS
+    window.appConfig = {
+        currentUser: {{ current_user.is_authenticated|tojson|safe }},
+        userId: {{ current_user.id|tojson|safe if current_user.is_authenticated else 'null' }},
+        baseUrl: "{{ url_for('index') }}",
+        student: "{{ student|safe }}"
+    };
+    
+    // Глобальные функции для удобства
+    window.showToast = function(message, type = 'info') {
+        if (typeof message === 'string') {
+            alert(`${type === 'error' ? '❌' : type === 'success' ? '✅' : 'ℹ️'} ${message}`);
+        }
+    };
+</script>
+<script src="{{ url_for('static', filename='main.js') }}?v=1"></script>
+
 </body>
 </html>

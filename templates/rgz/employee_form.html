@@ -1,34 +1,82 @@
 {% extends "base.html" %}
 
 {% block main %}
-<h2>Карточка сотрудника</h2>
+<h2>{% if employee %}Редактирование сотрудника{% else %}Добавление нового сотрудника{% endif %}</h2>
+
+<!-- Сообщения об ошибках и успехе -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">
+                {% if category == 'error' %}
+                    ❌
+                {% elif category == 'success' %}
+                    ✅
+                {% else %}
+                    ℹ️
+                {% endif %}
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
 
 <form method="post">
     <input name="full_name" placeholder="ФИО" required
            value="{{ employee.full_name if employee }}">
-
+    
     <input name="position" placeholder="Должность" required
            value="{{ employee.position if employee }}">
-
+    
     <input name="gender" placeholder="Пол" required
            value="{{ employee.gender if employee }}">
-
+    
     <input name="phone" placeholder="Телефон" required
            value="{{ employee.phone if employee }}">
-
+    
     <input name="email" placeholder="Email" required
            value="{{ employee.email if employee }}">
-
+    
     <input type="date" name="hire_date" required
            value="{{ employee.hire_date if employee }}">
-
+    
     <label>
         <input type="checkbox" name="probation"
         {% if employee and employee.probation %}checked{% endif %}>
         Испытательный срок
     </label>
-
-    <button type="submit">Сохранить</button>
+    
+    <button type="submit">
+        {% if employee %}
+            💾 Сохранить изменения
+        {% else %}
+            ➕ Добавить сотрудника
+        {% endif %}
+    </button>
 </form>
 
+<a href="{{ url_for('rgz.employees') }}" class="btn-cancel">
+    ← Отмена
+</a>
+
+<style>
+    /* Только специфичные стили для этой страницы */
+    .btn-cancel {
+        display: inline-block;
+        margin-top: 15px;
+        padding: 12px 24px;
+        background: #f7fafc;
+        color: #4a5568;
+        border: 2px solid #e2e8f0;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-cancel:hover {
+        background: #edf2f7;
+        border-color: #cbd5e0;
+    }
+</style>
 {% endblock %}
