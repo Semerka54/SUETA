@@ -48,7 +48,7 @@
     <td>
         <a href="{{ url_for('rgz.edit_employee', id=e.id) }}">✏</a>
         <a href="{{ url_for('rgz.delete_employee', id=e.id) }}" 
-       onclick="return confirm('Вы уверены, что хотите удалить этого сотрудника?\\nЭто действие нельзя отменить.');">
+       onclick="return confirm('Вы уверены, что хотите удалить этого сотрудника?');">
        ❌</a>
     </td>
     {% endif %}
